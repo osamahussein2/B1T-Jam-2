@@ -87,13 +87,13 @@
     <OutDir>$(SolutionDir)Windows (x32)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\Windows (x32)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)\external\SDL3_ttf-3.2.0\include;$(SolutionDir)\external\SDL3-3.2.18\include;$(SolutionDir)\external\miniaudio;$(SolutionDir)\external\SDL3_image-3.2.4\include;</IncludePath>
-    <LibraryPath>$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86</LibraryPath>
+    <LibraryPath>$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86;$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)Windows (x32)\$(Configuration)\</OutDir>
     <IntDir>$(ShortProjectName)\Windows (x32)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)\external\SDL3_ttf-3.2.0\include;$(SolutionDir)\external\SDL3-3.2.18\include;$(SolutionDir)\external\miniaudio;$(SolutionDir)\external\SDL3_image-3.2.4\include;</IncludePath>
-    <LibraryPath>$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86</LibraryPath>
+    <LibraryPath>$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86;$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -152,10 +152,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="Text.h" />
     <ClInclude Include="Vector2.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
