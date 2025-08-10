@@ -1,32 +1,21 @@
-# Prerequisites
-*.d
+.vs/
+.vscode/
+*.user
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+bin/
 
-# Precompiled Headers
-*.gch
-*.pch
+*/obj/
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
-*.out
-*.app
+*.obj
+*.tlog
+*.idb
+*.pdb
+*FileListAbsolute.txt
+*.log
+*.exe.recipe
+*.iobj
+*.ipdb
+*.ilk
+*/Windows (x64)/
+*/Windows (x32)/
