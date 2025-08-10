@@ -9,7 +9,8 @@ Text::~Text()
 {
 }
 
-void Text::InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_)
+void Text::InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_, float textPosX_,
+	float textPosY_)
 {
 	// Initialize SDL_ttf
 	if (TTF_Init())
@@ -33,8 +34,8 @@ void Text::InitializeText(std::string filePath_, float fontSize_, std::string te
 		srcText.h = textTexture->h;
 
 		// Draw text somewhere inside the window
-		destText.x = (static_cast<float>(Window::GetWindowWidth()) / 20.0f);
-		destText.y = (static_cast<float>(Window::GetWindowHeight()) / 20.0f);
+		destText.x = textPosX_;
+		destText.y = textPosY_;
 
 		destText.w = srcText.w * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destText.h = srcText.h * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
@@ -45,4 +46,10 @@ void Text::RenderText()
 {
 	// Render text
 	SDL_RenderTexture(Window::GetRenderer(), textTexture, &srcText, &destText);
+}
+
+void Text::DestroyText()
+{
+	// Close the font
+	TTF_CloseFont(font);
 }

@@ -14,8 +14,11 @@ public:
 	Text();
 	~Text();
 
-	void InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_);
+	void InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_, float textPosX_,
+		float textPosY_);
+
 	void RenderText();
+	void DestroyText();
 
 private:
 	SDL_Texture* textTexture;

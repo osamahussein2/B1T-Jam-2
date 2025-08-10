@@ -25,6 +25,8 @@ public:
 
 	static bool GetIsRunning() { return isRunning; }
 
+	static float GetDeltaTime() { return deltaTime; }
+
 private:
 	Window();
 
@@ -37,6 +39,8 @@ private:
 	static bool isRunning;
 
 	static void HandleSDLEvent();
+
+	static constexpr float deltaTime = 1.0f / 60.0f;
 };
 
 #endif
