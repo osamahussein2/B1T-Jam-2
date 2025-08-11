@@ -9,16 +9,15 @@ Text::~Text()
 {
 }
 
-void Text::InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_, float textPosX_,
-	float textPosY_)
+void Text::InitializeText(std::string text_, float fontSize_, Vector2 textPos_)
 {
 	// Initialize SDL_ttf
 	if (TTF_Init())
 	{
 		// Load the font
-		font = TTF_OpenFont(filePath_.c_str(), fontSize_);
+		font = TTF_OpenFont("Fonts/PIXEARG_.TTF", fontSize_);
 
-		textSurface = TTF_RenderText_Solid(font, text_.c_str(), 0, color_);
+		textSurface = TTF_RenderText_Blended_Wrapped(font, text_.c_str(), 0, SDL_Color{255, 255, 255}, 0);
 
 		if (!textSurface) std::cout << "Can't load " << SDL_GetError();
 
@@ -34,8 +33,8 @@ void Text::InitializeText(std::string filePath_, float fontSize_, std::string te
 		srcText.h = textTexture->h;
 
 		// Draw text somewhere inside the window
-		destText.x = textPosX_;
-		destText.y = textPosY_;
+		destText.x = textPos_.x;
+		destText.y = textPos_.y;
 
 		destText.w = srcText.w * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destText.h = srcText.h * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);

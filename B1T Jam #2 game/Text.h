@@ -8,14 +8,15 @@
 #include <iostream>
 #include <string>
 
+#include "Vector2.h"
+
 class Text
 {
 public:
 	Text();
 	~Text();
 
-	void InitializeText(std::string filePath_, float fontSize_, std::string text_, SDL_Color color_, float textPosX_,
-		float textPosY_);
+	void InitializeText(std::string text_, float fontSize_, Vector2 textPos_);
 
 	void RenderText();
 	void DestroyText();

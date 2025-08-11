@@ -14,6 +14,8 @@ public:
 
 private:
 	Engine();
+
+	static void InitializeGameTexts();
 };
 
 #endif
