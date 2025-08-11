@@ -16,12 +16,12 @@ public:
 	Text();
 	~Text();
 
-	void InitializeText(std::string text_, float fontSize_, Vector2 textPos_);
+	virtual void InitializeText(std::string text_, float fontSize_, Vector2 textPos_);
 
-	void RenderText();
-	void DestroyText();
+	virtual void RenderText();
+	virtual void DestroyText();
 
-private:
+protected:
 	SDL_Texture* textTexture;
 
 	SDL_FRect srcText;

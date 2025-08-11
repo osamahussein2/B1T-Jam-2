@@ -7,6 +7,7 @@
 #include <SDL3_image/SDL_image.h>
 
 #include "Vector2.h"
+#include "FadingText.h"
 
 #include <iostream>
 
@@ -16,12 +17,20 @@ public:
 	~Player();
 
 	static void InitializePlayer(std::string filePath_);
+
+	static void LoadPlayerStats();
+
 	static void UpdatePlayer();
 	static void RenderPlayer();
 
 	static void DestroyPlayer();
 
 	static SDL_FPoint GetCamera() { return camera; }
+
+	static int GetWaveNumber() { return waveNumber; }
+	static void SetWaveNumber(int waveNumber_) { waveNumber = waveNumber_; }
+
+	static bool GetWaveFinishedChanging() { return waveFinishedChanging; }
 
 private:
 	Player();
@@ -32,6 +41,8 @@ private:
 	static void HandleAimCursor();
 	static void HandleAimAction();
 	static void StopMovement();
+
+	static void UpdateWave();
 
 	static SDL_Texture* playerTexture;
 
@@ -48,6 +59,13 @@ private:
 	static Vector2 velocity;
 
 	static bool spriteFlipX;
+
+	static int waveNumber;
+
+	static bool waveChanged;
+	static bool waveFinishedChanging;
+
+	static FadingText waveText;
 };
 
 #endif

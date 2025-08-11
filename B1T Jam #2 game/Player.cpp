@@ -18,6 +18,14 @@ Vector2 Player::velocity = Vector2{0.0f, 0.0f};
 
 bool Player::spriteFlipX = false;
 
+int Player::waveNumber = 1;
+
+bool Player::waveChanged = true;
+
+FadingText Player::waveText;
+
+bool Player::waveFinishedChanging = false;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -44,9 +52,21 @@ void Player::InitializePlayer(std::string filePath_)
 	SDL_DestroySurface(playerSurface);
 }
 
+void Player::LoadPlayerStats()
+{
+	// Load the player stats upon entering the play state
+	if (waveNumber != 1) waveNumber = 1;
+	if (waveChanged != true) waveChanged = true;
+	if (waveFinishedChanging != false) waveFinishedChanging = false;
+
+	if (waveText.GetAlpha() != 0.0f) waveText.SetAlpha(0.0f);
+	if (waveText.GetAlphaStateChanged() != false) waveText.SetAlphaStateChanged(false);
+}
+
 void Player::UpdatePlayer()
 {
 	HandlePlayerInput();
+	if (Window::gameState == GameState::Playing) UpdateWave();
 
 	// Prevents the x frame animation from animating too fast
 	animationTimer += Window::GetDeltaTime() * 0.1f;
@@ -71,8 +91,11 @@ void Player::UpdatePlayer()
 void Player::RenderPlayer()
 {
 	// Render the sprite based on sprite flip X
-	SDL_RenderTextureRotated(Window::GetRenderer(), playerTexture, &srcPlayer, &destPlayer, 0.0f, NULL,
-		spriteFlipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	if (waveFinishedChanging)
+	{
+		SDL_RenderTextureRotated(Window::GetRenderer(), playerTexture, &srcPlayer, &destPlayer, 0.0f, NULL, 
+			spriteFlipX ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE);
+	}
 }
 
 void Player::DestroyPlayer()
@@ -81,6 +104,8 @@ void Player::DestroyPlayer()
 	SDL_DestroyTexture(playerTexture);
 
 	playerTexture = NULL;
+
+	waveText.DestroyText();
 }
 
 void Player::HandlePlayerInput()
@@ -121,6 +146,8 @@ void Player::HandlePlayerInput()
 
 			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::GameIntro && !pressed)
 			{
+				LoadPlayerStats();
+
 				Window::gameState = GameState::Playing;
 				pressed = true;
 			}
@@ -151,17 +178,17 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_KEY_UP:
-			if (Window::gameState == GameState::Playing) StopMovement();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging) StopMovement();
 
 			if (pressed) pressed = false;
 			break;
 
 		case SDL_EVENT_MOUSE_MOTION:
-			if (Window::gameState == GameState::Playing) HandleAimCursor();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimCursor();
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing) HandleAimAction();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimAction();
 			break;
 
 		default:
@@ -246,5 +273,154 @@ void Player::StopMovement()
 	{
 		if (spriteFlipX != false) spriteFlipX = false;
 		velocity.x += 0.0f;
+	}
+}
+
+void Player::UpdateWave()
+{
+	switch (waveNumber)
+	{
+	case 1:
+		if (!waveChanged)
+		{
+			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
+				waveText.RenderText();
+
+			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
+			{
+				// Skip to next wave for now to test it works
+				++waveNumber;
+				waveChanged = true;
+				waveFinishedChanging = true;
+
+				waveText.SetAlphaStateChanged(false);
+			}
+		}
+
+		else if (waveChanged)
+		{
+			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30, 
+				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
+				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			waveChanged = false;
+		}
+
+		break;
+
+	case 2:
+		if (waveChanged)
+		{
+			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30, 
+				{ static_cast<float>(Window::GetWindowWidth() / 2.5f), 
+				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			waveChanged = false;
+		}
+
+		else if (!waveChanged)
+		{
+			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
+				waveText.RenderText();
+
+			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
+			{
+				++waveNumber;
+				waveChanged = true;
+				waveFinishedChanging = true;
+
+				waveText.SetAlphaStateChanged(false);
+			}
+		}
+
+		break;
+
+	case 3:
+		if (waveChanged)
+		{
+			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
+				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			waveChanged = false;
+		}
+
+		else if (!waveChanged)
+		{
+			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
+				waveText.RenderText();
+
+			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
+			{
+				++waveNumber;
+				waveChanged = true;
+				waveFinishedChanging = true;
+
+				waveText.SetAlphaStateChanged(false);
+			}
+		}
+
+		break;
+
+	case 4:
+		if (waveChanged)
+		{
+			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
+				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			waveChanged = false;
+		}
+
+		else if (!waveChanged)
+		{
+			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
+				waveText.RenderText();
+
+			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
+			{
+				++waveNumber;
+				waveChanged = true;
+				waveFinishedChanging = true;
+
+				waveText.SetAlphaStateChanged(false);
+			}
+		}
+
+		break;
+
+	case 5:
+		if (waveChanged)
+		{
+			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
+				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			waveChanged = false;
+		}
+
+		else if (!waveChanged)
+		{
+			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
+				waveText.RenderText();
+
+			/*else
+			{
+				++waveNumber;
+				waveChanged = true;
+
+				waveText.SetAlpha(255.0f);
+			}*/
+		}
+
+		break;
+
+	default:
+
+#ifdef _DEBUG
+		std::cout << "Wave number invalid\n";
+#endif
+
+		break;
 	}
 }
