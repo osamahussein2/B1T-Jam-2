@@ -17,6 +17,9 @@ Vector2 Player::velocity = Vector2{0.0f, 0.0f};
 
 bool Player::spriteFlipX = false;
 
+// Initialize non-static variables
+bool pressed = false;
+
 Player::Player()
 {
 }
@@ -88,20 +91,63 @@ void Player::HandlePlayerInput()
 	{
 		switch (event.type)
 		{
+		case SDL_EVENT_QUIT:
+			Window::StopRunning();
+			break;
+
 		case SDL_EVENT_KEY_DOWN:
-			HandleMovement();
+			if (Window::gameState == GameState::Playing) HandleMovement();
+
+			// Handle press events depending on current game state
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::MainMenu && !pressed)
+			{
+				Window::gameState = GameState::GameIntro;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::GameIntro && !pressed)
+			{
+				Window::gameState = GameState::Playing;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::Playing && !pressed)
+			{
+				Window::gameState = GameState::Paused;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::Paused && !pressed)
+			{
+				Window::gameState = GameState::MainMenu;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::Paused && !pressed)
+			{
+				Window::gameState = GameState::Playing;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::MainMenu && !pressed)
+			{
+				Window::StopRunning();
+				pressed = true;
+			}
 			break;
 
 		case SDL_EVENT_KEY_UP:
-			StopMovement();
+			if (Window::gameState == GameState::Playing) StopMovement();
+
+			if (pressed) pressed = false;
 			break;
 
 		case SDL_EVENT_MOUSE_MOTION:
-			HandleAimCursor();
+			if (Window::gameState == GameState::Playing) HandleAimCursor();
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			HandleAimAction();
+			if (Window::gameState == GameState::Playing) HandleAimAction();
 			break;
 
 		default:
@@ -112,7 +158,10 @@ void Player::HandlePlayerInput()
 
 void Player::HandleMovement()
 {
+#ifdef _DEBUG
 	std::cout << "keyboard btn pressed" << std::endl;
+#endif
+
 	const bool* currentKeyStates = SDL_GetKeyboardState(NULL);
 
 	if (currentKeyStates[SDL_SCANCODE_D])
@@ -148,14 +197,16 @@ void Player::HandleAimCursor()
 	float mouseY;
 	unsigned int currentMouseStates = SDL_GetMouseState(&mouseX, &mouseY);
 
+#ifdef _DEBUG
 	std::cout << "moving cursor x:" << mouseX << " y: " << mouseY << std::endl;
-
-
+#endif
 }
 
 void Player::HandleAimAction()
 {
+#ifdef _DEBUG
 	std::cout << "mouse btn pressed" << std::endl;
+#endif
 }
 
 void Player::StopMovement()

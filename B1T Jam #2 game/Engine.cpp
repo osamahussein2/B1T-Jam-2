@@ -29,6 +29,8 @@ void Engine::RunEngine()
 		case GameState::MainMenu:
 			Window::RenderBeginFrame();
 
+			Player::UpdatePlayer(); // Only for handling menu input
+
 			gameTexts["mainMenuTitle"].RenderText();
 			gameTexts["mainMenuContinue"].RenderText();
 			gameTexts["mainMenuQuit"].RenderText();
@@ -59,6 +61,8 @@ void Engine::RunEngine()
 
 		case GameState::Paused:
 			Window::RenderBeginFrame();
+
+			Player::UpdatePlayer();
 
 			gameTexts["pauseMenuTitle"].RenderText();
 			gameTexts["pauseMenuResume"].RenderText();

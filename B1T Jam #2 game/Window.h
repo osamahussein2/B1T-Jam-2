@@ -31,6 +31,8 @@ public:
 
 	static GameState gameState;
 
+	static void StopRunning() { isRunning = false; }
+
 private:
 	Window();
 
@@ -41,8 +43,6 @@ private:
 	static int windowHeight;
 
 	static bool isRunning;
-
-	static void HandleSDLEvent();
 
 	static constexpr float deltaTime = 1.0f / 60.0f;
 };

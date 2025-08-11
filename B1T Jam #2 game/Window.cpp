@@ -13,9 +13,6 @@ bool Window::isRunning = false;
 
 GameState Window::gameState = GameState::MainMenu;
 
-// Initialize non-static variables
-bool pressed = false;
-
 Window::Window()
 {
 }
@@ -91,8 +88,6 @@ void Window::InitializeWindow()
 
 void Window::RenderBeginFrame()
 {
-	HandleSDLEvent();
-
 	// Clear the window with the set drawing color
 	SDL_RenderClear(gameRenderer);
 }
@@ -101,66 +96,6 @@ void Window::RenderEndFrame()
 {
 	// Draw the window renderer
 	SDL_RenderPresent(gameRenderer);
-}
-
-void Window::HandleSDLEvent()
-{
-	SDL_Event event;
-
-	// Check if there's an event to handle
-	if (SDL_PollEvent(&event))
-	{
-		switch (event.type)
-		{
-			// SDL_QUIT event occurs when the mouse clicks on a red cross in the window
-		case SDL_EVENT_QUIT:
-			isRunning = false;
-			break;
-		
-		case SDL_EVENT_KEY_DOWN:
-			
-			// Handle press events depending on current game state
-			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::MainMenu && !pressed)
-			{
-				gameState = GameState::GameIntro;
-				pressed = true;
-			}
-
-			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::GameIntro && !pressed)
-			{
-				gameState = GameState::Playing;
-				pressed = true;
-			}
-
-			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::Playing && !pressed)
-			{
-				gameState = GameState::Paused;
-				pressed = true;
-			}
-
-			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::Paused && !pressed)
-			{
-				gameState = GameState::MainMenu;
-				pressed = true;
-			}
-
-			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::Paused && !pressed)
-			{
-				gameState = GameState::Playing;
-				pressed = true;
-			}
-
-			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::MainMenu && !pressed)
-			{
-				isRunning = false;
-				pressed = true;
-			}
-			break;
-
-		case SDL_EVENT_KEY_UP:
-			if (pressed) pressed = false;
-		}
-	}
 }
 
 void Window::DestroyWindow()
