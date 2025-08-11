@@ -12,10 +12,15 @@ public:
 
 	static void RunEngine();
 
+	static void RestartCreditsMenu();
+
 private:
 	Engine();
 
 	static void InitializeGameTexts();
+	static void InitializeScrollingCreditsTexts();
+
+	static void CheckIfScrollingCreditsFinished();
 };
 
 #endif

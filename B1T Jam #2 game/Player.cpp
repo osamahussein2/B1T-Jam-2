@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Window.h"
+#include "Engine.h"
 
 SDL_Texture* Player::playerTexture = NULL;
 
@@ -99,9 +100,22 @@ void Player::HandlePlayerInput()
 			if (Window::gameState == GameState::Playing) HandleMovement();
 
 			// Handle press events depending on current game state
-			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::MainMenu && !pressed)
+			if (event.key.scancode == SDL_SCANCODE_SPACE && Window::gameState == GameState::MainMenu && !pressed)
 			{
 				Window::gameState = GameState::GameIntro;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::MainMenu && !pressed)
+			{
+				Engine::RestartCreditsMenu();
+				Window::gameState = GameState::CreditsMenu;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::CreditsMenu && !pressed)
+			{
+				Window::gameState = GameState::MainMenu;
 				pressed = true;
 			}
 

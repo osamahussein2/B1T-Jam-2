@@ -7,6 +7,7 @@ enum class GameState
 {
 	Error,
 	MainMenu,
+	CreditsMenu,
 	GameIntro,
 	Playing,
 	Paused
