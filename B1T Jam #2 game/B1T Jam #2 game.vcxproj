@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Vector2.h" />

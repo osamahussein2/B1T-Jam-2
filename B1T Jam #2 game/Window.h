@@ -5,6 +5,8 @@
 
 #include <SDL3/SDL.h>
 
+#include "Global.h"
+
 class Window
 {
 public:
@@ -26,6 +28,8 @@ public:
 	static bool GetIsRunning() { return isRunning; }
 
 	static float GetDeltaTime() { return deltaTime; }
+
+	static GameState gameState;
 
 private:
 	Window();

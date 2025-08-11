@@ -1,4 +1,5 @@
 #include "Window.h"
+
 #include <iostream>
 #include <SDL3_ttf/SDL_ttf.h>
 
@@ -9,6 +10,11 @@ int Window::windowWidth = 800;
 int Window::windowHeight = 600;
 
 bool Window::isRunning = false;
+
+GameState Window::gameState = GameState::MainMenu;
+
+// Initialize non-static variables
+bool pressed = false;
 
 Window::Window()
 {
@@ -62,11 +68,15 @@ void Window::InitializeWindow()
 			{
 				SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 255);
 				isRunning = true;
+				
+				gameState = GameState::MainMenu;
 			}
 
 			else
 			{
 				isRunning = false;
+				
+				gameState = GameState::Error;
 			}
 		}
 	}
@@ -74,6 +84,8 @@ void Window::InitializeWindow()
 	else if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		isRunning = false;
+		
+		gameState = GameState::Error;
 	}
 }
 
@@ -104,6 +116,49 @@ void Window::HandleSDLEvent()
 		case SDL_EVENT_QUIT:
 			isRunning = false;
 			break;
+		
+		case SDL_EVENT_KEY_DOWN:
+			
+			// Handle press events depending on current game state
+			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::MainMenu && !pressed)
+			{
+				gameState = GameState::GameIntro;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::GameIntro && !pressed)
+			{
+				gameState = GameState::Playing;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::Playing && !pressed)
+			{
+				gameState = GameState::Paused;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && gameState == GameState::Paused && !pressed)
+			{
+				gameState = GameState::MainMenu;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::Paused && !pressed)
+			{
+				gameState = GameState::Playing;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && gameState == GameState::MainMenu && !pressed)
+			{
+				isRunning = false;
+				pressed = true;
+			}
+			break;
+
+		case SDL_EVENT_KEY_UP:
+			if (pressed) pressed = false;
 		}
 	}
 }
