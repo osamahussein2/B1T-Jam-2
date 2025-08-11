@@ -29,6 +29,8 @@ private:
 	static void HandlePlayerInput();
 
 	static void HandleMovement();
+	static void HandleAimCursor();
+	static void HandleAimAction();
 	static void StopMovement();
 
 	static SDL_Texture* playerTexture;

@@ -90,9 +90,19 @@ void Player::HandlePlayerInput()
 		{
 		case SDL_EVENT_KEY_DOWN:
 			HandleMovement();
+			break;
 
 		case SDL_EVENT_KEY_UP:
 			StopMovement();
+			break;
+
+		case SDL_EVENT_MOUSE_MOTION:
+			HandleAimCursor();
+			break;
+
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+			HandleAimAction();
+			break;
 
 		default:
 			break;
@@ -102,6 +112,7 @@ void Player::HandlePlayerInput()
 
 void Player::HandleMovement()
 {
+	std::cout << "keyboard btn pressed" << std::endl;
 	const bool* currentKeyStates = SDL_GetKeyboardState(NULL);
 
 	if (currentKeyStates[SDL_SCANCODE_D])
@@ -129,6 +140,22 @@ void Player::HandleMovement()
 		if (frameY != 0) frameY = 0;
 		velocity.y += 50.0f * Window::GetDeltaTime();
 	}
+}
+
+void Player::HandleAimCursor()
+{
+	float mouseX;
+	float mouseY;
+	unsigned int currentMouseStates = SDL_GetMouseState(&mouseX, &mouseY);
+
+	std::cout << "moving cursor x:" << mouseX << " y: " << mouseY << std::endl;
+
+
+}
+
+void Player::HandleAimAction()
+{
+	std::cout << "mouse btn pressed" << std::endl;
 }
 
 void Player::StopMovement()

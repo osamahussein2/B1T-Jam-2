@@ -18,7 +18,7 @@ Engine::~Engine()
 void Engine::RunEngine()
 {
 	Window::InitializeWindow();
-	//Player::InitializePlayer("");
+	Player::InitializePlayer("./Textures/character.png"); // just to mock the player with a texture
 
 	InitializeGameTexts();
 
@@ -39,8 +39,8 @@ void Engine::RunEngine()
 		case GameState::GameIntro:
 			Window::RenderBeginFrame();
 
-			//Player::UpdatePlayer();
-			//Player::RenderPlayer();
+			Player::UpdatePlayer();
+			// Player::RenderPlayer();
 
 			gameTexts["gameIntro"].RenderText();
 			gameTexts["gameEndIntro"].RenderText();
@@ -51,8 +51,8 @@ void Engine::RunEngine()
 		case GameState::Playing:
 			Window::RenderBeginFrame();
 
-			//Player::UpdatePlayer();
-			//Player::RenderPlayer();
+			Player::UpdatePlayer();
+			// Player::RenderPlayer();
 
 			Window::RenderEndFrame();
 			break;
