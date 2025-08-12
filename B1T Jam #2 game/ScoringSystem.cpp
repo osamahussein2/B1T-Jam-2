@@ -13,7 +13,7 @@ int ScoringSystem::getEnemyScore(AlienType enemy)
             return 10;
         case AlienType::ShieldDrone:
             return 25;
-        case AlienType::OrangeZogling:
+        case AlienType::BigZogling:
             return 15;
         case AlienType::StunSporeling:
             return 30;
