@@ -217,7 +217,7 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimAction();
+			if (Window::gameState == GameState::Playing) HandleAimAction(event);
 			break;
 
 		default:
@@ -272,11 +272,24 @@ void Player::HandleAimCursor()
 #endif
 }
 
-void Player::HandleAimAction()
+void Player::HandleAimAction(SDL_Event& event)
 {
-#ifdef _DEBUG
-	std::cout << "mouse btn pressed" << std::endl;
-#endif
+	SDL_MouseButtonEvent b = event.button;
+
+	if (b.button == SDL_BUTTON_LEFT)
+	{		
+		#ifdef _DEBUG
+			std::cout << "left mouse btn pressed" << std::endl;
+		#endif
+	}
+
+	if (b.button == SDL_BUTTON_RIGHT)
+	{		
+		#ifdef _DEBUG
+			std::cout << "right mouse btn pressed" << std::endl;
+		#endif
+	}
+
 }
 
 void Player::StopMovement()

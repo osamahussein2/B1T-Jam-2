@@ -39,7 +39,7 @@ private:
 
 	static void HandleMovement();
 	static void HandleAimCursor();
-	static void HandleAimAction();
+	static void HandleAimAction(SDL_Event& event);
 	static void StopMovement();
 
 	static void UpdateWave();
