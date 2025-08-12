@@ -32,6 +32,9 @@ public:
 
 	static bool GetWaveFinishedChanging() { return waveFinishedChanging; }
 
+	static float GetMouseX() { return mouseX; }
+	static float GetMouseY() { return mouseY; }
+
 private:
 	Player();
 
@@ -70,6 +73,9 @@ private:
 	static bool waveFinishedChanging;
 
 	static FadingText waveText;
+
+	static float mouseX;
+	static float mouseY;
 };
 
 #endif
