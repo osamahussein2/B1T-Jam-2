@@ -234,7 +234,7 @@ void Engine::InitializeScrollingCreditsTexts()
 		20.0f, { static_cast<float>(Window::GetWindowWidth() / 2.4f),
 		static_cast<float>(Window::GetWindowHeight() * 0.85f) });
 
-	scrollingCreditsTexts["ArtistNameText"].InitializeScrollingCredits("Space Frog",
+	scrollingCreditsTexts["ArtistNameText"].InitializeScrollingCredits("Space Frog \nMantis",
 		15.0f, { static_cast<float>(Window::GetWindowWidth() / 2.3f),
 		static_cast<float>(Window::GetWindowHeight() * 0.95f) });
 }
@@ -309,6 +309,24 @@ void Engine::IsMouseHovered()
 		// Otherwise, freeze the animation
 		animatedObjects["BuyFlowerButton"].FreezeAnimation(7, 1, { Window::GetWindowWidth() / 2.35f,
 			Window::GetWindowHeight() / 3.0f }, { 1.0f, 1.0f });
+	}
+}
+
+void Engine::HandleMousePressedEvents()
+{
+	// Check if the player presses the mouse while hovering on the buy flower button
+	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x &&
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x +
+		animatedObjects["BuyFlowerButton"].GetAnimationPosition().w &&
+		Player::GetMouseY() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y &&
+		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
+		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h &&
+
+		Player::GetWaveFinishedChanging() && Window::gameState == GameState::Playing)
+	{
+#ifdef _DEBUG
+		std::cout << "Bought flower\n";
+#endif
 	}
 }
 

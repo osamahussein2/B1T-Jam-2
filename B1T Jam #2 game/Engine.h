@@ -14,6 +14,8 @@ public:
 
 	static void RestartCreditsMenu();
 
+	static void HandleMousePressedEvents();
+
 private:
 	Engine();
 

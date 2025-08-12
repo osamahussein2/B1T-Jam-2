@@ -272,9 +272,9 @@ void Player::HandleAimCursor()
 {
 	unsigned int currentMouseStates = SDL_GetMouseState(&mouseX, &mouseY);
 
-#ifdef _DEBUG
+/*#ifdef _DEBUG
 	std::cout << "moving cursor x:" << mouseX << " y: " << mouseY << std::endl;
-#endif
+#endif*/
 }
 
 void Player::HandleAimAction(SDL_Event& event)
@@ -288,6 +288,9 @@ void Player::HandleAimAction(SDL_Event& event)
 		#endif
 		// test case of scoring player before killing an enemy	
 		scoring.scorePlayer(AlienType::GruntZogling); 
+
+		// Handle some mouse pressed events
+		Engine::HandleMousePressedEvents();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)
