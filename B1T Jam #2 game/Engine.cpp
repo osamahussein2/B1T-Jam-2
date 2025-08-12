@@ -2,12 +2,21 @@
 #include "Player.h"
 #include "Text.h"
 #include "ScrollingCredits.h"
+#include "Plant.h"
+#include "Alien.h"
+#include "Item.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
+#include <vector>
+
 
 std::map<std::string, Text> gameTexts;
 std::map<std::string, ScrollingCredits> scrollingCreditsTexts;
+
+std::vector<Plant> plantsEntities;
+std::vector<Alien> aliensEntities;
+std::vector<Item> itemsEntities;
 
 Engine::Engine()
 {
@@ -24,6 +33,7 @@ void Engine::RunEngine()
 
 	InitializeGameTexts();
 	InitializeScrollingCreditsTexts();
+	InitializeGameEntities();
 
 	while (Window::GetIsRunning())
 	{
@@ -211,6 +221,50 @@ void Engine::InitializeScrollingCreditsTexts()
 	scrollingCreditsTexts["ArtistNameText"].InitializeScrollingCredits("Space Frog",
 		15.0f, { static_cast<float>(Window::GetWindowWidth() / 2.3f),
 		static_cast<float>(Window::GetWindowHeight() * 0.95f) });
+}
+
+void Engine::InitializeGameEntities()
+{
+	Plant plant1(PlantType::TomatoCannon);
+	Plant plant2(PlantType::SunflowerShooter);
+
+	Alien alien1(AlienType::GruntZogling);
+	Alien alien2(AlienType::ShieldDrone);
+
+	Item item1(ItemType::Seeds);
+	Item item2(ItemType::Fertilizer);
+
+	plantsEntities.push_back(plant1);
+	plantsEntities.push_back(plant2);
+
+	aliensEntities.push_back(alien1);
+	aliensEntities.push_back(alien2);
+
+	itemsEntities.push_back(item1);
+	itemsEntities.push_back(item2);
+
+#ifdef _DEBUG
+	std::cout << "Entities Initialized " << std::endl;
+
+	if (PlantType::TomatoCannon == plant1.getEntityID())
+	{
+		std::cout << "This plant is a Tomato cannon!: " << std::endl;
+	}
+
+	if (AlienType::GruntZogling == alien1.getEntityID())
+	{
+		std::cout << "This alien is an GruntZogling!: " << std::endl;
+	}
+
+	if (ItemType::Fertilizer == item2.getEntityID())
+	{
+		std::cout << "This item is a Fertilizer!: " << std::endl;
+	}
+
+	std::cout << "Plants count: " << plantsEntities.size() << std::endl;
+	std::cout << "Aliens count: " << aliensEntities.size() << std::endl;
+	std::cout << "Items count: " << itemsEntities.size() << std::endl;
+#endif
 }
 
 void Engine::CheckIfScrollingCreditsFinished()

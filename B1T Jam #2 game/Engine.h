@@ -19,6 +19,7 @@ private:
 
 	static void InitializeGameTexts();
 	static void InitializeScrollingCreditsTexts();
+	static void InitializeGameEntities();
 
 	static void CheckIfScrollingCreditsFinished();
 };
