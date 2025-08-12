@@ -44,6 +44,8 @@ private:
 
 	static void UpdateWave();
 
+	static void SavePlayerProgress();
+
 	static SDL_Texture* playerTexture;
 
 	static SDL_FRect srcPlayer;

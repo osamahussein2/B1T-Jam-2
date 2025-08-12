@@ -2,6 +2,9 @@
 #include "Window.h"
 #include "Engine.h"
 
+#include <fstream>
+#include <algorithm>
+
 SDL_Texture* Player::playerTexture = NULL;
 
 SDL_FRect Player::srcPlayer = {};
@@ -54,13 +57,39 @@ void Player::InitializePlayer(std::string filePath_)
 
 void Player::LoadPlayerStats()
 {
-	// Load the player stats upon entering the play state
-	if (waveNumber != 1) waveNumber = 1;
-	if (waveChanged != true) waveChanged = true;
-	if (waveFinishedChanging != false) waveFinishedChanging = false;
+	// Read the save file
+	std::ifstream getFile("Player Save/SaveGame.txt");
 
-	if (waveText.GetAlpha() != 0.0f) waveText.SetAlpha(0.0f);
-	if (waveText.GetAlphaStateChanged() != false) waveText.SetAlphaStateChanged(false);
+	if (getFile.is_open())
+	{
+		// Ignore string will detect any whitespace found in the file and skip it entirely
+		std::string ignore;
+
+		// Since there are 3 whitespaces in the file, we must use ignore 3 times
+		getFile >> ignore >> ignore >> ignore >> waveNumber;
+		getFile.close();
+
+		if (waveChanged != true) waveChanged = true;
+		if (waveFinishedChanging != false) waveFinishedChanging = false;
+
+		if (waveText.GetAlpha() != 0.0f) waveText.SetAlpha(0.0f);
+		if (waveText.GetAlphaStateChanged() != false) waveText.SetAlphaStateChanged(false);
+
+#ifdef _DEBUG
+		std::cout << "Loaded wave number: " << waveNumber << std::endl;
+#endif
+	}
+
+	else
+	{
+		// Load the player stats upon entering the play state
+		if (waveNumber != 1) waveNumber = 1;
+		if (waveChanged != true) waveChanged = true;
+		if (waveFinishedChanging != false) waveFinishedChanging = false;
+
+		if (waveText.GetAlpha() != 0.0f) waveText.SetAlpha(0.0f);
+		if (waveText.GetAlphaStateChanged() != false) waveText.SetAlphaStateChanged(false);
+	}
 }
 
 void Player::UpdatePlayer()
@@ -303,6 +332,8 @@ void Player::UpdateWave()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
 				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
 
+			SavePlayerProgress();
+
 			waveChanged = false;
 		}
 
@@ -314,6 +345,8 @@ void Player::UpdateWave()
 			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30, 
 				{ static_cast<float>(Window::GetWindowWidth() / 2.5f), 
 				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			SavePlayerProgress();
 
 			waveChanged = false;
 		}
@@ -342,6 +375,8 @@ void Player::UpdateWave()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
 				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
 
+			SavePlayerProgress();
+
 			waveChanged = false;
 		}
 
@@ -368,6 +403,8 @@ void Player::UpdateWave()
 			waveText.InitializeText("Wave " + std::to_string(waveNumber), 30,
 				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
 				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
+
+			SavePlayerProgress();
 
 			waveChanged = false;
 		}
@@ -396,6 +433,8 @@ void Player::UpdateWave()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.5f),
 				static_cast<float>(Window::GetWindowHeight() / 2.5f) });
 
+			SavePlayerProgress();
+
 			waveChanged = false;
 		}
 
@@ -423,4 +462,19 @@ void Player::UpdateWave()
 
 		break;
 	}
+}
+
+void Player::SavePlayerProgress()
+{
+	// Save player progress on file
+	std::ofstream writeFile("Player Save/SaveGame.txt");
+
+	std::string waveNumberString = "Wave Number = ";
+
+	writeFile << waveNumberString << waveNumber;
+	writeFile.close();
+
+#ifdef _DEBUG
+	std::cout <<  "Saved wave number: " << waveNumber << std::endl;
+#endif
 }
