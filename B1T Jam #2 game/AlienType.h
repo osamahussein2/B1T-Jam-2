@@ -6,7 +6,7 @@ enum class AlienType
 {
     GruntZogling,
     ShieldDrone,
-    OrangeZogling,
+    BigZogling,
     StunSporeling,
     GoliathWalker
 };
