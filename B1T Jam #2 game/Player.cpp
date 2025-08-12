@@ -221,7 +221,7 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing) HandleAimAction(event);
+			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimAction(event);
 			break;
 
 		default:
@@ -336,12 +336,7 @@ void Player::UpdateWave()
 
 			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
 			{
-				// Skip to next wave for now to test it works
-				++waveNumber;
-				waveChanged = true;
-				waveFinishedChanging = true;
-
-				waveText.SetAlphaStateChanged(false);
+				if (waveFinishedChanging != true) waveFinishedChanging = true;
 			}
 		}
 
@@ -353,6 +348,7 @@ void Player::UpdateWave()
 
 			SavePlayerProgress();
 
+			waveFinishedChanging = false;
 			waveChanged = false;
 		}
 
@@ -367,6 +363,7 @@ void Player::UpdateWave()
 
 			SavePlayerProgress();
 
+			waveFinishedChanging = false;
 			waveChanged = false;
 		}
 
@@ -377,11 +374,7 @@ void Player::UpdateWave()
 
 			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
 			{
-				++waveNumber;
-				waveChanged = true;
-				waveFinishedChanging = true;
-
-				waveText.SetAlphaStateChanged(false);
+				if (waveFinishedChanging != true) waveFinishedChanging = true;
 			}
 		}
 
@@ -396,6 +389,7 @@ void Player::UpdateWave()
 
 			SavePlayerProgress();
 
+			waveFinishedChanging = false;
 			waveChanged = false;
 		}
 
@@ -406,11 +400,7 @@ void Player::UpdateWave()
 
 			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
 			{
-				++waveNumber;
-				waveChanged = true;
-				waveFinishedChanging = true;
-
-				waveText.SetAlphaStateChanged(false);
+				if (waveFinishedChanging != true) waveFinishedChanging = true;
 			}
 		}
 
@@ -425,6 +415,7 @@ void Player::UpdateWave()
 
 			SavePlayerProgress();
 
+			waveFinishedChanging = false;
 			waveChanged = false;
 		}
 
@@ -435,11 +426,7 @@ void Player::UpdateWave()
 
 			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
 			{
-				++waveNumber;
-				waveChanged = true;
-				waveFinishedChanging = true;
-
-				waveText.SetAlphaStateChanged(false);
+				if (waveFinishedChanging != true) waveFinishedChanging = true;
 			}
 		}
 
@@ -454,6 +441,7 @@ void Player::UpdateWave()
 
 			SavePlayerProgress();
 
+			waveFinishedChanging = false;
 			waveChanged = false;
 		}
 
@@ -462,13 +450,10 @@ void Player::UpdateWave()
 			if (!waveText.GetAlphaStateChanged() || waveText.GetAlphaStateChanged() && waveText.GetAlpha() > 0.0f)
 				waveText.RenderText();
 
-			/*else
+			else if (waveText.GetAlphaStateChanged() && waveText.GetAlpha() <= 0.0f)
 			{
-				++waveNumber;
-				waveChanged = true;
-
-				waveText.SetAlpha(255.0f);
-			}*/
+				if (waveFinishedChanging != true) waveFinishedChanging = true;
+			}
 		}
 
 		break;
@@ -496,4 +481,12 @@ void Player::SavePlayerProgress()
 #ifdef _DEBUG
 	std::cout <<  "Saved wave number: " << waveNumber << std::endl;
 #endif
+}
+
+void Player::GoToNextWave()
+{
+	++waveNumber;
+	waveChanged = true;
+
+	waveText.SetAlphaStateChanged(false);
 }

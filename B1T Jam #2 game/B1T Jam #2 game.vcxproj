@@ -157,17 +157,21 @@
     <ClCompile Include="FadingText.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ScoringSystem.cpp" />
     <ClCompile Include="ScrollingCredits.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlienType.h" />
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="FadingText.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="PlantType.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ScoringSystem.h" />
     <ClInclude Include="ScrollingCredits.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Tile.h" />
