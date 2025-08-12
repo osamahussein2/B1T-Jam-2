@@ -19,6 +19,9 @@ private:
 
 	static void InitializeGameTexts();
 	static void InitializeScrollingCreditsTexts();
+	static void InitializeAnimatedObjects();
+
+	static void IsMouseHovered();
 
 	static void CheckIfScrollingCreditsFinished();
 };

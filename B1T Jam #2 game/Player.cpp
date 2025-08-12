@@ -30,6 +30,9 @@ FadingText Player::waveText;
 
 bool Player::waveFinishedChanging = false;
 
+float Player::mouseX = 0.0f;
+float Player::mouseY = 0.0f;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -267,8 +270,6 @@ void Player::HandleMovement()
 
 void Player::HandleAimCursor()
 {
-	float mouseX;
-	float mouseY;
 	unsigned int currentMouseStates = SDL_GetMouseState(&mouseX, &mouseY);
 
 #ifdef _DEBUG

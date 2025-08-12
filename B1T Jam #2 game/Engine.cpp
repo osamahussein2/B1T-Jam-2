@@ -2,12 +2,14 @@
 #include "Player.h"
 #include "Text.h"
 #include "ScrollingCredits.h"
+#include "AnimatedObject.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
 
 std::map<std::string, Text> gameTexts;
 std::map<std::string, ScrollingCredits> scrollingCreditsTexts;
+std::map<std::string, AnimatedObject> animatedObjects;
 
 Engine::Engine()
 {
@@ -24,6 +26,7 @@ void Engine::RunEngine()
 
 	InitializeGameTexts();
 	InitializeScrollingCreditsTexts();
+	InitializeAnimatedObjects();
 
 	while (Window::GetIsRunning())
 	{
@@ -90,7 +93,14 @@ void Engine::RunEngine()
 			Window::RenderBeginFrame();
 
 			Player::UpdatePlayer();
-			// Player::RenderPlayer();
+			//Player::RenderPlayer();
+
+			if (Player::GetWaveFinishedChanging())
+			{
+				IsMouseHovered();
+
+				animatedObjects["BuyFlowerButton"].RenderAnimation();
+			}
 
 			Window::RenderEndFrame();
 			break;
@@ -126,6 +136,12 @@ void Engine::RunEngine()
 	{
 		scrollingCreditsTextMap.second.DestroyScrollingCredits();
 		scrollingCreditsTextMap.first.clear();
+	}
+
+	for (std::pair<std::string, AnimatedObject> animatedObjectMap : animatedObjects)
+	{
+		animatedObjectMap.second.~AnimatedObject();
+		animatedObjectMap.first.clear();
 	}
 
 	// Quit all SDL subsystems including SDL_TTF
@@ -211,6 +227,34 @@ void Engine::InitializeScrollingCreditsTexts()
 	scrollingCreditsTexts["ArtistNameText"].InitializeScrollingCredits("Space Frog",
 		15.0f, { static_cast<float>(Window::GetWindowWidth() / 2.3f),
 		static_cast<float>(Window::GetWindowHeight() * 0.95f) });
+}
+
+void Engine::InitializeAnimatedObjects()
+{
+	animatedObjects["BuyFlowerButton"].InitializeAnimation("Textures/Flower_Menu_animated_X.png");
+}
+
+void Engine::IsMouseHovered()
+{
+	// Check if mouse is hovered on the but flower button
+	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x && 
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x + 
+		animatedObjects["BuyFlowerButton"].GetAnimationPosition().w && 
+		Player::GetMouseY() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y &&
+		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
+		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h)
+	{
+		// If so, update the animation
+		animatedObjects["BuyFlowerButton"].UpdateAnimation(7, 1, { Window::GetWindowWidth() / 2.35f,
+			Window::GetWindowHeight() / 3.0f }, { 1.0f, 1.0f }, 1.0f);
+	}
+
+	else
+	{
+		// Otherwise, freeze the animation
+		animatedObjects["BuyFlowerButton"].FreezeAnimation(7, 1, { Window::GetWindowWidth() / 2.35f,
+			Window::GetWindowHeight() / 3.0f }, { 1.0f, 1.0f });
+	}
 }
 
 void Engine::CheckIfScrollingCreditsFinished()
