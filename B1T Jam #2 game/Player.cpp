@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Window.h"
 #include "Engine.h"
+#include "ScoringSystem.h"
 
 #include <fstream>
 #include <algorithm>
@@ -31,6 +32,9 @@ bool Player::waveFinishedChanging = false;
 
 // Initialize non-static variables
 bool pressed = false;
+
+ScoringSystem scoring;
+
 
 Player::Player()
 {
@@ -281,6 +285,8 @@ void Player::HandleAimAction(SDL_Event& event)
 		#ifdef _DEBUG
 			std::cout << "left mouse btn pressed" << std::endl;
 		#endif
+		// test case of scoring player before killing an enemy	
+		scoring.scorePlayer(AlienType::GruntZogling); 
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)
