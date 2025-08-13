@@ -107,7 +107,7 @@ void Engine::RunEngine()
 			Player::UpdatePlayer();
 			//Player::RenderPlayer();
 
-			if (Player::GetWaveFinishedChanging())
+			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
 				IsMouseHovered();
 
@@ -116,28 +116,31 @@ void Engine::RunEngine()
 				// Render player HUD texts
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
-				// Loop through all the alien entities
-				for (int i = 0; i < aliensEntities.size(); i++)
+				if (!aliensEntities.empty())
 				{
-					// Update and render all alien entities
-					aliensEntities[i].update();
-					aliensEntities[i].render();
-
-					// Iterate through the alien elements
-					for (std::vector<Alien>::iterator it = aliensEntities.begin(); it != aliensEntities.end();) 
+					// Loop through all the alien entities
+					for (int i = 0; i < aliensEntities.size(); i++)
 					{
-						Alien alien = *it;
+						// Update and render all alien entities
+						aliensEntities[i].update();
+						aliensEntities[i].render();
+					}
+				}
+				
+				// Iterate through the alien elements
+				for (std::vector<Alien>::iterator it = aliensEntities.begin(); it != aliensEntities.end();)
+				{
+					Alien alien = *it;
 
-						// Destroy alien when health reaches 0 and delete them from the vector
-						if (alien.GetAlienHealth() <= 0.0f) 
-						{
-							alien.DestroyAlien();
-							it = aliensEntities.erase(it);
-						}
-						else 
-						{
-							++it;
-						}
+					// Destroy alien when health reaches 0 and delete them from the vector
+					if (alien.GetAlienHealth() <= 0.0f)
+					{
+						alien.DestroyAlien();
+						it = aliensEntities.erase(it);
+					}
+					else
+					{
+						++it;
 					}
 				}
 			}
@@ -209,8 +212,8 @@ void Engine::RunEngine()
 void Engine::InitializeGameTexts()
 {
 	// Create main menu texts
-	gameTexts["mainMenuTitle"].InitializeText("Main Menu",
-		40.0f, { static_cast<float>(Window::GetWindowWidth() / 3.0f),
+	gameTexts["mainMenuTitle"].InitializeText("Veggie Vanguard",
+		40.0f, { static_cast<float>(Window::GetWindowWidth() / 4.5f),
 		static_cast<float>(Window::GetWindowHeight() / 30.0f) });
 
 	gameTexts["mainMenuContinue"].InitializeText("Press SPACE to continue!",
@@ -338,8 +341,14 @@ void Engine::InitializeAnimatedObjects()
 
 void Engine::InitializePlayerHUD()
 {
-	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::getScoringSystem().getCurrentPlayerScore()), 
-		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+
+	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20, 
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 15.0f });
+
+	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
 }
 
 void Engine::IsMouseHovered()
@@ -375,18 +384,33 @@ void Engine::HandleMousePressedEvents()
 		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
 		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h &&
 
-		Player::GetWaveFinishedChanging() && Window::gameState == GameState::Playing)
+		Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging() && Window::gameState == GameState::Playing
+		&& Player::GetPlayerCurrency() >= 200)
 	{
 #ifdef _DEBUG
 		std::cout << "Bought flower\n";
 #endif
+
+		Player::SpendPlayerCurrency(200);
 	}
 }
 
 void Engine::UpdatePlayerScore()
 {
-	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::getScoringSystem().getCurrentPlayerScore()),
+	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore),
 		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+}
+
+void Engine::UpdatCurrentLevelText()
+{
+	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 15.0f });
+}
+
+void Engine::UpdateCurrentWaveText()
+{
+	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
 }
 
 void Engine::CheckIfScrollingCreditsFinished()

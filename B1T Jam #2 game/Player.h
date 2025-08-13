@@ -33,6 +33,7 @@ public:
 	static void SetWaveNumber(int waveNumber_) { waveNumber = waveNumber_; }
 
 	static bool GetWaveFinishedChanging() { return waveFinishedChanging; }
+	static bool GetLevelFinishedChanging() { return levelFinishedChanging; }
 
 	static float GetMouseX() { return mouseX; }
 	static float GetMouseY() { return mouseY; }
@@ -40,6 +41,11 @@ public:
 	static ScoringSystem getScoringSystem() { return scoring; }
 
 	static int GetLevelNumber() { return levelNumber; }
+
+	static int currentPlayerScore;
+
+	static unsigned int GetPlayerCurrency() { return playerCurrency; }
+	static void SpendPlayerCurrency(unsigned int cost_) { playerCurrency -= cost_; }
 
 private:
 	Player();
@@ -81,6 +87,9 @@ private:
 	static bool waveChanged;
 	static bool waveFinishedChanging;
 
+	static bool levelChanged;
+	static bool levelFinishedChanging;
+
 	static std::map<std::string, FadingText> fadingTexts;
 
 	static float mouseX;
@@ -91,6 +100,10 @@ private:
 	static ScoringSystem scoring;
 
 	static int levelNumber;
+
+	static bool canSaveProgress;
+
+	static unsigned int playerCurrency;
 };
 
 #endif

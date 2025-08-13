@@ -1,7 +1,8 @@
 #include "ScoringSystem.h"
 #include <iostream>
+#include "Player.h"
 
-ScoringSystem::ScoringSystem(): totalScore(0) {}
+ScoringSystem::ScoringSystem() {}
 
 ScoringSystem::~ScoringSystem() {}
 
@@ -26,13 +27,8 @@ int ScoringSystem::getEnemyScore(AlienType enemy)
 
 void ScoringSystem::scorePlayer(AlienType enemy)
 {
-   totalScore += getEnemyScore(enemy);
+   Player::currentPlayerScore += getEnemyScore(enemy);
    /*#ifdef _DEBUG
-         std::cout << "totalScore: " << totalScore << std::endl;
+         std::cout << "totalScore: " << Player::currentPlayerScore << std::endl;
    #endif*/
-}
-
-void ScoringSystem::resetScore()
-{
-    totalScore = 0;
 }

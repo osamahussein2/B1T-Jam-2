@@ -17,6 +17,8 @@ public:
 	static void HandleMousePressedEvents();
 
 	static void UpdatePlayerScore();
+	static void UpdatCurrentLevelText();
+	static void UpdateCurrentWaveText();
 
 private:
 	Engine();

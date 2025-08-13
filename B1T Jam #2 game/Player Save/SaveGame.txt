@@ -1,2 +1,4 @@
 Wave Number = 1
 Level Number = 1
+Player score = 0
+Player currency = 0

@@ -36,10 +36,19 @@ bool Player::scoreChanged = false;
 
 int Player::levelNumber = 1;
 
-// Initialize non-static variables
-bool pressed = false;
+bool Player::levelChanged = true;
+bool Player::levelFinishedChanging = false;
 
 ScoringSystem Player::scoring;
+
+bool Player::canSaveProgress = false;
+
+int Player::currentPlayerScore = 0;
+
+unsigned int Player::playerCurrency = 0;
+
+// Initialize non-static variables
+bool pressed = false;
 
 
 Player::Player()
@@ -78,27 +87,37 @@ void Player::LoadPlayerStats()
 		// Since there are 3 whitespaces in the file for found strings, we must use ignore 3 times
 		getFile >> ignore >> ignore >> ignore >> waveNumber;
 		getFile >> ignore >> ignore >> ignore >> levelNumber;
+		getFile >> ignore >> ignore >> ignore >> currentPlayerScore;
+		getFile >> ignore >> ignore >> ignore >> playerCurrency;
 		getFile.close();
 
-		if (waveChanged != true) waveChanged = true;
+		Engine::UpdateCurrentWaveText();
+
+		if (waveChanged != false) waveChanged = false;
 		if (waveFinishedChanging != false) waveFinishedChanging = false;
 
-		if (fadingTexts["waveText"].GetAlpha() != 0.0f) fadingTexts["waveText"].SetAlpha(0.0f);
-		if (fadingTexts["waveText"].GetAlphaStateChanged() != false) fadingTexts["waveText"].SetAlphaStateChanged(false);
+		if (levelChanged != true) levelChanged = true;
+		if (levelFinishedChanging != false) levelFinishedChanging = false;
+
+		if (canSaveProgress != false) canSaveProgress = false;
+
+		if (scoreChanged != true) scoreChanged = true;
 
 		if (fadingTexts["levelText"].GetAlpha() != 0.0f) fadingTexts["levelText"].SetAlpha(0.0f);
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
 
-		if (scoring.getCurrentPlayerScore() != 0 && waveNumber == 1)
+		if (currentPlayerScore != 0 && waveNumber == 1)
 		{
 			// Reset the score and make sure the score changed bool is true to show the actual score on HUD
-			scoring.resetScore();
+			currentPlayerScore = 0;
 			scoreChanged = true;
 		}
 
 #ifdef _DEBUG
 		std::cout << "Loaded wave number: " << waveNumber << std::endl;
 		std::cout << "Loaded level number: " << levelNumber << std::endl;
+		std::cout << "Loaded player score: " << currentPlayerScore << std::endl;
+		std::cout << "Loaded player currency: $" << playerCurrency << std::endl;
 #endif
 	}
 
@@ -108,24 +127,33 @@ void Player::LoadPlayerStats()
 		if (waveNumber != 1) waveNumber = 1;
 		if (levelNumber != 1) levelNumber = 1;
 
-		if (waveChanged != true) waveChanged = true;
+		Engine::UpdateCurrentWaveText();
+
+		if (waveChanged != false) waveChanged = false;
 		if (waveFinishedChanging != false) waveFinishedChanging = false;
 
-		if (fadingTexts["waveText"].GetAlpha() != 0.0f) fadingTexts["waveText"].SetAlpha(0.0f);
-		if (fadingTexts["waveText"].GetAlphaStateChanged() != false) fadingTexts["waveText"].SetAlphaStateChanged(false);
+		if (levelChanged != true) levelChanged = true;
+		if (levelFinishedChanging != false) levelFinishedChanging = false;
+
+		if (canSaveProgress != true) canSaveProgress = true;
 
 		if (fadingTexts["levelText"].GetAlpha() != 0.0f) fadingTexts["levelText"].SetAlpha(0.0f);
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
 
-		if (scoring.getCurrentPlayerScore() != 0) scoring.resetScore();
-		scoreChanged = true;
+		if (currentPlayerScore != 0) currentPlayerScore = 0;
+		if (playerCurrency != 0) playerCurrency = 0;
+		if (scoreChanged != true) scoreChanged = true;
 	}
 }
 
 void Player::UpdatePlayer()
 {
 	HandlePlayerInput();
-	if (Window::gameState == GameState::Playing) UpdateWave();
+	if (Window::gameState == GameState::Playing)
+	{
+		UpdateLevel();
+		UpdateWave();
+	}
 
 	ChangeScore();
 
@@ -187,7 +215,10 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_KEY_DOWN:
-			if (Window::gameState == GameState::Playing) HandleMovement();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			{
+				HandleMovement();
+			}
 
 			// Handle press events depending on current game state
 			if (event.key.scancode == SDL_SCANCODE_SPACE && Window::gameState == GameState::MainMenu && !pressed)
@@ -243,17 +274,26 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_KEY_UP:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging) StopMovement();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			{
+				StopMovement();
+			}
 
 			if (pressed) pressed = false;
 			break;
 
 		case SDL_EVENT_MOUSE_MOTION:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimCursor();
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			{
+				HandleAimCursor();
+			}
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging) HandleAimAction(event);
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			{
+				HandleAimAction(event);
+			}
 			break;
 
 		default:
@@ -366,33 +406,14 @@ void Player::UpdateWave()
 	case 1:
 		if (!waveChanged)
 		{
-			if (!fadingTexts["waveText"].GetAlphaStateChanged() ||
-				fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() > 0.0f &&
-				!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
-				fadingTexts["levelText"].GetAlpha() > 0.0f)
-			{
-				fadingTexts["waveText"].RenderText();
-				fadingTexts["levelText"].RenderText();
-			}
-
-			else if (fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() <= 0.0f ||
-				fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
-			{
-				if (waveFinishedChanging != true) waveFinishedChanging = true;
-			}
+			if (waveFinishedChanging != true) waveFinishedChanging = true;
 		}
 
 		else if (waveChanged)
 		{
-			fadingTexts["waveText"].InitializeText("Wave " + std::to_string(waveNumber), 30, 
-				{ static_cast<float>(Window::GetWindowWidth() / 2.35f),
-				static_cast<float>(Window::GetWindowHeight() / 2.25f) });
+			Engine::UpdateCurrentWaveText();
 
-			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
-				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
-
-			SavePlayerProgress();
+			if (canSaveProgress) SavePlayerProgress();
 
 			waveFinishedChanging = false;
 			waveChanged = false;
@@ -403,15 +424,9 @@ void Player::UpdateWave()
 	case 2:
 		if (waveChanged)
 		{
-			fadingTexts["waveText"].InitializeText("Wave " + std::to_string(waveNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.35f),
-				static_cast<float>(Window::GetWindowHeight() / 2.25f) });
+			Engine::UpdateCurrentWaveText();
 
-			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
-				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
-
-			SavePlayerProgress();
+			if (canSaveProgress) SavePlayerProgress();
 
 			waveFinishedChanging = false;
 			waveChanged = false;
@@ -419,20 +434,7 @@ void Player::UpdateWave()
 
 		else if (!waveChanged)
 		{
-			if (!fadingTexts["waveText"].GetAlphaStateChanged() ||
-				fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() > 0.0f &&
-				!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
-				fadingTexts["levelText"].GetAlpha() > 0.0f)
-			{
-				fadingTexts["waveText"].RenderText();
-				fadingTexts["levelText"].RenderText();
-			}
-
-			else if (fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() <= 0.0f ||
-				fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
-			{
-				if (waveFinishedChanging != true) waveFinishedChanging = true;
-			}
+			if (waveFinishedChanging != true) waveFinishedChanging = true;
 		}
 
 		break;
@@ -440,15 +442,9 @@ void Player::UpdateWave()
 	case 3:
 		if (waveChanged)
 		{
-			fadingTexts["waveText"].InitializeText("Wave " + std::to_string(waveNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.35f),
-				static_cast<float>(Window::GetWindowHeight() / 2.25f) });
+			Engine::UpdateCurrentWaveText();
 
-			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
-				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
-
-			SavePlayerProgress();
+			if (canSaveProgress) SavePlayerProgress();
 
 			waveFinishedChanging = false;
 			waveChanged = false;
@@ -456,20 +452,7 @@ void Player::UpdateWave()
 
 		else if (!waveChanged)
 		{
-			if (!fadingTexts["waveText"].GetAlphaStateChanged() ||
-				fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() > 0.0f &&
-				!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
-				fadingTexts["levelText"].GetAlpha() > 0.0f)
-			{
-				fadingTexts["waveText"].RenderText();
-				fadingTexts["levelText"].RenderText();
-			}
-
-			else if (fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() <= 0.0f ||
-				fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
-			{
-				if (waveFinishedChanging != true) waveFinishedChanging = true;
-			}
+			if (waveFinishedChanging != true) waveFinishedChanging = true;
 		}
 
 		break;
@@ -477,15 +460,9 @@ void Player::UpdateWave()
 	case 4:
 		if (waveChanged)
 		{
-			fadingTexts["waveText"].InitializeText("Wave " + std::to_string(waveNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.35f),
-				static_cast<float>(Window::GetWindowHeight() / 2.25f) });
+			Engine::UpdateCurrentWaveText();
 
-			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
-				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
-
-			SavePlayerProgress();
+			if (canSaveProgress) SavePlayerProgress();
 
 			waveFinishedChanging = false;
 			waveChanged = false;
@@ -493,20 +470,7 @@ void Player::UpdateWave()
 
 		else if (!waveChanged)
 		{
-			if (!fadingTexts["waveText"].GetAlphaStateChanged() ||
-				fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() > 0.0f &&
-				!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
-				fadingTexts["levelText"].GetAlpha() > 0.0f)
-			{
-				fadingTexts["waveText"].RenderText();
-				fadingTexts["levelText"].RenderText();
-			}
-
-			else if (fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() <= 0.0f ||
-				fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
-			{
-				if (waveFinishedChanging != true) waveFinishedChanging = true;
-			}
+			if (waveFinishedChanging != true) waveFinishedChanging = true;
 		}
 
 		break;
@@ -514,15 +478,9 @@ void Player::UpdateWave()
 	case 5:
 		if (waveChanged)
 		{
-			fadingTexts["waveText"].InitializeText("Wave " + std::to_string(waveNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.35f),
-				static_cast<float>(Window::GetWindowHeight() / 2.25f) });
+			Engine::UpdateCurrentWaveText();
 
-			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
-				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
-				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
-
-			SavePlayerProgress();
+			if (canSaveProgress) SavePlayerProgress();
 
 			waveFinishedChanging = false;
 			waveChanged = false;
@@ -530,20 +488,7 @@ void Player::UpdateWave()
 
 		else if (!waveChanged)
 		{
-			if (!fadingTexts["waveText"].GetAlphaStateChanged() ||
-				fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() > 0.0f &&
-				!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
-				fadingTexts["levelText"].GetAlpha() > 0.0f)
-			{
-				fadingTexts["waveText"].RenderText();
-				fadingTexts["levelText"].RenderText();
-			}
-
-			else if (fadingTexts["waveText"].GetAlphaStateChanged() && fadingTexts["waveText"].GetAlpha() <= 0.0f &&
-				fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
-			{
-				if (waveFinishedChanging != true) waveFinishedChanging = true;
-			}
+			if (waveFinishedChanging != true) waveFinishedChanging = true;
 		}
 
 		break;
@@ -563,12 +508,93 @@ void Player::UpdateLevel()
 	switch (levelNumber)
 	{
 	case 1:
+		if (levelChanged)
+		{
+			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
+				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
+
+			Engine::UpdatCurrentLevelText();
+
+			if (canSaveProgress) SavePlayerProgress();
+
+			levelFinishedChanging = false;
+			levelChanged = false;
+		}
+
+		else if (!levelChanged)
+		{
+			if (!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
+				fadingTexts["levelText"].GetAlpha() > 0.0f)
+			{
+				fadingTexts["levelText"].RenderText();
+			}
+
+			else if (fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
+			{
+				if (levelFinishedChanging != true) levelFinishedChanging = true;
+			}
+		}
 		break;
 
 	case 2:
+		if (levelChanged)
+		{
+			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
+				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
+
+			Engine::UpdatCurrentLevelText();
+
+			if (canSaveProgress) SavePlayerProgress();
+
+			levelFinishedChanging = false;
+			levelChanged = false;
+		}
+
+		else if (!levelChanged)
+		{
+			if (!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
+				fadingTexts["levelText"].GetAlpha() > 0.0f)
+			{
+				fadingTexts["levelText"].RenderText();
+			}
+
+			else if (fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
+			{
+				if (levelFinishedChanging != true) levelFinishedChanging = true;
+			}
+		}
 		break;
 
 	case 3:
+		if (levelChanged)
+		{
+			fadingTexts["levelText"].InitializeText("Level " + std::to_string(levelNumber), 30,
+				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
+				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
+
+			Engine::UpdatCurrentLevelText();
+
+			if (canSaveProgress) SavePlayerProgress();
+
+			levelFinishedChanging = false;
+			levelChanged = false;
+		}
+
+		else if (!levelChanged)
+		{
+			if (!fadingTexts["levelText"].GetAlphaStateChanged() || fadingTexts["levelText"].GetAlphaStateChanged() &&
+				fadingTexts["levelText"].GetAlpha() > 0.0f)
+			{
+				fadingTexts["levelText"].RenderText();
+			}
+
+			else if (fadingTexts["levelText"].GetAlphaStateChanged() && fadingTexts["levelText"].GetAlpha() <= 0.0f)
+			{
+				if (levelFinishedChanging != true) levelFinishedChanging = true;
+			}
+		}
 		break;
 
 	default:
@@ -588,14 +614,20 @@ void Player::SavePlayerProgress()
 
 	std::string waveNumberString = "Wave Number = ";
 	std::string levelNumberString = "Level Number = ";
+	std::string playerScoreString = "Player score = ";
+	std::string currencyString = "Player currency = ";
 
 	writeFile << waveNumberString << waveNumber << std::endl;
 	writeFile << levelNumberString << levelNumber << std::endl;
+	writeFile << playerScoreString << currentPlayerScore << std::endl;
+	writeFile << currencyString << playerCurrency << std::endl;
 	writeFile.close();
 
 #ifdef _DEBUG
-	std::cout <<  "Saved wave number: " << waveNumber << std::endl;
+	std::cout << "Saved wave number: " << waveNumber << std::endl;
 	std::cout << "Saved level number: " << levelNumber << std::endl;
+	std::cout << "Saved player score: " << currentPlayerScore << std::endl;
+	std::cout << "Saved player currency: " << playerCurrency << std::endl;
 #endif
 }
 
@@ -605,17 +637,24 @@ void Player::GoToNextWave()
 	else if (waveNumber >= 5) waveNumber = 1;
 
 	waveChanged = true;
+	canSaveProgress = true;
 
 	if (waveNumber % 3 == 0)
 	{
 		++levelNumber;
 
-		if (scoring.getCurrentPlayerScore() != 0) scoring.resetScore();
-		scoreChanged = true;
-	}
+		levelChanged = true;
 
-	fadingTexts["waveText"].SetAlphaStateChanged(false);
-	fadingTexts["levelText"].SetAlphaStateChanged(false);
+		playerCurrency += currentPlayerScore;
+
+		if (currentPlayerScore != 0)
+		{
+			currentPlayerScore = 0;
+			scoreChanged = true;
+		}
+
+		fadingTexts["levelText"].SetAlphaStateChanged(false);
+	}
 }
 
 void Player::ChangeScore()
