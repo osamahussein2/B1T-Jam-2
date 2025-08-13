@@ -1,5 +1,5 @@
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef GAMESTATE_H
+#define GAMESTATE_H
 
 #pragma once
 
@@ -10,7 +10,8 @@ enum class GameState
 	CreditsMenu,
 	GameIntro,
 	Playing,
-	Paused
+	Paused,
+	Shopping
 };
 
 #endif

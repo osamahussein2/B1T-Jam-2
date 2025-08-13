@@ -18,12 +18,6 @@ class ScoringSystem
 
     public:
         void           scorePlayer(AlienType enemy);
-
-    private:
-        int            totalScore; 
-
-public:
-    int getCurrentPlayerScore() { return totalScore; }
 };
 
 #endif
