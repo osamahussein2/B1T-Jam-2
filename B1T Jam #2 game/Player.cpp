@@ -47,6 +47,8 @@ int Player::currentPlayerScore = 0;
 
 unsigned int Player::playerCurrency = 0;
 
+unsigned int Player::flowerUpgrade = 0;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -83,11 +85,12 @@ void Player::LoadPlayerStats()
 		// Ignore string will detect any whitespace found in the file and skip it entirely
 		std::string ignore;
 
-		// Since there are 3 whitespaces in the file for found strings, we must use ignore 3 times
+		// Since there are n whitespaces in the file for found strings, we must use ignore n times
 		getFile >> ignore >> ignore >> ignore >> waveNumber;
 		getFile >> ignore >> ignore >> ignore >> levelNumber;
 		getFile >> ignore >> ignore >> ignore >> currentPlayerScore;
 		getFile >> ignore >> ignore >> ignore >> playerCurrency;
+		getFile >> ignore >> ignore >> flowerUpgrade;
 		getFile.close();
 
 		Engine::UpdateCurrentWaveText();
@@ -105,6 +108,8 @@ void Player::LoadPlayerStats()
 		if (fadingTexts["levelText"].GetAlpha() != 0.0f) fadingTexts["levelText"].SetAlpha(0.0f);
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
 
+		Engine::UpdatePlayerCurrencyText();
+
 		if (currentPlayerScore != 0 && waveNumber == 1)
 		{
 			// Reset the score and make sure the score changed bool is true to show the actual score on HUD
@@ -117,6 +122,7 @@ void Player::LoadPlayerStats()
 		std::cout << "Loaded level number: " << levelNumber << std::endl;
 		std::cout << "Loaded player score: " << currentPlayerScore << std::endl;
 		std::cout << "Loaded player currency: $" << playerCurrency << std::endl;
+		std::cout << "Loaded flower upgrade: " << flowerUpgrade << std::endl;
 #endif
 	}
 
@@ -138,6 +144,8 @@ void Player::LoadPlayerStats()
 
 		if (fadingTexts["levelText"].GetAlpha() != 0.0f) fadingTexts["levelText"].SetAlpha(0.0f);
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
+
+		if (flowerUpgrade != 0) flowerUpgrade = 0;
 
 		if (currentPlayerScore != 0) currentPlayerScore = 0;
 		if (playerCurrency != 0) playerCurrency = 0;
@@ -634,18 +642,21 @@ void Player::SavePlayerProgress()
 	std::string levelNumberString = "Level Number = ";
 	std::string playerScoreString = "Player score = ";
 	std::string currencyString = "Player currency = ";
+	std::string flowerUpgradeString = "Flower upgrade ";
 
 	writeFile << waveNumberString << waveNumber << std::endl;
 	writeFile << levelNumberString << levelNumber << std::endl;
 	writeFile << playerScoreString << currentPlayerScore << std::endl;
 	writeFile << currencyString << playerCurrency << std::endl;
+	writeFile << flowerUpgradeString << flowerUpgrade << std::endl;
 	writeFile.close();
 
 #ifdef _DEBUG
 	std::cout << "Saved wave number: " << waveNumber << std::endl;
 	std::cout << "Saved level number: " << levelNumber << std::endl;
 	std::cout << "Saved player score: " << currentPlayerScore << std::endl;
-	std::cout << "Saved player currency: " << playerCurrency << std::endl;
+	std::cout << "Saved player currency: $" << playerCurrency << std::endl;
+	std::cout << "Saved flower upgrade: " << flowerUpgrade << std::endl;
 #endif
 }
 

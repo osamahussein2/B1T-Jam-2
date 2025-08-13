@@ -72,7 +72,17 @@ void AnimatedObject::FreezeAnimation(int numberOfFramesX_, int numberOfFramesY_,
 	destAnimation.h = (srcAnimation.h * scaleMultiplier_.y) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 }
 
-void AnimatedObject::RenderAnimation()
+void AnimatedObject::RenderAnimation(bool halfTransparent_)
 {
 	SDL_RenderTexture(Window::GetRenderer(), animatedTexture, &srcAnimation, &destAnimation);
+
+	if (halfTransparent_)
+	{
+		SDL_SetTextureAlphaMod(animatedTexture, 50);
+	}
+
+	else
+	{
+		SDL_SetTextureAlphaMod(animatedTexture, 255);
+	}
 }

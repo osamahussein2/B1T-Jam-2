@@ -22,7 +22,7 @@ public:
 		float startAnimationTime_);
 
 	void FreezeAnimation(int numberOfFramesX_, int numberOfFramesY_, Vector2 position_, Vector2 scaleMultiplier_);
-	void RenderAnimation();
+	void RenderAnimation(bool halfTransparent_ = false);
 
 	int frameY;
 

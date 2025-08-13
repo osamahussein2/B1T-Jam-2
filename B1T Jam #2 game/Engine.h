@@ -19,6 +19,7 @@ public:
 	static void UpdatePlayerScore();
 	static void UpdateCurrentLevelText();
 	static void UpdateCurrentWaveText();
+	static void UpdatePlayerCurrencyText();
 
 private:
 	Engine();
@@ -33,6 +34,8 @@ private:
 	static void IsMouseHovered();
 
 	static void CheckIfScrollingCreditsFinished();
+
+	static void SwitchFlowerUpgrades();
 };
 
 #endif

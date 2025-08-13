@@ -170,8 +170,7 @@ void Engine::RunEngine()
 			Player::UpdatePlayer();
 
 			IsMouseHovered();
-
-			animatedObjects["BuyFlowerButton"].RenderAnimation();
+			SwitchFlowerUpgrades();
 
 			staticObjects["FlowerShopUI"].RenderStaticObject();
 			gameTexts["playerCurrencyAmount"].RenderText();
@@ -366,7 +365,8 @@ void Engine::InitializeGameEntities()
 void Engine::InitializeAnimatedObjects()
 {
 	// Shop menu buttons
-	animatedObjects["BuyFlowerButton"].InitializeAnimation("Textures/Flower_Menu_animated_X.png");
+	animatedObjects["BuyFlowerButton1"].InitializeAnimation("Textures/Flower_Menu_animated_X.png");
+	animatedObjects["SellFlowerButton1"].InitializeAnimation("Textures/Flower_Menu_animated_X.png");
 }
 
 void Engine::InitializePlayerHUD()
@@ -391,22 +391,42 @@ void Engine::InitializeShopMenu()
 void Engine::IsMouseHovered()
 {
 	// Check if mouse is hovered on the but flower button
-	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x + 12.5f && 
-		Player::GetMouseX() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x + 
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().w - 15.0f && 
-		Player::GetMouseY() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y + 25.0f &&
-		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h - 60.0f)
+	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 12.5f && 
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().w - 15.0f && 
+		Player::GetMouseY() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y + 25.0f &&
+		Player::GetMouseY() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().h - 60.0f && Player::flowerUpgrade == 0)
 	{
 		// If so, update the animation
-		animatedObjects["BuyFlowerButton"].UpdateAnimation(7, 1, { Window::GetWindowWidth() / 4.0f,
+		animatedObjects["BuyFlowerButton1"].UpdateAnimation(7, 1, { Window::GetWindowWidth() / 4.0f,
 			Window::GetWindowHeight() / 6.0f }, { 1.3f, 1.3f }, 1.0f);
 	}
 
 	else
 	{
 		// Otherwise, freeze the animation
-		animatedObjects["BuyFlowerButton"].FreezeAnimation(7, 1, { Window::GetWindowWidth() / 4.0f,
+		animatedObjects["BuyFlowerButton1"].FreezeAnimation(7, 1, { Window::GetWindowWidth() / 4.0f,
+			Window::GetWindowHeight() / 6.0f }, { 1.3f, 1.3f });
+	}
+
+	// Sell flower logic
+	if (Player::GetMouseX() >= animatedObjects["SellFlowerButton1"].GetAnimationPosition().x + 12.5f &&
+		Player::GetMouseX() <= animatedObjects["SellFlowerButton1"].GetAnimationPosition().x +
+		animatedObjects["SellFlowerButton1"].GetAnimationPosition().w - 15.0f &&
+		Player::GetMouseY() >= animatedObjects["SellFlowerButton1"].GetAnimationPosition().y + 25.0f &&
+		Player::GetMouseY() <= animatedObjects["SellFlowerButton1"].GetAnimationPosition().y +
+		animatedObjects["SellFlowerButton1"].GetAnimationPosition().h - 60.0f && Player::flowerUpgrade == 1)
+	{
+		// If so, update the animation
+		animatedObjects["SellFlowerButton1"].UpdateAnimation(7, 1, { Window::GetWindowWidth() / 2.0f,
+			Window::GetWindowHeight() / 6.0f }, { 1.3f, 1.3f }, 1.0f);
+	}
+
+	else
+	{
+		// Otherwise, freeze the animation
+		animatedObjects["SellFlowerButton1"].FreezeAnimation(7, 1, { Window::GetWindowWidth() / 2.0f,
 			Window::GetWindowHeight() / 6.0f }, { 1.3f, 1.3f });
 	}
 }
@@ -414,33 +434,57 @@ void Engine::IsMouseHovered()
 void Engine::HandleMousePressedEvents()
 {
 	// Check if the player presses the mouse while hovering on the buy flower button
-	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x + 12.5f &&
-		Player::GetMouseX() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x +
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().w - 15.0f &&
-		Player::GetMouseY() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y + 25.0f &&
-		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h - 60.0f && Window::gameState == GameState::Shopping
-		&& Player::GetPlayerCurrency() >= 200)
+	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 12.5f &&
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().w - 15.0f &&
+		Player::GetMouseY() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y + 25.0f &&
+		Player::GetMouseY() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().h - 60.0f && Window::gameState == GameState::Shopping
+		&& Player::GetPlayerCurrency() >= 200 && Player::flowerUpgrade == 0)
 	{
 #ifdef _DEBUG
 		std::cout << "Bought flower\n";
 #endif
 
-		Player::SpendPlayerCurrency(200);
-		Player::GoToNextLevel();
+		Player::flowerUpgrade = 1;
 
-		Window::gameState = GameState::Playing;
+		Player::SpendPlayerCurrency(200);
+		UpdatePlayerCurrencyText();
+
+		//Player::GoToNextLevel();
+
+		//Window::gameState = GameState::Playing;
 	}
 
 	// Otherwise if the player presses the mouse while hovering on the buy flower button, but don't have enough currency
-	else if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x + 12.5f &&
-		Player::GetMouseX() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().x +
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().w - 15.0f &&
-		Player::GetMouseY() >= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y + 25.0f &&
-		Player::GetMouseY() <= animatedObjects["BuyFlowerButton"].GetAnimationPosition().y +
-		animatedObjects["BuyFlowerButton"].GetAnimationPosition().h - 60.0f && Window::gameState == GameState::Shopping)
+	else if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 12.5f &&
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().w - 15.0f &&
+		Player::GetMouseY() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y + 25.0f &&
+		Player::GetMouseY() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().h - 60.0f && Window::gameState == GameState::Shopping)
 	{
 		// TODO: Player doesn't have enough currency to buy flower
+	}
+
+	// Check if the player presses the mouse while hovering on the sell flower button
+	if (Player::GetMouseX() >= animatedObjects["SellFlowerButton1"].GetAnimationPosition().x + 12.5f &&
+		Player::GetMouseX() <= animatedObjects["SellFlowerButton1"].GetAnimationPosition().x +
+		animatedObjects["SellFlowerButton1"].GetAnimationPosition().w - 15.0f &&
+		Player::GetMouseY() >= animatedObjects["SellFlowerButton1"].GetAnimationPosition().y + 25.0f &&
+		Player::GetMouseY() <= animatedObjects["SellFlowerButton1"].GetAnimationPosition().y +
+		animatedObjects["SellFlowerButton1"].GetAnimationPosition().h - 60.0f && Window::gameState == GameState::Shopping
+		&& Player::flowerUpgrade == 1)
+	{
+#ifdef _DEBUG
+		std::cout << "Sold flower\n";
+#endif
+
+		Player::flowerUpgrade = 0;
+
+		Player::EarnPlayerCurrency(200);
+
+		UpdatePlayerCurrencyText();
 	}
 }
 
@@ -462,6 +506,45 @@ void Engine::UpdateCurrentWaveText()
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
 }
 
+void Engine::UpdatePlayerCurrencyText()
+{
+	if (Player::GetPlayerCurrency() < 10)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+
+	else if (Player::GetPlayerCurrency() >= 10 && Player::GetPlayerCurrency() < 100)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.08f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+
+	else if (Player::GetPlayerCurrency() >= 100 && Player::GetPlayerCurrency() < 1000)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.11f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+
+	else if (Player::GetPlayerCurrency() >= 1000 && Player::GetPlayerCurrency() < 10000)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.14f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+
+	else if (Player::GetPlayerCurrency() >= 10000 && Player::GetPlayerCurrency() < 100000)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.17f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+
+	else if (Player::GetPlayerCurrency() >= 100000 && Player::GetPlayerCurrency() < 1000000)
+	{
+		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
+			{ static_cast<float>(Window::GetWindowWidth() / 2.2f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+	}
+}
+
 void Engine::CheckIfScrollingCreditsFinished()
 {
 	// Reset scrolling credits texts once they reach above the screen
@@ -478,6 +561,27 @@ void Engine::CheckIfScrollingCreditsFinished()
 		scrollingCreditsTexts["AudioComposerNameText"].ResetScrollingCredits();
 		scrollingCreditsTexts["ArtistText"].ResetScrollingCredits();
 		scrollingCreditsTexts["ArtistNameText"].ResetScrollingCredits();
+	}
+}
+
+void Engine::SwitchFlowerUpgrades()
+{
+	switch (Player::flowerUpgrade)
+	{
+	case 0:
+		animatedObjects["BuyFlowerButton1"].RenderAnimation(false);
+		animatedObjects["SellFlowerButton1"].RenderAnimation(true);
+
+		break;
+
+	case 1:
+		animatedObjects["BuyFlowerButton1"].RenderAnimation(true);
+		animatedObjects["SellFlowerButton1"].RenderAnimation(false);
+
+		break;
+
+	default:
+		break;
 	}
 }
 
