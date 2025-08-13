@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "Text.h"
 #include "ScrollingCredits.h"
-#include "Plant.h"
+#include "PlantTower.h"
 #include "Alien.h"
 #include "GruntZogling.h"
 #include "ShieldDrone.h"
@@ -24,7 +24,7 @@ std::map<std::string, AnimatedObject> animatedObjects;
 std::map<std::string, Text> playerHUD;
 std::map<std::string, StaticObject> staticObjects;
 
-std::vector<Plant> plantsEntities;
+std::vector<PlantTower> plantsEntities;
 std::vector<Alien> aliensEntities;
 std::vector<Item> itemsEntities;
 
@@ -314,8 +314,8 @@ void Engine::InitializeScrollingCreditsTexts()
 
 void Engine::InitializeGameEntities()
 {
-	Plant plant1(PlantType::TomatoCannon);
-	Plant plant2(PlantType::SunflowerShooter);
+	PlantTower plant1(PlantType::TomatoCannon);
+	PlantTower plant2(PlantType::SunflowerShooter);
 
 	GruntZogling alien1;
     ShieldDrone alien2;

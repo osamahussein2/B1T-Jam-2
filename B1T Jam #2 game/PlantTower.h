@@ -6,18 +6,23 @@
 #include "Entity.h"
 #include "PlantType.h"
 
-class Plant : public Entity
+class PlantTower : public Entity
 {
     public:
-                        Plant(PlantType type);
-                        ~Plant();
+        PlantTower(PlantType type);
+                        ~PlantTower();
 
         void                   update() override;
         void                   render() override;
         void                   moveEntity(Vector2 position) override;
         void                   collision(Entity* other) override;
 
+        void DestroyPlantTower();
+
         PlantType          getEntityID() const;
+
+protected:
+    float          animationTimer;
 
     private:
         PlantType   m_PlantID;
