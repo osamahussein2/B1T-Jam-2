@@ -32,5 +32,7 @@ void ScoringSystem::scorePlayer(AlienType enemy)
    #endif*/
 }
 
-
-
+void ScoringSystem::resetScore()
+{
+    totalScore = 0;
+}

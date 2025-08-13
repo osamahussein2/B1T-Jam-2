@@ -24,6 +24,7 @@ class ScoringSystem
 
 public:
     int getCurrentPlayerScore() { return totalScore; }
+    void resetScore();
 };
 
 #endif

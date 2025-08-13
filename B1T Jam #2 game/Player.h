@@ -39,6 +39,8 @@ public:
 
 	static ScoringSystem getScoringSystem() { return scoring; }
 
+	static int GetLevelNumber() { return levelNumber; }
+
 private:
 	Player();
 
@@ -50,6 +52,7 @@ private:
 	static void StopMovement();
 
 	static void UpdateWave();
+	static void UpdateLevel();
 
 	static void SavePlayerProgress();
 
@@ -78,7 +81,7 @@ private:
 	static bool waveChanged;
 	static bool waveFinishedChanging;
 
-	static FadingText waveText;
+	static std::map<std::string, FadingText> fadingTexts;
 
 	static float mouseX;
 	static float mouseY;
@@ -86,6 +89,8 @@ private:
 	static bool scoreChanged;
 
 	static ScoringSystem scoring;
+
+	static int levelNumber;
 };
 
 #endif
