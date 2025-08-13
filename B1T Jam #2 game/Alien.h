@@ -17,10 +17,14 @@ class Alien : public Entity
         void                    moveEntity(Vector2 position) override;
         void                    collision(Entity* other) override;
 
+        void DestroyAlien();
+
         AlienType           getEntityID() const;
 
     private:
          AlienType   m_AlienID;
+
+         float animationTimer;
 };
 
 #endif

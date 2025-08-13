@@ -5,6 +5,9 @@
 
 #include "Vector2.h"
 
+#include <SDL3/SDL.h>
+#include <SDL3_image/SDL_image.h>
+
 class Entity
 {
     public:
@@ -17,6 +20,13 @@ class Entity
 
     protected:
         virtual void                update();
+
+        SDL_Texture* entityTexture;
+
+        SDL_FRect srcEntity;
+        SDL_FRect destEntity;
+
+        SDL_Surface* entitySurface;
 
         // virtual unsigned int        getEntityID() const;
 

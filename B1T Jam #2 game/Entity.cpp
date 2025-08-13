@@ -33,8 +33,3 @@ void Entity::moveEntity(Vector2 position)
 void Entity::collision(Entity* other)
 {
 }
-
-//unsigned int Entity::getEntityID() const
-//{
-//	return 0;
-//}

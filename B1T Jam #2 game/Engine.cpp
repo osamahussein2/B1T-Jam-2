@@ -110,6 +110,13 @@ void Engine::RunEngine()
 				IsMouseHovered();
 
 				animatedObjects["BuyFlowerButton"].RenderAnimation();
+				
+				// Update and render all alien entities
+				for (int i = 0; i < aliensEntities.size(); i++)
+				{
+					aliensEntities[i].update();
+					aliensEntities[i].render();
+				}
 			}
 
 			Window::RenderEndFrame();
@@ -153,6 +160,17 @@ void Engine::RunEngine()
 		animatedObjectMap.second.~AnimatedObject();
 		animatedObjectMap.first.clear();
 	}
+
+	// Destroy all alien entities
+	for (int i = 0; i < aliensEntities.size(); i++)
+	{
+		aliensEntities[i].DestroyAlien();
+	}
+
+	// Clear all entities
+	if (!aliensEntities.empty()) aliensEntities.clear();
+	if (!plantsEntities.empty()) plantsEntities.clear();
+	if (!itemsEntities.empty()) itemsEntities.clear();
 
 	// Quit all SDL subsystems including SDL_TTF
 	TTF_Quit();
