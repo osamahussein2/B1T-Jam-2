@@ -601,13 +601,17 @@ void Player::SavePlayerProgress()
 
 void Player::GoToNextWave()
 {
-	++waveNumber;
+	if (waveNumber < 5) ++waveNumber;
+	else if (waveNumber >= 5) waveNumber = 1;
+
 	waveChanged = true;
 
 	if (waveNumber % 3 == 0)
 	{
 		++levelNumber;
+
 		if (scoring.getCurrentPlayerScore() != 0) scoring.resetScore();
+		scoreChanged = true;
 	}
 
 	fadingTexts["waveText"].SetAlphaStateChanged(false);
