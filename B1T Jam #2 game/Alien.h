@@ -9,7 +9,7 @@
 class Alien : public Entity
 {
     public:
-                            Alien(AlienType type);
+                            Alien();
                             ~Alien();
 
         void                    update() override;
@@ -22,14 +22,11 @@ class Alien : public Entity
         float GetAlienHealth() const { return alienHealth; }
         void SetAlienDamaged(float damagedValue_) { alienHealth -= damagedValue_; }
 
-        AlienType           getEntityID() const;
+        virtual AlienType           getAlienID() const;
 
-    private:
-         AlienType   m_AlienID;
-
-         float animationTimer;
-
-         float alienHealth;
+    protected:
+         float          alienHealth;
+         float          animationTimer;
 };
 
 #endif

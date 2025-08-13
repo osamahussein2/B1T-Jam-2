@@ -4,6 +4,11 @@
 #include "ScrollingCredits.h"
 #include "Plant.h"
 #include "Alien.h"
+#include "GruntZogling.h"
+#include "ShieldDrone.h"
+#include "BigZogling.h"
+#include "StunSporeling.h"
+#include "GoliathWalker.h"
 #include "Item.h"
 #include "AnimatedObject.h"
 
@@ -292,8 +297,11 @@ void Engine::InitializeGameEntities()
 	Plant plant1(PlantType::TomatoCannon);
 	Plant plant2(PlantType::SunflowerShooter);
 
-	Alien alien1(AlienType::GruntZogling);
-	Alien alien2(AlienType::ShieldDrone);
+	GruntZogling alien1;
+    ShieldDrone alien2;
+    BigZogling alien3;
+    StunSporeling alien4;
+    GoliathWalker alien5;
 
 	Item item1(ItemType::Seeds);
 	Item item2(ItemType::Fertilizer);
@@ -302,7 +310,10 @@ void Engine::InitializeGameEntities()
 	plantsEntities.push_back(plant2);
 
 	aliensEntities.push_back(alien1);
-	aliensEntities.push_back(alien2);
+    aliensEntities.push_back(alien2);
+    aliensEntities.push_back(alien3);
+    aliensEntities.push_back(alien4);
+    aliensEntities.push_back(alien5);
 
 	itemsEntities.push_back(item1);
 	itemsEntities.push_back(item2);
@@ -315,7 +326,7 @@ void Engine::InitializeGameEntities()
 		std::cout << "This plant is a Tomato cannon!: " << std::endl;
 	}
 
-	if (AlienType::GruntZogling == alien1.getEntityID())
+	if (AlienType::GruntZogling == alien1.getAlienID())
 	{
 		std::cout << "This alien is an GruntZogling!: " << std::endl;
 	}
