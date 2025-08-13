@@ -19,12 +19,17 @@ class Alien : public Entity
 
         void DestroyAlien();
 
+        float GetAlienHealth() const { return alienHealth; }
+        void SetAlienDamaged(float damagedValue_) { alienHealth -= damagedValue_; }
+
         AlienType           getEntityID() const;
 
     private:
          AlienType   m_AlienID;
 
          float animationTimer;
+
+         float alienHealth;
 };
 
 #endif

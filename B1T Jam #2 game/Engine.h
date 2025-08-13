@@ -16,6 +16,8 @@ public:
 
 	static void HandleMousePressedEvents();
 
+	static void UpdatePlayerScore();
+
 private:
 	Engine();
 
@@ -23,6 +25,8 @@ private:
 	static void InitializeScrollingCreditsTexts();
 	static void InitializeGameEntities();
 	static void InitializeAnimatedObjects();
+	static void InitializePlayerHUD();
+
 	static void IsMouseHovered();
 
 	static void CheckIfScrollingCreditsFinished();

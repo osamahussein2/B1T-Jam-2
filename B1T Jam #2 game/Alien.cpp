@@ -1,5 +1,6 @@
 #include "Alien.h"
 #include "Window.h"
+#include "Player.h"
 #include <iostream>
 
 Alien::Alien(AlienType type)
@@ -17,6 +18,9 @@ Alien::Alien(AlienType type)
 		entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 		SDL_DestroySurface(entitySurface);
 
+		// Set alien's health to be whatever at the start and increased after progressing past waves
+		alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
+
 		break;
 
 	case AlienType::ShieldDrone:
@@ -28,6 +32,9 @@ Alien::Alien(AlienType type)
 
 		entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 		SDL_DestroySurface(entitySurface);
+
+		// Set alien's health to be whatever at the start and increased after progressing past waves
+		alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
 
 		break;
 
@@ -41,6 +48,9 @@ Alien::Alien(AlienType type)
 		entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 		SDL_DestroySurface(entitySurface);
 
+		// Set alien's health to be whatever at the start and increased after progressing past waves
+		alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
+
 		break;
 
 	case AlienType::StunSporeling:
@@ -53,6 +63,9 @@ Alien::Alien(AlienType type)
 		entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 		SDL_DestroySurface(entitySurface);
 
+		// Set alien's health to be whatever at the start and increased after progressing past waves
+		alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
+
 		break;
 
 	case AlienType::GoliathWalker:
@@ -64,6 +77,9 @@ Alien::Alien(AlienType type)
 
 		entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 		SDL_DestroySurface(entitySurface);
+
+		// Set alien's health to be whatever at the start and increased after progressing past waves
+		alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
 
 		break;
 
@@ -83,6 +99,7 @@ void Alien::update()
 	case AlienType::GruntZogling:
 
 		// Update grunt zogling
+		//alienHealth -= Window::GetDeltaTime();
 		
 		// Prevents the x frame animation from animating too fast
 		animationTimer += Window::GetDeltaTime() * 0.1f;
@@ -107,7 +124,8 @@ void Alien::update()
 	case AlienType::ShieldDrone:
 
 		// Update shield drone
-		
+		//alienHealth -= Window::GetDeltaTime();
+
 		// Prevents the x frame animation from animating too fast
 		animationTimer += Window::GetDeltaTime() * 0.1f;
 

@@ -1,7 +1,6 @@
 #include "Player.h"
 #include "Window.h"
 #include "Engine.h"
-#include "ScoringSystem.h"
 
 #include <fstream>
 #include <algorithm>
@@ -33,10 +32,12 @@ bool Player::waveFinishedChanging = false;
 float Player::mouseX = 0.0f;
 float Player::mouseY = 0.0f;
 
+bool Player::scoreChanged = false;
+
 // Initialize non-static variables
 bool pressed = false;
 
-ScoringSystem scoring;
+ScoringSystem Player::scoring;
 
 
 Player::Player()
@@ -103,6 +104,8 @@ void Player::UpdatePlayer()
 {
 	HandlePlayerInput();
 	if (Window::gameState == GameState::Playing) UpdateWave();
+
+	ChangeScore();
 
 	// Prevents the x frame animation from animating too fast
 	animationTimer += Window::GetDeltaTime() * 0.1f;
@@ -287,7 +290,9 @@ void Player::HandleAimAction(SDL_Event& event)
 			std::cout << "left mouse btn pressed" << std::endl;
 		#endif
 		// test case of scoring player before killing an enemy	
-		scoring.scorePlayer(AlienType::GruntZogling); 
+		scoring.scorePlayer(AlienType::GruntZogling);
+
+		scoreChanged = true; // Make sure to set score changed to true wherever the score player function is
 
 		// Handle some mouse pressed events
 		Engine::HandleMousePressedEvents();
@@ -493,4 +498,14 @@ void Player::GoToNextWave()
 	waveChanged = true;
 
 	waveText.SetAlphaStateChanged(false);
+}
+
+void Player::ChangeScore()
+{
+	if (scoreChanged)
+	{
+		Engine::UpdatePlayerScore();
+
+		scoreChanged = false;
+	}
 }

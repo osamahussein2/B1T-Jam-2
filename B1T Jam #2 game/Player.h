@@ -8,8 +8,10 @@
 
 #include "Vector2.h"
 #include "FadingText.h"
+#include "ScoringSystem.h"
 
 #include <iostream>
+#include <map>
 
 class Player
 {
@@ -35,6 +37,8 @@ public:
 	static float GetMouseX() { return mouseX; }
 	static float GetMouseY() { return mouseY; }
 
+	static ScoringSystem getScoringSystem() { return scoring; }
+
 private:
 	Player();
 
@@ -50,6 +54,8 @@ private:
 	static void SavePlayerProgress();
 
 	static void GoToNextWave();
+
+	static void ChangeScore();
 
 	static SDL_Texture* playerTexture;
 
@@ -76,6 +82,10 @@ private:
 
 	static float mouseX;
 	static float mouseY;
+
+	static bool scoreChanged;
+
+	static ScoringSystem scoring;
 };
 
 #endif

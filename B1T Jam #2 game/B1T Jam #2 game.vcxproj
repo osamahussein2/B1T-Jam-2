@@ -80,8 +80,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)\external\SDL3_ttf-3.2.0\include;$(SolutionDir)\external\SDL3-3.2.18\include;$(SolutionDir)\external\miniaudio;$(SolutionDir)\external\SDL3_image-3.2.4\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x64;$(SolutionDir)\external\SDL3-mixer\lib\x64;$(SolutionDir)\external\SDL3-3.2.18\lib\x64;$(SolutionDir)\external\SDL3_image-3.2.4\lib\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)Windows (x64)\$(Configuration)\</OutDir>
-    <IntDir>$(ShortProjectName)\Windows (x64)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Windows (x64)\Win64 game\</OutDir>
+    <IntDir>$(ShortProjectName)\Windows (x64)\Win64 game\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)Windows (x32)\$(Configuration)\</OutDir>
@@ -90,8 +90,8 @@
     <LibraryPath>$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86;$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)Windows (x32)\$(Configuration)\</OutDir>
-    <IntDir>$(ShortProjectName)\Windows (x32)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)Windows (x32)\Win32 game\</OutDir>
+    <IntDir>$(ShortProjectName)\Windows (x32)\Win32 game\</IntDir>
     <IncludePath>$(SolutionDir)\external\SDL3_ttf-3.2.0\include;$(SolutionDir)\external\SDL3-3.2.18\include;$(SolutionDir)\external\miniaudio;$(SolutionDir)\external\SDL3_image-3.2.4\include;</IncludePath>
     <LibraryPath>$(SolutionDir)\external\SDL3_image-3.2.4\lib\x86;$(SolutionDir)\external\SDL3_ttf-3.2.0\lib\x86;$(SolutionDir)\external\SDL3-mixer\lib\x86;$(SolutionDir)\external\SDL3-3.2.18\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

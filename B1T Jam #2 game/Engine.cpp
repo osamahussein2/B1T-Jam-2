@@ -15,6 +15,7 @@
 std::map<std::string, Text> gameTexts;
 std::map<std::string, ScrollingCredits> scrollingCreditsTexts;
 std::map<std::string, AnimatedObject> animatedObjects;
+std::map<std::string, Text> playerHUD;
 
 std::vector<Plant> plantsEntities;
 std::vector<Alien> aliensEntities;
@@ -37,6 +38,7 @@ void Engine::RunEngine()
 	InitializeScrollingCreditsTexts();
 	InitializeGameEntities();
 	InitializeAnimatedObjects();
+	InitializePlayerHUD();
 
 	while (Window::GetIsRunning())
 	{
@@ -110,12 +112,33 @@ void Engine::RunEngine()
 				IsMouseHovered();
 
 				animatedObjects["BuyFlowerButton"].RenderAnimation();
-				
-				// Update and render all alien entities
+
+				// Render player HUD texts
+				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
+
+				// Loop through all the alien entities
 				for (int i = 0; i < aliensEntities.size(); i++)
 				{
+					// Update and render all alien entities
 					aliensEntities[i].update();
 					aliensEntities[i].render();
+
+					// Iterate through the alien elements
+					for (std::vector<Alien>::iterator it = aliensEntities.begin(); it != aliensEntities.end();) 
+					{
+						Alien alien = *it;
+
+						// Destroy alien when health reaches 0 and delete them from the vector
+						if (alien.GetAlienHealth() <= 0.0f) 
+						{
+							alien.DestroyAlien();
+							it = aliensEntities.erase(it);
+						}
+						else 
+						{
+							++it;
+						}
+					}
 				}
 			}
 
@@ -159,6 +182,12 @@ void Engine::RunEngine()
 	{
 		animatedObjectMap.second.~AnimatedObject();
 		animatedObjectMap.first.clear();
+	}
+
+	for (std::pair<std::string, Text> HUD_Map : playerHUD)
+	{
+		HUD_Map.second.DestroyText();
+		HUD_Map.first.clear();
 	}
 
 	// Destroy all alien entities
@@ -307,6 +336,12 @@ void Engine::InitializeAnimatedObjects()
 	animatedObjects["BuyFlowerButton"].InitializeAnimation("Textures/Flower_Menu_animated_X.png");
 }
 
+void Engine::InitializePlayerHUD()
+{
+	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::getScoringSystem().getCurrentPlayerScore()), 
+		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+}
+
 void Engine::IsMouseHovered()
 {
 	// Check if mouse is hovered on the but flower button
@@ -346,6 +381,12 @@ void Engine::HandleMousePressedEvents()
 		std::cout << "Bought flower\n";
 #endif
 	}
+}
+
+void Engine::UpdatePlayerScore()
+{
+	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::getScoringSystem().getCurrentPlayerScore()),
+		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
 }
 
 void Engine::CheckIfScrollingCreditsFinished()

@@ -27,9 +27,9 @@ int ScoringSystem::getEnemyScore(AlienType enemy)
 void ScoringSystem::scorePlayer(AlienType enemy)
 {
    totalScore += getEnemyScore(enemy);
-   #ifdef _DEBUG
+   /*#ifdef _DEBUG
          std::cout << "totalScore: " << totalScore << std::endl;
-   #endif
+   #endif*/
 }
 
 
