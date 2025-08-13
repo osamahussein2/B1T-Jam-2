@@ -50,7 +50,6 @@ unsigned int Player::playerCurrency = 0;
 // Initialize non-static variables
 bool pressed = false;
 
-
 Player::Player()
 {
 }
@@ -266,6 +265,23 @@ void Player::HandlePlayerInput()
 				pressed = true;
 			}
 
+#ifdef _DEBUG
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::Playing && !pressed &&
+				waveFinishedChanging && levelFinishedChanging)
+			{
+				Window::gameState = GameState::Shopping;
+				pressed = true;
+			}
+#endif
+
+			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::Shopping && !pressed)
+			{
+				Player::GoToNextLevel();
+
+				Window::gameState = GameState::Playing;
+				pressed = true;
+			}
+
 			if (event.key.scancode == SDL_SCANCODE_ESCAPE && Window::gameState == GameState::MainMenu && !pressed)
 			{
 				Window::StopRunning();
@@ -283,14 +299,16 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_MOUSE_MOTION:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging ||
+				Window::gameState == GameState::Shopping && waveFinishedChanging && levelFinishedChanging)
 			{
 				HandleAimCursor();
 			}
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging)
+			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging || 
+				Window::gameState == GameState::Shopping && waveFinishedChanging && levelFinishedChanging)
 			{
 				HandleAimAction(event);
 			}
@@ -356,7 +374,7 @@ void Player::HandleAimAction(SDL_Event& event)
 			std::cout << "left mouse btn pressed" << std::endl;
 		#endif
 		// test case of scoring player before killing an enemy	
-		scoring.scorePlayer(AlienType::GruntZogling);
+		if (Window::gameState == GameState::Playing) scoring.scorePlayer(AlienType::GruntZogling);
 
 		scoreChanged = true; // Make sure to set score changed to true wherever the score player function is
 
@@ -514,7 +532,7 @@ void Player::UpdateLevel()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
 				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
 
-			Engine::UpdatCurrentLevelText();
+			Engine::UpdateCurrentLevelText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -544,7 +562,7 @@ void Player::UpdateLevel()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
 				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
 
-			Engine::UpdatCurrentLevelText();
+			Engine::UpdateCurrentLevelText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -574,7 +592,7 @@ void Player::UpdateLevel()
 				{ static_cast<float>(Window::GetWindowWidth() / 2.3f),
 				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
 
-			Engine::UpdatCurrentLevelText();
+			Engine::UpdateCurrentLevelText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -638,22 +656,38 @@ void Player::GoToNextWave()
 
 	waveChanged = true;
 	canSaveProgress = true;
+}
 
-	if (waveNumber % 3 == 0)
+void Player::GoToNextLevel()
+{
+	if (levelNumber < 3)
 	{
 		++levelNumber;
-
 		levelChanged = true;
 
-		playerCurrency += currentPlayerScore;
+		fadingTexts["levelText"].SetAlphaStateChanged(false);
+	}
 
-		if (currentPlayerScore != 0)
-		{
-			currentPlayerScore = 0;
-			scoreChanged = true;
-		}
+	else
+	{
+		levelNumber = 1;
+		levelChanged = true;
 
 		fadingTexts["levelText"].SetAlphaStateChanged(false);
+	}
+
+	if (waveNumber != 1) waveNumber = 1;
+
+	Engine::UpdateCurrentWaveText();
+
+	if (canSaveProgress != true) canSaveProgress = true;
+	
+	playerCurrency += currentPlayerScore;
+
+	if (currentPlayerScore != 0)
+	{
+		currentPlayerScore = 0;
+		scoreChanged = true;
 	}
 }
 

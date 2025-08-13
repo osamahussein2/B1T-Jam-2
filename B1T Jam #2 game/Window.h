@@ -5,7 +5,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "Global.h"
+#include "GameState.h"
 
 class Window
 {

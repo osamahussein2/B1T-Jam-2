@@ -17,7 +17,7 @@ public:
 	static void HandleMousePressedEvents();
 
 	static void UpdatePlayerScore();
-	static void UpdatCurrentLevelText();
+	static void UpdateCurrentLevelText();
 	static void UpdateCurrentWaveText();
 
 private:
@@ -28,6 +28,7 @@ private:
 	static void InitializeGameEntities();
 	static void InitializeAnimatedObjects();
 	static void InitializePlayerHUD();
+	static void InitializeShopMenu();
 
 	static void IsMouseHovered();
 

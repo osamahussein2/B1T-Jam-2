@@ -47,6 +47,8 @@ public:
 	static unsigned int GetPlayerCurrency() { return playerCurrency; }
 	static void SpendPlayerCurrency(unsigned int cost_) { playerCurrency -= cost_; }
 
+	static void GoToNextLevel();
+
 private:
 	Player();
 
