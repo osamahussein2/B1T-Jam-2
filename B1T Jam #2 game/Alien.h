@@ -22,11 +22,20 @@ class Alien : public Entity
         float GetAlienHealth() const { return alienHealth; }
         void SetAlienDamaged(float damagedValue_) { alienHealth -= damagedValue_; }
 
+        // Death logic
+        float getDeathAnimationTime() const { return deathTimer; }
+        bool getIsDead() const { return isDead; }
+
         virtual AlienType           getAlienID() const;
 
     protected:
          float          alienHealth;
          float          animationTimer;
+
+         bool isDead;
+         bool hasTextureChanged;
+
+         float          deathTimer;
 };
 
 #endif

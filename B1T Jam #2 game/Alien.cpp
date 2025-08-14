@@ -5,7 +5,7 @@
 #include <iostream>
 
 Alien::Alien()
-	: animationTimer(0.0f)
+	: animationTimer(0.0f), isDead(false), hasTextureChanged(false), deathTimer(0.0f)
 {
 }
 

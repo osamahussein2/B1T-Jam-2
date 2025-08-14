@@ -593,8 +593,9 @@ void Engine::IterateAliens()
 	{
 		Alien* alien = it->get();
 
-		// Destroy alien when health reaches 0 and delete them from the vector
-		if (alien->GetAlienHealth() <= 0.0f)
+		// Destroy grunt zogling alien when they're dead and delete them from the vector
+		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling && 
+			alien->getDeathAnimationTime() >= 8.0f)
 		{
 			alien->DestroyAlien();
 			it = aliensEntities.erase(it);
