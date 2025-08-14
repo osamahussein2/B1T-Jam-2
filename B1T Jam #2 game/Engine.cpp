@@ -28,11 +28,8 @@ std::map<std::string, StaticObject> staticObjects;
 std::vector<PlantTower> plantsEntities;
 
 // Aliens
-std::vector<GruntZogling> gruntZoglingAliens;
-std::vector<ShieldDrone> shieldDroneAliens;
-std::vector<BigZogling> bigZoglingAliens;
-std::vector<StunSporeling> stunSporelingAliens;
-std::vector<GoliathWalker> goliathWalkerAliens;
+std::vector<std::unique_ptr<Alien>> aliensEntities;
+
 
 // Items
 std::vector<Item> itemsEntities;
@@ -195,37 +192,13 @@ void Engine::RunEngine()
 	}
 
 	// Destroy all alien entities
-	for (int i = 0; i < gruntZoglingAliens.size(); i++)
+	for (int i = 0; i < aliensEntities.size(); i++)
 	{
-		gruntZoglingAliens[i].DestroyAlien();
-	}
-
-	for (int i = 0; i < shieldDroneAliens.size(); i++)
-	{
-		shieldDroneAliens[i].DestroyAlien();
-	}
-
-	for (int i = 0; i < bigZoglingAliens.size(); i++)
-	{
-		bigZoglingAliens[i].DestroyAlien();
-	}
-
-	for (int i = 0; i < stunSporelingAliens.size(); i++)
-	{
-		stunSporelingAliens[i].DestroyAlien();
-	}
-
-	for (int i = 0; i < goliathWalkerAliens.size(); i++)
-	{
-		goliathWalkerAliens[i].DestroyAlien();
+		aliensEntities[i].get()->DestroyAlien();
 	}
 
 	// Clear all entities
-	if (!gruntZoglingAliens.empty()) gruntZoglingAliens.clear();
-	if (!shieldDroneAliens.empty()) shieldDroneAliens.clear();
-	if (!bigZoglingAliens.empty()) bigZoglingAliens.clear();
-	if (!stunSporelingAliens.empty()) stunSporelingAliens.clear();
-	if (!goliathWalkerAliens.empty()) goliathWalkerAliens.clear();
+	if (!aliensEntities.empty()) aliensEntities.clear();
 
 	if (!plantsEntities.empty()) plantsEntities.clear();
 	if (!itemsEntities.empty()) itemsEntities.clear();
@@ -337,11 +310,11 @@ void Engine::InitializeGameEntities()
 	plantsEntities.push_back(plant1);
 	plantsEntities.push_back(plant2);
 
-	gruntZoglingAliens.push_back(alien1);
-	shieldDroneAliens.push_back(alien2);
-	bigZoglingAliens.push_back(alien3);
-	stunSporelingAliens.push_back(alien4);
-	goliathWalkerAliens.push_back(alien5);
+	aliensEntities.push_back(std::make_unique<GruntZogling>());
+	aliensEntities.push_back(std::make_unique<ShieldDrone>());
+	// aliensEntities.push_back(std::make_unique<BigZogling>()); // they chrash because not having texture loaded, maybe we need some more validations 
+	// aliensEntities.push_back(std::make_unique<StunSporeling>());
+	// aliensEntities.push_back(std::make_unique<GoliathWalker>());
 
 	itemsEntities.push_back(item1);
 	itemsEntities.push_back(item2);
@@ -367,11 +340,12 @@ void Engine::InitializeGameEntities()
 	std::cout << "Plants count: " << plantsEntities.size() << std::endl;
 
 	// Print different alien entities
-	std::cout << "Grunt zogling aliens count: " << gruntZoglingAliens.size() << std::endl;
-	std::cout << "Shield drone aliens count: " << shieldDroneAliens.size() << std::endl;
-	std::cout << "Big zogling aliens count: " << bigZoglingAliens.size() << std::endl;
-	std::cout << "Stun sporeling aliens count: " << stunSporelingAliens.size() << std::endl;
-	std::cout << "Goliath walker aliens count: " << goliathWalkerAliens.size() << std::endl;
+	std::cout << "Aliens count: " << aliensEntities.size() << std::endl;
+	// std::cout << "Grunt zogling aliens count: " << shieldDroneAliens.size() << std::endl;
+	// std::cout << "Shield drone aliens count: " << shieldDroneAliens.size() << std::endl;
+	// std::cout << "Big zogling aliens count: " << bigZoglingAliens.size() << std::endl;
+	// std::cout << "Stun sporeling aliens count: " << stunSporelingAliens.size() << std::endl;
+	// std::cout << "Goliath walker aliens count: " << goliathWalkerAliens.size() << std::endl;
 
 	std::cout << "Items count: " << itemsEntities.size() << std::endl;
 #endif
@@ -602,89 +576,34 @@ void Engine::SwitchFlowerUpgrades()
 
 void Engine::IterateAliens()
 {
-	if (!gruntZoglingAliens.empty())
+
+	if (!aliensEntities.empty())
 	{
 		// Loop through all the alien entities
-		for (int i = 0; i < gruntZoglingAliens.size(); i++)
+		for (int i = 0; i < aliensEntities.size(); i++)
 		{
 			// Update and render all alien entities
-			gruntZoglingAliens[i].update();
-			gruntZoglingAliens[i].render();
+			aliensEntities[i].get()->update();
+			aliensEntities[i].get()->render();
 		}
 	}
 
 	// Iterate through the alien elements
-	for (std::vector<GruntZogling>::iterator it = gruntZoglingAliens.begin(); it != gruntZoglingAliens.end();)
+	for (auto it = aliensEntities.begin(); it != aliensEntities.end();)
 	{
-		GruntZogling alien = *it;
+		Alien* alien = it->get();
 
 		// Destroy alien when health reaches 0 and delete them from the vector
-		if (alien.GetAlienHealth() <= 0.0f)
+		if (alien->GetAlienHealth() <= 0.0f)
 		{
-			alien.DestroyAlien();
-			it = gruntZoglingAliens.erase(it);
+			alien->DestroyAlien();
+			it = aliensEntities.erase(it);
 		}
 		else
 		{
 			++it;
 		}
 	}
-
-	if (!shieldDroneAliens.empty())
-	{
-		// Loop through all the alien entities
-		for (int i = 0; i < shieldDroneAliens.size(); i++)
-		{
-			// Update and render all alien entities
-			shieldDroneAliens[i].update();
-			shieldDroneAliens[i].render();
-		}
-	}
-
-	// Iterate through the alien elements
-	for (std::vector<ShieldDrone>::iterator it = shieldDroneAliens.begin(); it != shieldDroneAliens.end();)
-	{
-		ShieldDrone alien = *it;
-
-		// Destroy alien when health reaches 0 and delete them from the vector
-		if (alien.GetAlienHealth() <= 0.0f)
-		{
-			alien.DestroyAlien();
-			it = shieldDroneAliens.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}
-
-	/*if (!bigZoglingAliens.empty())
-	{
-		// Loop through all the alien entities
-		for (int i = 0; i < bigZoglingAliens.size(); i++)
-		{
-			// Update and render all alien entities
-			bigZoglingAliens[i].update();
-			bigZoglingAliens[i].render();
-		}
-	}
-
-	// Iterate through the alien elements
-	for (std::vector<BigZogling>::iterator it = bigZoglingAliens.begin(); it != bigZoglingAliens.end();)
-	{
-		BigZogling alien = *it;
-
-		// Destroy alien when health reaches 0 and delete them from the vector
-		if (alien.GetAlienHealth() <= 0.0f)
-		{
-			alien.DestroyAlien();
-			it = bigZoglingAliens.erase(it);
-		}
-		else
-		{
-			++it;
-		}
-	}*/
 }
 
 
