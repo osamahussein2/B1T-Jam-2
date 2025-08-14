@@ -24,8 +24,17 @@ std::map<std::string, AnimatedObject> animatedObjects;
 std::map<std::string, Text> playerHUD;
 std::map<std::string, StaticObject> staticObjects;
 
+// Plants
 std::vector<PlantTower> plantsEntities;
-std::vector<Alien> aliensEntities;
+
+// Aliens
+std::vector<GruntZogling> gruntZoglingAliens;
+std::vector<ShieldDrone> shieldDroneAliens;
+std::vector<BigZogling> bigZoglingAliens;
+std::vector<StunSporeling> stunSporelingAliens;
+std::vector<GoliathWalker> goliathWalkerAliens;
+
+// Items
 std::vector<Item> itemsEntities;
 
 Engine::Engine()
@@ -120,33 +129,7 @@ void Engine::RunEngine()
 				// Render player HUD texts
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
-				if (!aliensEntities.empty())
-				{
-					// Loop through all the alien entities
-					for (int i = 0; i < aliensEntities.size(); i++)
-					{
-						// Update and render all alien entities
-						aliensEntities[i].update();
-						aliensEntities[i].render();
-					}
-				}
-				
-				// Iterate through the alien elements
-				for (std::vector<Alien>::iterator it = aliensEntities.begin(); it != aliensEntities.end();)
-				{
-					Alien alien = *it;
-
-					// Destroy alien when health reaches 0 and delete them from the vector
-					if (alien.GetAlienHealth() <= 0.0f)
-					{
-						alien.DestroyAlien();
-						it = aliensEntities.erase(it);
-					}
-					else
-					{
-						++it;
-					}
-				}
+				IterateAliens();
 			}
 
 			Window::RenderEndFrame();
@@ -212,13 +195,38 @@ void Engine::RunEngine()
 	}
 
 	// Destroy all alien entities
-	for (int i = 0; i < aliensEntities.size(); i++)
+	for (int i = 0; i < gruntZoglingAliens.size(); i++)
 	{
-		aliensEntities[i].DestroyAlien();
+		gruntZoglingAliens[i].DestroyAlien();
+	}
+
+	for (int i = 0; i < shieldDroneAliens.size(); i++)
+	{
+		shieldDroneAliens[i].DestroyAlien();
+	}
+
+	for (int i = 0; i < bigZoglingAliens.size(); i++)
+	{
+		bigZoglingAliens[i].DestroyAlien();
+	}
+
+	for (int i = 0; i < stunSporelingAliens.size(); i++)
+	{
+		stunSporelingAliens[i].DestroyAlien();
+	}
+
+	for (int i = 0; i < goliathWalkerAliens.size(); i++)
+	{
+		goliathWalkerAliens[i].DestroyAlien();
 	}
 
 	// Clear all entities
-	if (!aliensEntities.empty()) aliensEntities.clear();
+	if (!gruntZoglingAliens.empty()) gruntZoglingAliens.clear();
+	if (!shieldDroneAliens.empty()) shieldDroneAliens.clear();
+	if (!bigZoglingAliens.empty()) bigZoglingAliens.clear();
+	if (!stunSporelingAliens.empty()) stunSporelingAliens.clear();
+	if (!goliathWalkerAliens.empty()) goliathWalkerAliens.clear();
+
 	if (!plantsEntities.empty()) plantsEntities.clear();
 	if (!itemsEntities.empty()) itemsEntities.clear();
 
@@ -329,11 +337,11 @@ void Engine::InitializeGameEntities()
 	plantsEntities.push_back(plant1);
 	plantsEntities.push_back(plant2);
 
-	aliensEntities.push_back(alien1);
-    aliensEntities.push_back(alien2);
-    aliensEntities.push_back(alien3);
-    aliensEntities.push_back(alien4);
-    aliensEntities.push_back(alien5);
+	gruntZoglingAliens.push_back(alien1);
+	shieldDroneAliens.push_back(alien2);
+	bigZoglingAliens.push_back(alien3);
+	stunSporelingAliens.push_back(alien4);
+	goliathWalkerAliens.push_back(alien5);
 
 	itemsEntities.push_back(item1);
 	itemsEntities.push_back(item2);
@@ -357,7 +365,14 @@ void Engine::InitializeGameEntities()
 	}
 
 	std::cout << "Plants count: " << plantsEntities.size() << std::endl;
-	std::cout << "Aliens count: " << aliensEntities.size() << std::endl;
+
+	// Print different alien entities
+	std::cout << "Grunt zogling aliens count: " << gruntZoglingAliens.size() << std::endl;
+	std::cout << "Shield drone aliens count: " << shieldDroneAliens.size() << std::endl;
+	std::cout << "Big zogling aliens count: " << bigZoglingAliens.size() << std::endl;
+	std::cout << "Stun sporeling aliens count: " << stunSporelingAliens.size() << std::endl;
+	std::cout << "Goliath walker aliens count: " << goliathWalkerAliens.size() << std::endl;
+
 	std::cout << "Items count: " << itemsEntities.size() << std::endl;
 #endif
 
@@ -583,6 +598,93 @@ void Engine::SwitchFlowerUpgrades()
 	default:
 		break;
 	}
+}
+
+void Engine::IterateAliens()
+{
+	if (!gruntZoglingAliens.empty())
+	{
+		// Loop through all the alien entities
+		for (int i = 0; i < gruntZoglingAliens.size(); i++)
+		{
+			// Update and render all alien entities
+			gruntZoglingAliens[i].update();
+			gruntZoglingAliens[i].render();
+		}
+	}
+
+	// Iterate through the alien elements
+	for (std::vector<GruntZogling>::iterator it = gruntZoglingAliens.begin(); it != gruntZoglingAliens.end();)
+	{
+		GruntZogling alien = *it;
+
+		// Destroy alien when health reaches 0 and delete them from the vector
+		if (alien.GetAlienHealth() <= 0.0f)
+		{
+			alien.DestroyAlien();
+			it = gruntZoglingAliens.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	if (!shieldDroneAliens.empty())
+	{
+		// Loop through all the alien entities
+		for (int i = 0; i < shieldDroneAliens.size(); i++)
+		{
+			// Update and render all alien entities
+			shieldDroneAliens[i].update();
+			shieldDroneAliens[i].render();
+		}
+	}
+
+	// Iterate through the alien elements
+	for (std::vector<ShieldDrone>::iterator it = shieldDroneAliens.begin(); it != shieldDroneAliens.end();)
+	{
+		ShieldDrone alien = *it;
+
+		// Destroy alien when health reaches 0 and delete them from the vector
+		if (alien.GetAlienHealth() <= 0.0f)
+		{
+			alien.DestroyAlien();
+			it = shieldDroneAliens.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	/*if (!bigZoglingAliens.empty())
+	{
+		// Loop through all the alien entities
+		for (int i = 0; i < bigZoglingAliens.size(); i++)
+		{
+			// Update and render all alien entities
+			bigZoglingAliens[i].update();
+			bigZoglingAliens[i].render();
+		}
+	}
+
+	// Iterate through the alien elements
+	for (std::vector<BigZogling>::iterator it = bigZoglingAliens.begin(); it != bigZoglingAliens.end();)
+	{
+		BigZogling alien = *it;
+
+		// Destroy alien when health reaches 0 and delete them from the vector
+		if (alien.GetAlienHealth() <= 0.0f)
+		{
+			alien.DestroyAlien();
+			it = bigZoglingAliens.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}*/
 }
 
 

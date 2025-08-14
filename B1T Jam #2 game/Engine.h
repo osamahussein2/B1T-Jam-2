@@ -36,6 +36,8 @@ private:
 	static void CheckIfScrollingCreditsFinished();
 
 	static void SwitchFlowerUpgrades();
+
+	static void IterateAliens();
 };
 
 #endif

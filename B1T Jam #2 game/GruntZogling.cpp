@@ -24,9 +24,9 @@ GruntZogling::~GruntZogling()
 void GruntZogling::update()
 {
 	// Update grunt zogling
-		//alienHealth -= Window::GetDeltaTime();
-
-		// Prevents the x frame animation from animating too fast
+	//alienHealth -= Window::GetDeltaTime();
+	
+	// Prevents the x frame animation from animating too fast
 	animationTimer += Window::GetDeltaTime() * 0.1f;
 
 	// Set the source rectangle to match the sprite dimensions for animation
