@@ -13,6 +13,8 @@ bool Window::isRunning = false;
 
 GameState Window::gameState = GameState::MainMenu;
 
+std::map<std::string, Audio> Window::enemySounds;
+
 Window::Window()
 {
 }
@@ -23,8 +25,15 @@ Window::~Window()
 	gameRenderer = NULL;
 }
 
+void Window::InitializeAudioItems()
+{
+	enemySounds["EnemyDeathSound"].InitializeAudio("Sounds/Enemy_Dead.wav");
+}
+
 void Window::InitializeWindow()
 {
+	InitializeAudioItems();
+
 	// Initialize SDL to initialize all of the SDL subsystems
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) >= 0)
 	{
@@ -106,4 +115,11 @@ void Window::DestroyWindow()
 
 	gameWindow = NULL;
 	gameRenderer = NULL;
+
+	// Unload any audio
+	for (std::pair<std::string, Audio> enemySound : enemySounds)
+	{
+		enemySound.second.UnloadAudio();
+		enemySound.first.clear();
+	}
 }

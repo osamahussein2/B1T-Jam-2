@@ -1,7 +1,7 @@
-#pragma once
-
 #ifndef ALIEN_H
 #define ALIEN_H
+
+#pragma once
 
 #include "Entity.h"
 #include "AlienType.h"

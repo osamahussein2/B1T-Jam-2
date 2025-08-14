@@ -67,6 +67,8 @@ void GruntZogling::update()
 
 			if (deathTimer != 0.0f) deathTimer = 0.0f; // Just in case for starting the death animation frames
 
+			Window::enemySounds["EnemyDeathSound"].PlayAudio();
+
 			hasTextureChanged = true;
 		}
 

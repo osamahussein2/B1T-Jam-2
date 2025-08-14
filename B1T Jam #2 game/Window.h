@@ -6,6 +6,8 @@
 #include <SDL3/SDL.h>
 
 #include "GameState.h"
+#include "Audio.h"
+#include <map>
 
 class Window
 {
@@ -33,8 +35,12 @@ public:
 
 	static void StopRunning() { isRunning = false; }
 
+	static std::map<std::string, Audio> enemySounds;
+
 private:
 	Window();
+
+	static void InitializeAudioItems();
 
 	static SDL_Window* gameWindow;
 	static SDL_Renderer* gameRenderer;
