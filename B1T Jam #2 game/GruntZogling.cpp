@@ -26,7 +26,7 @@ void GruntZogling::update()
 	// Update grunt zogling while isn't dead
 	if (!isDead)
 	{
-		if (alienHealth >= -0.1f) alienHealth -= Window::GetDeltaTime();
+		//if (alienHealth >= -0.1f) alienHealth -= Window::GetDeltaTime();
 
 		// Prevents the x frame animation from animating too fast
 		animationTimer += Window::GetDeltaTime() * 0.1f;

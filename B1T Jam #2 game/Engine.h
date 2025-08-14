@@ -21,6 +21,8 @@ public:
 	static void UpdateCurrentWaveText();
 	static void UpdatePlayerCurrencyText();
 
+	static void HasShovel();
+
 private:
 	Engine();
 

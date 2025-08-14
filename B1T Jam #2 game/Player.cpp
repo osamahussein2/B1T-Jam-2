@@ -388,6 +388,8 @@ void Player::HandleAimAction(SDL_Event& event)
 
 		// Handle some mouse pressed events
 		Engine::HandleMousePressedEvents();
+
+		Engine::HasShovel();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)

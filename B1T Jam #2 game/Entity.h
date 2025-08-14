@@ -18,13 +18,14 @@ class Entity
         virtual void                moveEntity(Vector2 position);
         virtual void                collision(Entity* other);
 
+        SDL_FRect destEntity;
+
     protected:
         virtual void                update();
 
         SDL_Texture* entityTexture;
 
         SDL_FRect srcEntity;
-        SDL_FRect destEntity;
 
         SDL_Surface* entitySurface;
 

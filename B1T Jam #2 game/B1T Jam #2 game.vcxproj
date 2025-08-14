@@ -172,6 +172,7 @@
     <ClCompile Include="ScoringSystem.cpp" />
     <ClCompile Include="ScrollingCredits.cpp" />
     <ClCompile Include="ShieldDrone.cpp" />
+    <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="StunSporeling.cpp" />
     <ClCompile Include="SunflowerShooter.cpp" />
@@ -203,6 +204,7 @@
     <ClInclude Include="ScoringSystem.h" />
     <ClInclude Include="ScrollingCredits.h" />
     <ClInclude Include="ShieldDrone.h" />
+    <ClInclude Include="Shovel.h" />
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="StunSporeling.h" />
     <ClInclude Include="SunflowerShooter.h" />

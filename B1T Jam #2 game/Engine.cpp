@@ -12,6 +12,7 @@
 #include "Item.h"
 #include "AnimatedObject.h"
 #include "StaticObject.h"
+#include "Shovel.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
@@ -33,6 +34,9 @@ std::vector<std::unique_ptr<Alien>> aliensEntities;
 
 // Items
 std::vector<Item> itemsEntities;
+
+// Shovel
+Shovel shovel;
 
 Engine::Engine()
 {
@@ -127,6 +131,31 @@ void Engine::RunEngine()
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
 				IterateAliens();
+
+				shovel.update();
+
+				/*for (int i = 0; i < aliensEntities.size(); i++)
+				{
+					shovel.collision(aliensEntities[i].get()); // test shovel collision with aliens
+				}*/
+
+				for (auto it = aliensEntities.begin(); it != aliensEntities.end();)
+				{
+					Alien* alien = it->get();
+
+					// Destroy aliens for testing when shovel hovers on them
+					if (shovel.shouldDestroyEntity(alien))
+					{
+						alien->DestroyAlien();
+						it = aliensEntities.erase(it);
+					}
+					else
+					{
+						++it;
+					}
+				}
+
+				shovel.render();
 			}
 
 			Window::RenderEndFrame();
@@ -196,6 +225,8 @@ void Engine::RunEngine()
 	{
 		aliensEntities[i].get()->DestroyAlien();
 	}
+
+	shovel.DestroyShovel();
 
 	// Clear all entities
 	if (!aliensEntities.empty()) aliensEntities.clear();
@@ -318,6 +349,9 @@ void Engine::InitializeGameEntities()
 
 	itemsEntities.push_back(item1);
 	itemsEntities.push_back(item2);
+
+	// Shovel entity initialization
+	shovel.InitializeShovel({ Window::GetWindowWidth() / 1.2f, Window::GetWindowHeight() / 100.0f });
 
 #ifdef _DEBUG
 	std::cout << "Entities Initialized " << std::endl;
@@ -532,6 +566,11 @@ void Engine::UpdatePlayerCurrencyText()
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
 			{ static_cast<float>(Window::GetWindowWidth() / 2.2f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
 	}
+}
+
+void Engine::HasShovel()
+{
+	shovel.HandleShovel();
 }
 
 void Engine::CheckIfScrollingCreditsFinished()
