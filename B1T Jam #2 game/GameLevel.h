@@ -19,7 +19,8 @@ class GameLevel
 
     public:
          void LoadLevel(const char *file, unsigned int levelWidth, unsigned int levelHeight);
-         void DrawLevel();
+         void DestroyLevel();
+         void RenderLevel();
 
          bool IsLevelLoaded();
 

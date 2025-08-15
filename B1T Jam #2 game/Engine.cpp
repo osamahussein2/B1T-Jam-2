@@ -176,7 +176,24 @@ void Engine::RunEngine()
 				}
 
 				shovel.render();
-				gameLevels[0].DrawLevel();
+
+				// render player level, i have to validate yet also if exist on the array
+				// but we know we have 3 levels	
+				switch(Player::GetLevelNumber())
+				{
+					case 1:
+						gameLevels[0].RenderLevel();
+						break;
+					case 2:
+						gameLevels[1].RenderLevel();
+						break;
+					case 3:
+						gameLevels[2].RenderLevel();
+						break;
+					default:
+						std::cout << "level not loaded" << std::endl;
+						break;
+				}
 
 				IteratePlacingPlants();
 				IteratePlants();
@@ -438,8 +455,16 @@ void Engine::InitializeShopMenu()
 void Engine::InitializeGameLevels()
 {
 	GameLevel level1;
+	GameLevel level2;
+	GameLevel level3;
+
 	level1.LoadLevel("Levels/one.txt", Window::GetWindowWidth(), Window::GetWindowHeight());
+	level2.LoadLevel("Levels/two.txt", Window::GetWindowWidth(), Window::GetWindowHeight());
+	level3.LoadLevel("Levels/tree.txt", Window::GetWindowWidth(), Window::GetWindowHeight());
+
 	gameLevels.push_back(level1);
+	gameLevels.push_back(level2);
+	gameLevels.push_back(level3);
 }
 
 void Engine::InitializePlacingPlants()

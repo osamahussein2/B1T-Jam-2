@@ -35,14 +35,16 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             {
                 Vector2 tilePosition(unit_width * x, unit_height * y);
                 Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/block.png", tilePosition, tileScale);
+                tile.InitializeTile("Textures/block_1.png", tilePosition, tileScale);
+                // tile.InitializeTile("Textures/background.png", tilePosition, tileScale);
                 m_Tiles.push_back(tile);
             }
             else if (tileData[y][x] > 1)	// non-solid; now determine its color based on level data
             {
                 Vector2 tilePosition(unit_width * x, unit_width * y);
                 Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/block.png", tilePosition, tileScale);
+                tile.InitializeTile("Textures/block_1.png", tilePosition, tileScale);
+                // tile.InitializeTile("Textures/background.png", tilePosition, tileScale);
                 m_Tiles.push_back(tile);
             }
         }
@@ -77,10 +79,17 @@ void GameLevel::LoadLevel(const char* file, unsigned int levelWidth, unsigned in
 	std::cout << "Level file was loaded succesfully" << std::endl;
 }
 
+void GameLevel::DestroyLevel()
+{
+	for (Tile& tile : m_Tiles)
+    {
+    	//tile.DestroyTile();
+    }
+}
 
 
 
-void GameLevel::DrawLevel()
+void GameLevel::RenderLevel()
 {
     for (Tile& tile : m_Tiles)
     {
