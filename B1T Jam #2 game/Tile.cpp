@@ -8,9 +8,9 @@ Tile::Tile() : tileTexture(NULL), srcTile(), destTile(), tileSurface(NULL)
 Tile::~Tile()
 {
 	// Destroy the tile texture
-	SDL_DestroyTexture(tileTexture);
+	// SDL_DestroyTexture(tileTexture);
 
-	tileTexture = NULL;
+	// tileTexture = NULL;
 }
 
 void Tile::InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scaleMultiplier_)
@@ -38,8 +38,8 @@ void Tile::InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scale
 	destTile.x = tilePos_.x;
 	destTile.y = tilePos_.y;
 
-	destTile.w = (srcTile.w * scaleMultiplier_.x) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-	destTile.h = (srcTile.h * scaleMultiplier_.y) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+	destTile.w = scaleMultiplier_.x;
+	destTile.h = scaleMultiplier_.y;
 }
 
 void Tile::RenderTile()

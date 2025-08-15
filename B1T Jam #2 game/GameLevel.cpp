@@ -13,6 +13,7 @@ GameLevel::GameLevel()
 
 GameLevel::~GameLevel()
 {
+	// need to destroy all tiles texture here!! or in a method, when level is completed
 }
 
 void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsigned int levelWidth, unsigned int levelHeight)
@@ -20,8 +21,10 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
 	// calculate dimensions
     unsigned int height = tileData.size();
     unsigned int width = tileData[0].size(); // note we can index vector at [0] since this function is only called if height > 0
-    float unit_width = levelWidth / static_cast<float>(width), unit_height = levelHeight / height; 
-    // initialize level tiles based on tileData		
+    float unit_width = levelWidth / static_cast<float>(width);
+    float unit_height = levelHeight / static_cast<float>(height); 
+    // initialize level tiles based on tileData
+    float size_sc = 1;		
     for (unsigned int y = 0; y < height; ++y)
     {
         for (unsigned int x = 0; x < width; ++x)
@@ -32,14 +35,14 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             {
                 Vector2 tilePosition(unit_width * x, unit_height * y);
                 Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/background.png", tilePosition, tileScale);
+                tile.InitializeTile("Textures/block.png", tilePosition, tileScale);
                 m_Tiles.push_back(tile);
             }
             else if (tileData[y][x] > 1)	// non-solid; now determine its color based on level data
             {
                 Vector2 tilePosition(unit_width * x, unit_width * y);
                 Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/background.png", tilePosition, tileScale);
+                tile.InitializeTile("Textures/block.png", tilePosition, tileScale);
                 m_Tiles.push_back(tile);
             }
         }

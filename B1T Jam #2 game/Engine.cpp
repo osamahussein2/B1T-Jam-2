@@ -141,7 +141,6 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 			//Player::RenderPlayer();
-			// gameLevels[0].DrawLevel();
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
@@ -177,6 +176,7 @@ void Engine::RunEngine()
 				}
 
 				shovel.render();
+				gameLevels[0].DrawLevel();
 
 				IteratePlacingPlants();
 				IteratePlants();
@@ -438,7 +438,7 @@ void Engine::InitializeShopMenu()
 void Engine::InitializeGameLevels()
 {
 	GameLevel level1;
-	level1.LoadLevel("Levels/one.txt", 800, 600 / 2);
+	level1.LoadLevel("Levels/one.txt", Window::GetWindowWidth(), Window::GetWindowHeight());
 	gameLevels.push_back(level1);
 }
 
