@@ -37,10 +37,14 @@ void SunflowerShooter::update()
 
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+
+		if (shootingTime != 0.0f) shootingTime = 0.0f;
 	}
 
 	else
 	{
+		shootingTime += Window::GetDeltaTime() * 0.02f;
+
 		// Set the source rectangle to match the sprite dimensions for animation
 		srcEntity.x = 0;
 		srcEntity.y = 0;

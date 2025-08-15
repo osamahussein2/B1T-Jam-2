@@ -19,6 +19,7 @@
 #include "SunflowerShooter.h"
 #include "EggplantTrap.h"
 #include "CornMortar.h"
+#include "Bullet.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
@@ -45,6 +46,9 @@ std::vector<Item> itemsEntities;
 std::vector<GameLevel> gameLevels;
 
 Shovel shovel;
+
+// Bullet
+std::vector<std::unique_ptr<Bullet>> bullets;
 
 Engine::Engine()
 {
@@ -89,6 +93,12 @@ void Engine::RunEngine()
 			{
 				for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
 				plantsEntities.clear();
+			}
+
+			if (!bullets.empty())
+			{
+				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
+				bullets.clear();
 			}
 			break;
 
@@ -175,8 +185,6 @@ void Engine::RunEngine()
 					}
 				}
 
-				shovel.render();
-
 				// render player level, i have to validate yet also if exist on the array
 				// but we know we have 3 levels	
 				switch(Player::GetLevelNumber())
@@ -195,8 +203,11 @@ void Engine::RunEngine()
 						break;
 				}
 
+				shovel.render();
+
 				IteratePlacingPlants();
 				IteratePlants();
+				IterateBullets();
 			}
 
 			Window::RenderEndFrame();
@@ -273,6 +284,12 @@ void Engine::RunEngine()
 	{
 		placePlantMap.second.DestroyPlacingPlant();
 		placePlantMap.first.clear();
+	}
+
+	if (!bullets.empty())
+	{
+		for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
+		bullets.clear();
 	}
 
 	// Clear all entities
@@ -866,11 +883,32 @@ void Engine::IterateAliens()
 
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
+			if (plantsEntities[i].get()->getEntityID() == PlantType::SunflowerShooter &&
+				plantsEntities[i].get()->GetShootingTime() >= 1.0f && !alien->getIsDead())
+			{
+				bullets.push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
+
+				plantsEntities[i].get()->ResetShootingTime();
+			}
+
 			// Check if alien is near the tomato cannon once it explodes, then trigger death logic if it's true
 			if (plantsEntities[i].get()->checkCollision(alien) &&
 				plantsEntities[i].get()->getEntityID() == PlantType::TomatoCannon &&
 				plantsEntities[i].get()->GetIsDead())
 			{
+				alien->setIsDead(true);
+			}
+		}
+
+		for (int i = 0; i < bullets.size(); i++)
+		{
+			bullets[i].get()->moveEntity(alien->GetCenter());
+
+			// Check if bullets hit the alien and kill the aliens
+			if (bullets[i].get()->checkCollision(alien) && !alien->getIsDead())
+			{
+				// Destroy the bullets too until the alien's death animation is completed
+				bullets[i].get()->SetIsDestroyed(true);
 				alien->setIsDead(true);
 			}
 		}
@@ -922,6 +960,32 @@ void Engine::IteratePlants()
 		{
 			plant->DestroyPlantTower();
 			it = plantsEntities.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+void Engine::IterateBullets()
+{
+	for (int i = 0; i < bullets.size(); i++)
+	{
+		bullets[i].get()->update();
+		bullets[i].get()->render();
+	}
+
+	// Iterate through the bullets
+	for (auto it = bullets.begin(); it != bullets.end();)
+	{
+		Bullet* bullet = it->get();
+
+		// Destroy bullet after a few seconds and delete them from the vector
+		if (bullet->GetLifeTime() >= 3.0f || bullet->IsDestroyed())
+		{
+			bullet->DestroyBullet();
+			it = bullets.erase(it);
 		}
 		else
 		{

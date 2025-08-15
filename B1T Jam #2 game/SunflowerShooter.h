@@ -4,6 +4,8 @@
 #pragma once
 
 #include "PlantTower.h"
+#include "Bullet.h"
+#include <vector>
 
 class SunflowerShooter : public PlantTower
 {

@@ -32,6 +32,11 @@ class Alien : public Entity
 
         int GetCurrentDirectionIndex() const { return currentDirectionIndex; }
 
+        Vector2 GetPosition() const { return { destEntity.x, destEntity.y }; }
+
+        Vector2 GetCenter() const { return { destEntity.x + (destEntity.w / 2.0f),
+            destEntity.y + (destEntity.h / 2.0f) }; }
+
     protected:
          float          alienHealth;
          float          animationTimer;

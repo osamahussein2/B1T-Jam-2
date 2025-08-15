@@ -26,9 +26,14 @@ class PlantTower : public Entity
         bool GetGoingToPlacePlant() const { return goingToPlacePlant; }
 
         Vector2 GetPosition() const { return { destEntity.x, destEntity.y }; }
+        Vector2 GetCenter() const { return { destEntity.x + (destEntity.w / 2.0f),
+            destEntity.y + (destEntity.h / 2.0f) }; }
 
         float GetAnimationTimer() const { return animationTimer; }
         bool GetIsDead() const { return isDead; }
+
+        float GetShootingTime() const { return shootingTime; }
+        void ResetShootingTime() { shootingTime = 0.0f; }
 
 protected:
     float          animationTimer;
@@ -37,6 +42,8 @@ protected:
 
     bool isDead;
     bool hasTextureChanged;
+
+    float shootingTime;
 
     private:
         PlantType   m_PlantID;

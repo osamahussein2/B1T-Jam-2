@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef SHOVEL_H
 #define SHOVEL_H
 

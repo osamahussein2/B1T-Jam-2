@@ -49,6 +49,7 @@ private:
 	static void IterateAliens();
 	static void IteratePlacingPlants();
 	static void IteratePlants();
+	static void IterateBullets();
 };
 
 #endif
