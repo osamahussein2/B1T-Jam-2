@@ -24,6 +24,8 @@ class PlantTower : public Entity
         void PlacePlant() { if (goingToPlacePlant != false) goingToPlacePlant = false; }
         bool GetGoingToPlacePlant() const { return goingToPlacePlant; }
 
+        Vector2 GetPosition() const { return { destEntity.x, destEntity.y }; }
+
 protected:
     float          animationTimer;
 
