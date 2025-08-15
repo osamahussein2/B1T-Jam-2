@@ -5,7 +5,9 @@
 #include <iostream>
 
 Alien::Alien()
-	: animationTimer(0.0f)
+	: animationTimer(0.0f), isDead(false), hasTextureChanged(false), deathTimer(0.0f), 
+	position(Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 9.375f), direction(), velocity(0.0f),
+	currentDirectionIndex(0)
 {
 }
 
@@ -22,6 +24,10 @@ void Alien::render()
 }
 
 void Alien::moveEntity(Vector2 position)
+{
+}
+
+void Alien::moveEntity(Vector2 moveToPosition, Vector2 startingPosition)
 {
 }
 

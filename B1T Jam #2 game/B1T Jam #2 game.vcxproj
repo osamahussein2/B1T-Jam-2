@@ -161,6 +161,7 @@
     <ClCompile Include="EggplantTrap.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="external\miniaudio\miniaudio.c" />
     <ClCompile Include="FadingText.cpp" />
     <ClCompile Include="GoliathWalker.cpp" />
     <ClCompile Include="GruntZogling.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="ScoringSystem.cpp" />
     <ClCompile Include="ScrollingCredits.cpp" />
     <ClCompile Include="ShieldDrone.cpp" />
+    <ClCompile Include="Shovel.cpp" />
     <ClCompile Include="StaticObject.cpp" />
     <ClCompile Include="StunSporeling.cpp" />
     <ClCompile Include="SunflowerShooter.cpp" />
@@ -203,6 +205,7 @@
     <ClInclude Include="ScoringSystem.h" />
     <ClInclude Include="ScrollingCredits.h" />
     <ClInclude Include="ShieldDrone.h" />
+    <ClInclude Include="Shovel.h" />
     <ClInclude Include="StaticObject.h" />
     <ClInclude Include="StunSporeling.h" />
     <ClInclude Include="SunflowerShooter.h" />

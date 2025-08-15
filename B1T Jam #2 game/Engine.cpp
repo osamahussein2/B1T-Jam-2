@@ -13,6 +13,7 @@
 #include "AnimatedObject.h"
 #include "StaticObject.h"
 #include "GameLevel.h"
+#include "Shovel.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
@@ -36,6 +37,8 @@ std::vector<Item> itemsEntities;
 
 // Levels
 std::vector<GameLevel> gameLevels;
+
+Shovel shovel;
 
 Engine::Engine()
 {
@@ -132,6 +135,31 @@ void Engine::RunEngine()
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
 				IterateAliens();
+
+				shovel.update();
+
+				/*for (int i = 0; i < aliensEntities.size(); i++)
+				{
+					shovel.collision(aliensEntities[i].get()); // test shovel collision with aliens
+				}*/
+
+				for (auto it = aliensEntities.begin(); it != aliensEntities.end();)
+				{
+					Alien* alien = it->get();
+
+					// Destroy aliens for testing when shovel hovers on them
+					if (shovel.shouldDestroyEntity(alien))
+					{
+						alien->DestroyAlien();
+						it = aliensEntities.erase(it);
+					}
+					else
+					{
+						++it;
+					}
+				}
+
+				shovel.render();
 			}
 
 			Window::RenderEndFrame();
@@ -201,6 +229,8 @@ void Engine::RunEngine()
 	{
 		aliensEntities[i].get()->DestroyAlien();
 	}
+
+	shovel.DestroyShovel();
 
 	// Clear all entities
 	if (!aliensEntities.empty()) aliensEntities.clear();
@@ -323,6 +353,9 @@ void Engine::InitializeGameEntities()
 
 	itemsEntities.push_back(item1);
 	itemsEntities.push_back(item2);
+
+	// Shovel entity initialization
+	shovel.InitializeShovel({ Window::GetWindowWidth() / 1.2f, Window::GetWindowHeight() / 100.0f });
 
 #ifdef _DEBUG
 	std::cout << "Entities Initialized " << std::endl;
@@ -546,6 +579,11 @@ void Engine::UpdatePlayerCurrencyText()
 	}
 }
 
+void Engine::HasShovel()
+{
+	shovel.HandleShovel();
+}
+
 void Engine::CheckIfScrollingCreditsFinished()
 {
 	// Reset scrolling credits texts once they reach above the screen
@@ -596,6 +634,27 @@ void Engine::IterateAliens()
 		{
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
+			
+			switch (aliensEntities[i].get()->GetCurrentDirectionIndex())
+			{
+			case 0:
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f }, 
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 9.375f });
+
+				break;
+
+			case 1:
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 2.622f, Window::GetWindowHeight() / 1.875f }, 
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f });
+
+				break;
+
+			default:
+				break;
+			}
+
 			aliensEntities[i].get()->render();
 		}
 	}
@@ -605,8 +664,9 @@ void Engine::IterateAliens()
 	{
 		Alien* alien = it->get();
 
-		// Destroy alien when health reaches 0 and delete them from the vector
-		if (alien->GetAlienHealth() <= 0.0f)
+		// Destroy grunt zogling alien when they're dead and delete them from the vector
+		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling && 
+			alien->getDeathAnimationTime() >= 8.0f)
 		{
 			alien->DestroyAlien();
 			it = aliensEntities.erase(it);

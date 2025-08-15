@@ -378,6 +378,9 @@ void Player::HandleAimAction(SDL_Event& event)
 
 	if (b.button == SDL_BUTTON_LEFT)
 	{		
+#ifdef _DEBUG
+		std::cout << "moving cursor x:" << mouseX << " y: " << mouseY << std::endl;
+#endif
 		#ifdef _DEBUG
 			std::cout << "left mouse btn pressed" << std::endl;
 		#endif
@@ -388,6 +391,8 @@ void Player::HandleAimAction(SDL_Event& event)
 
 		// Handle some mouse pressed events
 		Engine::HandleMousePressedEvents();
+
+		Engine::HasShovel();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)

@@ -96,6 +96,12 @@
     <ClCompile Include="PeaVineSniper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Shovel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="external\miniaudio\miniaudio.c">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -186,6 +192,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PeaVineSniper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shovel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
