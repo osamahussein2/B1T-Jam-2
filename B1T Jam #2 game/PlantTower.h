@@ -16,6 +16,7 @@ class PlantTower : public Entity
         void                   render() override;
         void                   moveEntity(Vector2 position) override;
         void                   collision(Entity* other) override;
+        virtual bool                   checkCollision(Entity* other);
 
         void DestroyPlantTower();
 
@@ -26,10 +27,16 @@ class PlantTower : public Entity
 
         Vector2 GetPosition() const { return { destEntity.x, destEntity.y }; }
 
+        float GetAnimationTimer() const { return animationTimer; }
+        bool GetIsDead() const { return isDead; }
+
 protected:
     float          animationTimer;
 
     bool goingToPlacePlant;
+
+    bool isDead;
+    bool hasTextureChanged;
 
     private:
         PlantType   m_PlantID;

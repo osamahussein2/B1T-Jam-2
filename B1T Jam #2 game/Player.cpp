@@ -388,10 +388,6 @@ void Player::HandleAimAction(SDL_Event& event)
 #ifdef _DEBUG
 		std::cout << "left mouse btn pressed" << std::endl;
 #endif
-		// test case of scoring player before killing an enemy	
-		if (Window::gameState == GameState::Playing) scoring.scorePlayer(AlienType::GruntZogling);
-
-		scoreChanged = true; // Make sure to set score changed to true wherever the score player function is
 
 		// Handle some mouse pressed events
 		Engine::HandleMousePressedEvents();

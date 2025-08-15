@@ -26,6 +26,7 @@ class Alien : public Entity
         // Death logic
         float getDeathAnimationTime() const { return deathTimer; }
         bool getIsDead() const { return isDead; }
+        void setIsDead(bool isDead_) { isDead = isDead_; }
 
         virtual AlienType           getAlienID() const;
 

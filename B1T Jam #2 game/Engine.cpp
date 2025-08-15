@@ -640,7 +640,6 @@ void Engine::InstantiateTomatoCannon()
 			{
 				PlantTower* plant = it->get();
 
-				// Destroy grunt zogling alien when they're dead and delete them from the vector
 				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
 				{
 					plant->DestroyPlantTower();
@@ -840,8 +839,19 @@ void Engine::IterateAliens()
 	{
 		Alien* alien = it->get();
 
+		for (int i = 0; i < plantsEntities.size(); i++)
+		{
+			// Check if alien is near the tomato cannon once it explodes, then trigger death logic if it's true
+			if (plantsEntities[i].get()->checkCollision(alien) &&
+				plantsEntities[i].get()->getEntityID() == PlantType::TomatoCannon &&
+				plantsEntities[i].get()->GetIsDead())
+			{
+				alien->setIsDead(true);
+			}
+		}
+
 		// Destroy grunt zogling alien when they're dead and delete them from the vector
-		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling && 
+		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
 			alien->getDeathAnimationTime() >= 8.0f)
 		{
 			alien->DestroyAlien();
@@ -875,6 +885,23 @@ void Engine::IteratePlants()
 		// Update and render all plant entities
 		plantsEntities[i].get()->update();
 		plantsEntities[i].get()->render();
+	}
+
+	// Iterate through the plant elements
+	for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+	{
+		PlantTower* plant = it->get();
+
+		// Destroy tomato cannon after it's done exploding and delete them from the vector
+		if (plant->GetIsDead() && plant->getEntityID() == PlantType::TomatoCannon && plant->GetAnimationTimer() >= 10.0f)
+		{
+			plant->DestroyPlantTower();
+			it = plantsEntities.erase(it);
+		}
+		else
+		{
+			++it;
+		}
 	}
 }
 

@@ -68,6 +68,13 @@ void GruntZogling::update()
 	{
 		if (!hasTextureChanged)
 		{
+			// Also increase the player's score for defeating grunt zogling
+			Player::getScoringSystem().scorePlayer(AlienType::GruntZogling);
+
+			// Make sure to set score changed to true wherever the score player function is
+			Player::scoreChanged = true;
+
+			// Change texture image
 			entitySurface = IMG_Load("Textures/enemy_dyingx.png");
 
 			if (!entitySurface) std::cout << "Can't load " << SDL_GetError() << std::endl;
@@ -96,8 +103,8 @@ void GruntZogling::update()
 			srcEntity.h = entityTexture->h / static_cast<float>(1);
 
 			// Draw grunt zogling somewhere on window
-			destEntity.x = direction.x;
-			destEntity.y = direction.y;
+			destEntity.x += 0.0f;
+			destEntity.y += 0.0f;
 
 			destEntity.w = (srcEntity.w * 0.5f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 			destEntity.h = (srcEntity.h * 0.5f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);

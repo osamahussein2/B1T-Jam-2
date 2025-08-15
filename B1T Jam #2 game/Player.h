@@ -58,6 +58,8 @@ public:
 		if (toggleMouseInput != toggleMouseInput_) toggleMouseInput = toggleMouseInput_; 
 	}
 
+	static bool scoreChanged;
+
 private:
 	Player();
 
@@ -105,8 +107,6 @@ private:
 
 	static float mouseX;
 	static float mouseY;
-
-	static bool scoreChanged;
 
 	static ScoringSystem scoring;
 

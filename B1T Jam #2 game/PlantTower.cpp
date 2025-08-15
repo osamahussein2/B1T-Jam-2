@@ -1,7 +1,7 @@
 #include "PlantTower.h"
 
 PlantTower::PlantTower(PlantType type)
-: m_PlantID(type), goingToPlacePlant(true)
+: m_PlantID(type), goingToPlacePlant(true), isDead(false), hasTextureChanged(false)
 {
 }
 
@@ -23,6 +23,11 @@ void PlantTower::moveEntity(Vector2 position)
 
 void PlantTower::collision(Entity* other)
 {
+}
+
+bool PlantTower::checkCollision(Entity* other)
+{
+	return false;
 }
 
 void PlantTower::DestroyPlantTower()
