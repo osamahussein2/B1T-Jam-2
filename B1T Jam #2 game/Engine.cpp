@@ -632,7 +632,26 @@ void Engine::InstantiateTomatoCannon()
 	
 	if (!Player::GetToggleMouseInput())
 	{
-		for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->PlacePlant();
+		for (int i = 0; i < plantsEntities.size(); i++)
+		{
+			plantsEntities[i].get()->PlacePlant();
+
+			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			{
+				PlantTower* plant = it->get();
+
+				// Destroy grunt zogling alien when they're dead and delete them from the vector
+				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+				{
+					plant->DestroyPlantTower();
+					it = plantsEntities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
+		}
 	}
 }
 
@@ -652,6 +671,21 @@ void Engine::InstantiateSunflowerShooter()
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
 			plantsEntities[i].get()->PlacePlant();
+
+			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			{
+				PlantTower* plant = it->get();
+
+				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+				{
+					plant->DestroyPlantTower();
+					it = plantsEntities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
 		}
 	}
 }
@@ -672,6 +706,21 @@ void Engine::InstantiateEggplantTrap()
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
 			plantsEntities[i].get()->PlacePlant();
+
+			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			{
+				PlantTower* plant = it->get();
+
+				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+				{
+					plant->DestroyPlantTower();
+					it = plantsEntities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
 		}
 	}
 }
@@ -692,6 +741,21 @@ void Engine::InstantiateCornMortar()
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
 			plantsEntities[i].get()->PlacePlant();
+
+			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			{
+				PlantTower* plant = it->get();
+
+				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+				{
+					plant->DestroyPlantTower();
+					it = plantsEntities.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+			}
 		}
 	}
 }
