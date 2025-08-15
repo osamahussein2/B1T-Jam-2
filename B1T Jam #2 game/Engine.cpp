@@ -127,7 +127,7 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 			//Player::RenderPlayer();
-			// gameLevels[0].DrawLevel();
+			gameLevels[0].DrawLevel();
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{

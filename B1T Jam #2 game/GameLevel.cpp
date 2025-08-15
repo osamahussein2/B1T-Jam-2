@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <cstdlib>
+#include <iostream>
 
 
 GameLevel::GameLevel()
@@ -51,20 +52,26 @@ void GameLevel::LoadLevel(const char* file, unsigned int levelWidth, unsigned in
 	std::ifstream fstream(file);
 	std::vector<std::vector<unsigned int>> tileData;
 
-	if(fstream)
+	if (!fstream)
 	{
-		while(std::getline(fstream, line)) // read each line from level file
-		{
-			std::istringstream sstream(line);
-			std::vector<unsigned int> row;
-			while (sstream >> tileCode) // read each word separated by spaces
-				row.push_back(tileCode);
-			tileData.push_back(row);
-		}
-
-		if (tileData.size() > 0)
-			this->BuildLevel(tileData, levelWidth, levelHeight);
+		std::cout << "Error loading level file" << std::endl;
+		return;
 	}
+
+
+	while(std::getline(fstream, line)) // read each line from level file
+	{
+		std::istringstream sstream(line);
+		std::vector<unsigned int> row;
+		while (sstream >> tileCode) // read each word separated by spaces
+			row.push_back(tileCode);
+		tileData.push_back(row);
+	}
+
+	if (tileData.size() > 0)
+		this->BuildLevel(tileData, levelWidth, levelHeight);
+
+	std::cout << "Level file was loaded succesfully" << std::endl;
 }
 
 
