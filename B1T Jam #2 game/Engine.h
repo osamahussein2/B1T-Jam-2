@@ -30,6 +30,7 @@ private:
 	static void InitializeAnimatedObjects();
 	static void InitializePlayerHUD();
 	static void InitializeShopMenu();
+	static void InitializeGameLevels();
 
 	static void IsMouseHovered();
 

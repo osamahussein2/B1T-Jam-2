@@ -12,6 +12,7 @@
 #include "Item.h"
 #include "AnimatedObject.h"
 #include "StaticObject.h"
+#include "GameLevel.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
@@ -30,9 +31,11 @@ std::vector<PlantTower> plantsEntities;
 // Aliens
 std::vector<std::unique_ptr<Alien>> aliensEntities;
 
-
 // Items
 std::vector<Item> itemsEntities;
+
+// Levels
+std::vector<GameLevel> gameLevels;
 
 Engine::Engine()
 {
@@ -53,6 +56,7 @@ void Engine::RunEngine()
 	InitializeAnimatedObjects();
 	InitializePlayerHUD();
 	InitializeShopMenu();
+	InitializeGameLevels();
 
 	while (Window::GetIsRunning())
 	{
@@ -120,6 +124,7 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 			//Player::RenderPlayer();
+			// gameLevels[0].DrawLevel();
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
@@ -375,6 +380,13 @@ void Engine::InitializeShopMenu()
 	// Shop menu UI
 	staticObjects["FlowerShopUI"].InitializeStaticObject("Textures/Flower_ShopX.png",
 		{ Window::GetWindowWidth() / 8.0f, Window::GetWindowHeight() / 600.0f }, { 3.5f, 3.0f });
+}
+
+void Engine::InitializeGameLevels()
+{
+	GameLevel level1;
+	level1.LoadLevel("Levels/one.txt", 800, 600 / 2);
+	gameLevels.push_back(level1);
 }
 
 void Engine::IsMouseHovered()
