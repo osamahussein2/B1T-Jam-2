@@ -15,6 +15,8 @@ GruntZogling::GruntZogling()
 
 	// Set alien's health to be whatever at the start and increased after progressing past waves
 	alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
+
+	velocity = 0.0032f;
 }
 
 GruntZogling::~GruntZogling()
@@ -29,10 +31,10 @@ void GruntZogling::update()
 		//if (alienHealth >= -0.1f) alienHealth -= Window::GetDeltaTime();
 
 		// Prevents the x frame animation from animating too fast
-		animationTimer += Window::GetDeltaTime() * 0.1f;
+		//animationTimer += Window::GetDeltaTime() * 0.1f;
 
 		// Set the source rectangle to match the sprite dimensions for animation
-		srcEntity.x = (entityTexture->w / 8) * (static_cast<int>(animationTimer) % 8);
+		srcEntity.x = (entityTexture->w / 8) * frameX;
 
 		srcEntity.y = (entityTexture->h / 1) * (0 % 1);
 
@@ -40,8 +42,16 @@ void GruntZogling::update()
 		srcEntity.h = entityTexture->h / static_cast<float>(1);
 
 		// Draw grunt zogling somewhere on window
-		destEntity.x = 100.0f;
-		destEntity.y = 100.0f;
+		destEntity.x = position.x + direction.x;
+		destEntity.y = position.y + direction.y;
+
+		//if (direction.x <= 0.1f && direction.y <= 0.1f && frameX != 0) frameX = 0;
+
+		if (direction.y > 0.1f && frameX != 0) frameX = 0; // Moving down
+		else if (direction.x > 0.1f && frameX != 2) frameX = 2; // Moving right
+		else if (direction.x > 0.1f && frameX != 3) frameX = 3; // Moving right
+		else if (direction.x < -0.1f && frameX != 6) frameX = 6; // Moving left
+		else if (direction.x < -0.1f && frameX != 7) frameX = 7; // Moving left
 
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
@@ -86,8 +96,8 @@ void GruntZogling::update()
 			srcEntity.h = entityTexture->h / static_cast<float>(1);
 
 			// Draw grunt zogling somewhere on window
-			destEntity.x = 100.0f;
-			destEntity.y = 100.0f;
+			destEntity.x = direction.x;
+			destEntity.y = direction.y;
 
 			destEntity.w = (srcEntity.w * 0.5f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 			destEntity.h = (srcEntity.h * 0.5f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
@@ -106,6 +116,28 @@ void GruntZogling::render()
 void GruntZogling::moveEntity(Vector2 position)
 {
 	// Move grunt zogling
+}
+
+void GruntZogling::moveEntity(Vector2 moveToPosition, Vector2 startingPosition)
+{
+	// Move grunt zogling
+	if (!isDead)
+	{
+		float dx = moveToPosition.x - destEntity.x;
+		float dy = moveToPosition.y - destEntity.y;
+		float distance = sqrtf((dx * dx) + (dy * dy));
+
+		if (distance <= 0.3f)
+		{
+			currentDirectionIndex += 1;
+		}
+
+		else
+		{
+			direction.x += (moveToPosition.x - startingPosition.x) * velocity * Window::GetDeltaTime();
+			direction.y += (moveToPosition.y - startingPosition.y) * velocity * Window::GetDeltaTime();
+		}
+	}
 }
 
 void GruntZogling::collision(Entity* other)

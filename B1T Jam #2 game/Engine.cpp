@@ -623,6 +623,27 @@ void Engine::IterateAliens()
 		{
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
+			
+			switch (aliensEntities[i].get()->GetCurrentDirectionIndex())
+			{
+			case 0:
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f }, 
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 9.375f });
+
+				break;
+
+			case 1:
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 2.622f, Window::GetWindowHeight() / 1.875f }, 
+					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f });
+
+				break;
+
+			default:
+				break;
+			}
+
 			aliensEntities[i].get()->render();
 		}
 	}
