@@ -102,6 +102,12 @@
     <ClCompile Include="external\miniaudio\miniaudio.c">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlacePlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameLevel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vector2.h">
@@ -195,6 +201,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Shovel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlacePlant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

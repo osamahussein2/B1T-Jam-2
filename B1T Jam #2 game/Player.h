@@ -52,6 +52,12 @@ public:
 
 	static unsigned int flowerUpgrade;
 
+	static bool GetToggleMouseInput() { return toggleMouseInput; }
+	static void SetToggleMouseInput(bool toggleMouseInput_) 
+	{ 
+		if (toggleMouseInput != toggleMouseInput_) toggleMouseInput = toggleMouseInput_; 
+	}
+
 private:
 	Player();
 
@@ -109,6 +115,8 @@ private:
 	static bool canSaveProgress;
 
 	static unsigned int playerCurrency;
+
+	static bool toggleMouseInput;
 };
 
 #endif

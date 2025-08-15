@@ -1,7 +1,7 @@
 #include "PlantTower.h"
 
 PlantTower::PlantTower(PlantType type)
-: m_PlantID(type)
+: m_PlantID(type), goingToPlacePlant(true)
 {
 }
 

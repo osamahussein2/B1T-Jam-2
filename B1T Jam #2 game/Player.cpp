@@ -49,6 +49,8 @@ unsigned int Player::playerCurrency = 0;
 
 unsigned int Player::flowerUpgrade = 0;
 
+bool Player::toggleMouseInput = false;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -377,13 +379,15 @@ void Player::HandleAimAction(SDL_Event& event)
 	SDL_MouseButtonEvent b = event.button;
 
 	if (b.button == SDL_BUTTON_LEFT)
-	{		
+	{
 #ifdef _DEBUG
-		std::cout << "moving cursor x:" << mouseX << " y: " << mouseY << std::endl;
+		std::cout << "moving cursor x:" << Window::GetWindowWidth() / mouseX << " y: " <<
+			Window::GetWindowHeight() / mouseY << std::endl;
 #endif
-		#ifdef _DEBUG
-			std::cout << "left mouse btn pressed" << std::endl;
-		#endif
+
+#ifdef _DEBUG
+		std::cout << "left mouse btn pressed" << std::endl;
+#endif
 		// test case of scoring player before killing an enemy	
 		if (Window::gameState == GameState::Playing) scoring.scorePlayer(AlienType::GruntZogling);
 
@@ -393,6 +397,11 @@ void Player::HandleAimAction(SDL_Event& event)
 		Engine::HandleMousePressedEvents();
 
 		Engine::HasShovel();
+
+		Engine::InstantiateTomatoCannon();
+		Engine::InstantiateSunflowerShooter();
+		Engine::InstantiateEggplantTrap();
+		Engine::InstantiateCornMortar();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)

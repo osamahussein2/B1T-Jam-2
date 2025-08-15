@@ -163,11 +163,13 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="external\miniaudio\miniaudio.c" />
     <ClCompile Include="FadingText.cpp" />
+    <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="GoliathWalker.cpp" />
     <ClCompile Include="GruntZogling.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PeaVineSniper.cpp" />
+    <ClCompile Include="PlacePlant.cpp" />
     <ClCompile Include="PlantTower.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ScoringSystem.cpp" />
@@ -194,11 +196,13 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="FadingText.h" />
+    <ClInclude Include="GameLevel.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="GoliathWalker.h" />
     <ClInclude Include="GruntZogling.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="PeaVineSniper.h" />
+    <ClInclude Include="PlacePlant.h" />
     <ClInclude Include="PlantTower.h" />
     <ClInclude Include="PlantType.h" />
     <ClInclude Include="Player.h" />

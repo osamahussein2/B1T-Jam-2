@@ -21,8 +21,13 @@ class PlantTower : public Entity
 
         PlantType          getEntityID() const;
 
+        void PlacePlant() { if (goingToPlacePlant != false) goingToPlacePlant = false; }
+        bool GetGoingToPlacePlant() const { return goingToPlacePlant; }
+
 protected:
     float          animationTimer;
+
+    bool goingToPlacePlant;
 
     private:
         PlantType   m_PlantID;

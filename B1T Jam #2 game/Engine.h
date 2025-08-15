@@ -23,6 +23,11 @@ public:
 
 	static void HasShovel();
 
+	static void InstantiateTomatoCannon();
+	static void InstantiateSunflowerShooter();
+	static void InstantiateEggplantTrap();
+	static void InstantiateCornMortar();
+
 private:
 	Engine();
 
@@ -33,6 +38,7 @@ private:
 	static void InitializePlayerHUD();
 	static void InitializeShopMenu();
 	static void InitializeGameLevels();
+	static void InitializePlacingPlants();
 
 	static void IsMouseHovered();
 
@@ -41,6 +47,8 @@ private:
 	static void SwitchFlowerUpgrades();
 
 	static void IterateAliens();
+	static void IteratePlacingPlants();
+	static void IteratePlants();
 };
 
 #endif

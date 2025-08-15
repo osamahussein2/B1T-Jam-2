@@ -1,11 +1,12 @@
 #include "SunflowerShooter.h"
 #include "Window.h"
 #include <iostream>
+#include "Player.h"
 
 SunflowerShooter::SunflowerShooter() : PlantTower(PlantType::SunflowerShooter)
 {
 	// Load sunflower shooter
-	entitySurface = IMG_Load("Textures/");
+	entitySurface = IMG_Load("Textures/Sunflower1.png");
 
 	if (!entitySurface) std::cout << "Can't load " << SDL_GetError();
 
@@ -21,23 +22,35 @@ void SunflowerShooter::update()
 {
 	// Update sunflower shooter
 
-	// Prevents the x frame animation from animating too fast
-	animationTimer += Window::GetDeltaTime() * 0.1f;
+	if (goingToPlacePlant)
+	{
+		// Set the source rectangle to match the sprite dimensions for animation
+		srcEntity.x = 0;
+		srcEntity.y = 0;
 
-	// Set the source rectangle to match the sprite dimensions for animation
-	srcEntity.x = (entityTexture->w / 8) * (static_cast<int>(animationTimer) % 8);
+		srcEntity.w = entityTexture->w;
+		srcEntity.h = entityTexture->h;
 
-	srcEntity.y = (entityTexture->h / 1) * (0 % 1);
+		// Draw shield drone somewhere on window
+		destEntity.x = Player::GetMouseX() - (destEntity.w / 2.0f);
+		destEntity.y = Player::GetMouseY() - (destEntity.h / 2.0f);
 
-	srcEntity.w = entityTexture->w / static_cast<float>(8);
-	srcEntity.h = entityTexture->h / static_cast<float>(1);
+		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+	}
 
-	// Draw shield drone somewhere on window
-	destEntity.x = 200.0f;
-	destEntity.y = 200.0f;
+	else
+	{
+		// Set the source rectangle to match the sprite dimensions for animation
+		srcEntity.x = 0;
+		srcEntity.y = 0;
 
-	destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-	destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+		srcEntity.w = entityTexture->w;
+		srcEntity.h = entityTexture->h;
+
+		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+	}
 }
 
 void SunflowerShooter::render()

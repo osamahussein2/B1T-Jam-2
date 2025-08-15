@@ -14,6 +14,11 @@
 #include "StaticObject.h"
 #include "GameLevel.h"
 #include "Shovel.h"
+#include "PlacePlant.h"
+#include "TomatoCannon.h"
+#include "SunflowerShooter.h"
+#include "EggplantTrap.h"
+#include "CornMortar.h"
 
 #include <SDL3_ttf/SDL_ttf.h>
 #include <map>
@@ -25,9 +30,10 @@ std::map<std::string, ScrollingCredits> scrollingCreditsTexts;
 std::map<std::string, AnimatedObject> animatedObjects;
 std::map<std::string, Text> playerHUD;
 std::map<std::string, StaticObject> staticObjects;
+std::map<std::string, PlacePlant> placePlants;
 
 // Plants
-std::vector<PlantTower> plantsEntities;
+std::vector<std::unique_ptr<PlantTower>> plantsEntities;
 
 // Aliens
 std::vector<std::unique_ptr<Alien>> aliensEntities;
@@ -60,6 +66,7 @@ void Engine::RunEngine()
 	InitializePlayerHUD();
 	InitializeShopMenu();
 	InitializeGameLevels();
+	InitializePlacingPlants();
 
 	while (Window::GetIsRunning())
 	{
@@ -76,6 +83,13 @@ void Engine::RunEngine()
 			gameTexts["mainMenuQuit"].RenderText();
 
 			Window::RenderEndFrame();
+
+			// Make sure there are no aliens after leaving the game
+			if (!plantsEntities.empty())
+			{
+				for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
+				plantsEntities.clear();
+			}
 			break;
 
 		case GameState::CreditsMenu:
@@ -127,7 +141,7 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 			//Player::RenderPlayer();
-			gameLevels[0].DrawLevel();
+			// gameLevels[0].DrawLevel();
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
@@ -138,20 +152,23 @@ void Engine::RunEngine()
 
 				shovel.update();
 
-				/*for (int i = 0; i < aliensEntities.size(); i++)
+				for (int i = 0; i < plantsEntities.size(); i++)
 				{
-					shovel.collision(aliensEntities[i].get()); // test shovel collision with aliens
-				}*/
-
-				for (auto it = aliensEntities.begin(); it != aliensEntities.end();)
-				{
-					Alien* alien = it->get();
-
-					// Destroy aliens for testing when shovel hovers on them
-					if (shovel.shouldDestroyEntity(alien))
+					if (!plantsEntities[i].get()->GetGoingToPlacePlant())
 					{
-						alien->DestroyAlien();
-						it = aliensEntities.erase(it);
+						shovel.collision(plantsEntities[i].get()); // test shovel collision with aliens
+					}
+				}
+
+				for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+				{
+					PlantTower* plant = it->get();
+
+					// Destroy plants for testing when shovel hovers on them
+					if (shovel.shouldDestroyEntity(plant))
+					{
+						plant->DestroyPlantTower();
+						it = plantsEntities.erase(it);
 					}
 					else
 					{
@@ -160,6 +177,9 @@ void Engine::RunEngine()
 				}
 
 				shovel.render();
+
+				IteratePlacingPlants();
+				IteratePlants();
 			}
 
 			Window::RenderEndFrame();
@@ -231,6 +251,12 @@ void Engine::RunEngine()
 	}
 
 	shovel.DestroyShovel();
+
+	for (std::pair<std::string, PlacePlant> placePlantMap : placePlants)
+	{
+		placePlantMap.second.DestroyPlacingPlant();
+		placePlantMap.first.clear();
+	}
 
 	// Clear all entities
 	if (!aliensEntities.empty()) aliensEntities.clear();
@@ -330,9 +356,6 @@ void Engine::InitializeScrollingCreditsTexts()
 
 void Engine::InitializeGameEntities()
 {
-	PlantTower plant1(PlantType::TomatoCannon);
-	PlantTower plant2(PlantType::SunflowerShooter);
-
 	GruntZogling alien1;
     ShieldDrone alien2;
     BigZogling alien3;
@@ -341,9 +364,6 @@ void Engine::InitializeGameEntities()
 
 	Item item1(ItemType::Seeds);
 	Item item2(ItemType::Fertilizer);
-
-	plantsEntities.push_back(plant1);
-	plantsEntities.push_back(plant2);
 
 	aliensEntities.push_back(std::make_unique<GruntZogling>());
 	aliensEntities.push_back(std::make_unique<ShieldDrone>());
@@ -360,10 +380,10 @@ void Engine::InitializeGameEntities()
 #ifdef _DEBUG
 	std::cout << "Entities Initialized " << std::endl;
 
-	if (PlantType::TomatoCannon == plant1.getEntityID())
+	/*if (PlantType::TomatoCannon == plant1.getEntityID())
 	{
 		std::cout << "This plant is a Tomato cannon!: " << std::endl;
-	}
+	}*/
 
 	if (AlienType::GruntZogling == alien1.getAlienID())
 	{
@@ -420,6 +440,21 @@ void Engine::InitializeGameLevels()
 	GameLevel level1;
 	level1.LoadLevel("Levels/one.txt", 800, 600 / 2);
 	gameLevels.push_back(level1);
+}
+
+void Engine::InitializePlacingPlants()
+{
+	placePlants["PlaceTomato"].InitializePlacingPlant("Textures/Plant_Tomato.png",
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 4.545f });
+
+	placePlants["PlaceSunflower"].InitializePlacingPlant("Textures/Plant_Sunflower.png",
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 2.575f });
+
+	placePlants["PlaceEggplant"].InitializePlacingPlant("Textures/Plant_Eggplant.png",
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.66f });
+
+	placePlants["PlaceCornMortar"].InitializePlacingPlant("Textures/Plant_Corn_Mortar.png",
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.24f });
 }
 
 void Engine::IsMouseHovered()
@@ -584,6 +619,83 @@ void Engine::HasShovel()
 	shovel.HandleShovel();
 }
 
+void Engine::InstantiateTomatoCannon()
+{
+	placePlants["PlaceTomato"].HandlePlacingPlant();
+
+	if (placePlants["PlaceTomato"].GetPickedUpPlacingPlant())
+	{
+		plantsEntities.push_back(std::make_unique<TomatoCannon>());
+
+		std::cout << plantsEntities.size() << std::endl;
+	}
+	
+	if (!Player::GetToggleMouseInput())
+	{
+		for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->PlacePlant();
+	}
+}
+
+void Engine::InstantiateSunflowerShooter()
+{
+	placePlants["PlaceSunflower"].HandlePlacingPlant();
+
+	if (placePlants["PlaceSunflower"].GetPickedUpPlacingPlant())
+	{
+		plantsEntities.push_back(std::make_unique<SunflowerShooter>());
+
+		std::cout << plantsEntities.size() << std::endl;
+	}
+
+	else if (!Player::GetToggleMouseInput())
+	{
+		for (int i = 0; i < plantsEntities.size(); i++)
+		{
+			plantsEntities[i].get()->PlacePlant();
+		}
+	}
+}
+
+void Engine::InstantiateEggplantTrap()
+{
+	placePlants["PlaceEggplant"].HandlePlacingPlant();
+
+	if (placePlants["PlaceEggplant"].GetPickedUpPlacingPlant())
+	{
+		plantsEntities.push_back(std::make_unique<EggplantTrap>());
+
+		std::cout << plantsEntities.size() << std::endl;
+	}
+
+	else if (!Player::GetToggleMouseInput())
+	{
+		for (int i = 0; i < plantsEntities.size(); i++)
+		{
+			plantsEntities[i].get()->PlacePlant();
+		}
+	}
+}
+
+void Engine::InstantiateCornMortar()
+{
+	placePlants["PlaceCornMortar"].HandlePlacingPlant();
+
+	if (placePlants["PlaceCornMortar"].GetPickedUpPlacingPlant())
+	{
+		plantsEntities.push_back(std::make_unique<CornMortar>());
+
+		std::cout << plantsEntities.size() << std::endl;
+	}
+
+	else if (!Player::GetToggleMouseInput())
+	{
+		for (int i = 0; i < plantsEntities.size(); i++)
+		{
+			plantsEntities[i].get()->PlacePlant();
+		}
+	}
+}
+
 void Engine::CheckIfScrollingCreditsFinished()
 {
 	// Reset scrolling credits texts once they reach above the screen
@@ -675,6 +787,30 @@ void Engine::IterateAliens()
 		{
 			++it;
 		}
+	}
+}
+
+void Engine::IteratePlacingPlants()
+{
+	for (std::pair<std::string, PlacePlant> placePlantMap : placePlants)
+	{
+		placePlantMap.second.render();
+	}
+
+	/*for (int i = 0; i < placePlants.size(); i++)
+	{
+		placePlants.second.collision(aliensEntities[i].get()); // test shovel collision with aliens
+	}*/
+}
+
+void Engine::IteratePlants()
+{
+	// Loop through all the plant entities
+	for (int i = 0; i < plantsEntities.size(); i++)
+	{
+		// Update and render all plant entities
+		plantsEntities[i].get()->update();
+		plantsEntities[i].get()->render();
 	}
 }
 
