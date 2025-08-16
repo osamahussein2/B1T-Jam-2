@@ -7,6 +7,7 @@
 #include <SDL3/SDL.h>
 
 #include <vector>
+#include "Entity.h"
 
 class GameLevel
 {
@@ -25,6 +26,8 @@ class GameLevel
          bool IsLevelLoaded();
 
          std::vector<Tile> GetTilesArray() const;
+
+         bool TileCollision(Entity* other, int tileNumber_);
 
 
     private:

@@ -25,6 +25,9 @@ public:
 
 	Vector2 GetTilePosition() const;
 
+	SDL_FRect GetTileDimensions() const { return destTile; }
+	Vector2 GetTileCenter() const { return { destTile.x + (destTile.w / 2.0f), destTile.y + (destTile.h / 2.0f) }; }
+
 private:
 	SDL_Texture* tileTexture;
 	

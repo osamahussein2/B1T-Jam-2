@@ -106,8 +106,24 @@ bool GameLevel::IsLevelLoaded()
 	return false;
 }
 
-
 std::vector<Tile> GameLevel::GetTilesArray() const
 {
     return m_Tiles;
+}
+
+bool GameLevel::TileCollision(Entity* other, int tileNumber_)
+{
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        if (m_Tiles[i].GetTileDimensions().x + m_Tiles[i].GetTileDimensions().w >= other->destEntity.x &&
+            m_Tiles[i].GetTileDimensions().x <= other->destEntity.x + other->destEntity.w &&
+            m_Tiles[i].GetTileDimensions().y + m_Tiles[i].GetTileDimensions().h >= other->destEntity.y &&
+            m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
+            m_Tiles[i].GetTileID() == tileNumber_)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

@@ -703,31 +703,31 @@ void Engine::InstantiateTomatoCannon()
 	
 	if (!Player::GetToggleMouseInput())
 	{
-		for (int i = 0; i < plantsEntities.size(); i++)
+		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
 		{
-			plantsEntities[i].get()->PlacePlant();
+			PlantTower* plant = it->get();
 
-			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
+				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
+				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
 			{
-				PlantTower* plant = it->get();
+				plant->DestroyPlantTower();
+				it = plantsEntities.erase(it);
+			}
 
-				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+			else
+			{
+				if (!plant->GetSeedDecreased())
 				{
-					plant->DestroyPlantTower();
-					it = plantsEntities.erase(it);
-				}
-				else
-				{
-					if (!plant->GetSeedDecreased())
-					{
-						Player::currentSeedAmount -= 50;
-						Player::scoreChanged = true;
+					Player::currentSeedAmount -= 50;
+					Player::scoreChanged = true;
 
-						plant->SetSeedDecreased(true);
-					}
-
-					++it;
+					plant->SetSeedDecreased(true);
 				}
+
+				plant->PlacePlant();
+
+				++it;
 			}
 		}
 	}
@@ -746,31 +746,31 @@ void Engine::InstantiateSunflowerShooter()
 
 	else if (!Player::GetToggleMouseInput())
 	{
-		for (int i = 0; i < plantsEntities.size(); i++)
+		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
 		{
-			plantsEntities[i].get()->PlacePlant();
+			PlantTower* plant = it->get();
 
-			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
+				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
+				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
 			{
-				PlantTower* plant = it->get();
+				plant->DestroyPlantTower();
+				it = plantsEntities.erase(it);
+			}
 
-				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+			else
+			{
+				if (!plant->GetSeedDecreased())
 				{
-					plant->DestroyPlantTower();
-					it = plantsEntities.erase(it);
-				}
-				else
-				{
-					if (!plant->GetSeedDecreased())
-					{
-						Player::currentSeedAmount -= 30;
-						Player::scoreChanged = true;
+					Player::currentSeedAmount -= 30;
+					Player::scoreChanged = true;
 
-						plant->SetSeedDecreased(true);
-					}
-
-					++it;
+					plant->SetSeedDecreased(true);
 				}
+
+				plant->PlacePlant();
+
+				++it;
 			}
 		}
 	}
@@ -789,31 +789,31 @@ void Engine::InstantiateEggplantTrap()
 
 	else if (!Player::GetToggleMouseInput())
 	{
-		for (int i = 0; i < plantsEntities.size(); i++)
+		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
 		{
-			plantsEntities[i].get()->PlacePlant();
+			PlantTower* plant = it->get();
 
-			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
+				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
+				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
 			{
-				PlantTower* plant = it->get();
+				plant->DestroyPlantTower();
+				it = plantsEntities.erase(it);
+			}
 
-				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+			else
+			{
+				if (!plant->GetSeedDecreased())
 				{
-					plant->DestroyPlantTower();
-					it = plantsEntities.erase(it);
-				}
-				else
-				{
-					if (!plant->GetSeedDecreased())
-					{
-						Player::currentSeedAmount -= 25;
-						Player::scoreChanged = true;
+					Player::currentSeedAmount -= 25;
+					Player::scoreChanged = true;
 
-						plant->SetSeedDecreased(true);
-					}
-
-					++it;
+					plant->SetSeedDecreased(true);
 				}
+
+				plant->PlacePlant();
+
+				++it;
 			}
 		}
 	}
@@ -832,31 +832,31 @@ void Engine::InstantiateCornMortar()
 
 	else if (!Player::GetToggleMouseInput())
 	{
-		for (int i = 0; i < plantsEntities.size(); i++)
+		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
 		{
-			plantsEntities[i].get()->PlacePlant();
+			PlantTower* plant = it->get();
 
-			for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
+			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
+				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
+				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
 			{
-				PlantTower* plant = it->get();
+				plant->DestroyPlantTower();
+				it = plantsEntities.erase(it);
+			}
 
-				if (plant->GetPosition().x <= Window::GetWindowWidth() / 5.85f)
+			else
+			{
+				if (!plant->GetSeedDecreased())
 				{
-					plant->DestroyPlantTower();
-					it = plantsEntities.erase(it);
-				}
-				else
-				{
-					if (!plant->GetSeedDecreased())
-					{
-						Player::currentSeedAmount -= 90;
-						Player::scoreChanged = true;
+					Player::currentSeedAmount -= 90;
+					Player::scoreChanged = true;
 
-						plant->SetSeedDecreased(true);
-					}
-
-					++it;
+					plant->SetSeedDecreased(true);
 				}
+
+				plant->PlacePlant();
+
+				++it;
 			}
 		}
 	}

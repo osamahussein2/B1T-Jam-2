@@ -53,4 +53,3 @@ Vector2 Tile::GetTilePosition() const
 {
 	return Vector2 {destTile.x, destTile.y};
 }
-
