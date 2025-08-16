@@ -39,6 +39,7 @@ void SunflowerShooter::update()
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 
 		if (shootingTime != 0.0f) shootingTime = 0.0f;
+		if (seedDecreased != false) seedDecreased = false;
 	}
 
 	else

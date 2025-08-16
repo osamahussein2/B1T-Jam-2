@@ -37,6 +37,9 @@ class PlantTower : public Entity
         float GetShootingTime() const { return shootingTime; }
         void ResetShootingTime() { shootingTime = 0.0f; }
 
+        bool GetSeedDecreased() { return seedDecreased; }
+        void SetSeedDecreased(bool value_) { seedDecreased = value_; }
+
 protected:
     float          animationTimer;
 
@@ -46,6 +49,8 @@ protected:
     bool hasTextureChanged;
 
     float shootingTime;
+
+    bool seedDecreased;
 
     private:
         PlantType   m_PlantID;

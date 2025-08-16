@@ -39,6 +39,7 @@ void EggplantTrap::update()
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 
 		if (animationTimer != 0.0f) animationTimer = 0.0f;
+		if (seedDecreased != false) seedDecreased = false;
 	}
 
 	else

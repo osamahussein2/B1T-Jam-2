@@ -20,6 +20,7 @@ public:
 	static void UpdateCurrentLevelText();
 	static void UpdateCurrentWaveText();
 	static void UpdatePlayerCurrencyText();
+	static void UpdateSeedAmountText();
 
 	static void HasShovel();
 

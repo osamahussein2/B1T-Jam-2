@@ -60,6 +60,8 @@ public:
 
 	static bool scoreChanged;
 
+	static int currentSeedAmount;
+
 private:
 	Player();
 
