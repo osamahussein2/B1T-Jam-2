@@ -358,7 +358,8 @@ void Engine::InitializeGameTexts()
 
 	// Shop menu texts
 	gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-		{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+		{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) }, 
+		LIGHT_GREEN);
 }
 
 void Engine::InitializeScrollingCreditsTexts()
@@ -620,37 +621,43 @@ void Engine::UpdatePlayerCurrencyText()
 	if (Player::GetPlayerCurrency() < 10)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 
 	else if (Player::GetPlayerCurrency() >= 10 && Player::GetPlayerCurrency() < 100)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.08f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.08f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 
 	else if (Player::GetPlayerCurrency() >= 100 && Player::GetPlayerCurrency() < 1000)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.11f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.11f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 
 	else if (Player::GetPlayerCurrency() >= 1000 && Player::GetPlayerCurrency() < 10000)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.14f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.14f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 
 	else if (Player::GetPlayerCurrency() >= 10000 && Player::GetPlayerCurrency() < 100000)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.17f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.17f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 
 	else if (Player::GetPlayerCurrency() >= 100000 && Player::GetPlayerCurrency() < 1000000)
 	{
 		gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-			{ static_cast<float>(Window::GetWindowWidth() / 2.2f), static_cast<float>(Window::GetWindowHeight() / 1.2f) });
+			{ static_cast<float>(Window::GetWindowWidth() / 2.2f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
+			LIGHT_GREEN);
 	}
 }
 

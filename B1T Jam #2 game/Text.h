@@ -9,6 +9,7 @@
 #include <string>
 
 #include "Vector2.h"
+#include "Colors.h"
 
 class Text
 {
@@ -16,7 +17,7 @@ public:
 	Text();
 	~Text();
 
-	virtual void InitializeText(std::string text_, float fontSize_, Vector2 textPos_);
+	virtual void InitializeText(std::string text_, float fontSize_, Vector2 textPos_, SDL_Color color_ = DARK_GREEN);
 
 	virtual void RenderText();
 	virtual void DestroyText();
