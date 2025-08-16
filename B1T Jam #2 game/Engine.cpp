@@ -937,6 +937,15 @@ void Engine::IterateAliens()
 				plantsEntities[i].get()->getEntityID() == PlantType::TomatoCannon &&
 				plantsEntities[i].get()->GetIsDead())
 			{
+				// Increase the seed amount after killing enemies
+				if (!alien->GetSeedIncreased())
+				{
+					Player::currentSeedAmount += 50;
+					Player::scoreChanged = true;
+
+					alien->SetSeedIncreased(true);
+				}
+
 				alien->setIsDead(true);
 			}
 
@@ -957,6 +966,15 @@ void Engine::IterateAliens()
 			// Check if bullets hit the alien and kill the aliens
 			if (bullets[i].get()->checkCollision(alien) && !alien->getIsDead())
 			{
+				// Increase the seed amount after killing aliens
+				if (!alien->GetSeedIncreased())
+				{
+					Player::currentSeedAmount += 30;
+					Player::scoreChanged = true;
+
+					alien->SetSeedIncreased(true);
+				}
+
 				// Destroy the bullets too until the alien's death animation is completed
 				bullets[i].get()->SetIsDestroyed(true);
 				alien->setIsDead(true);

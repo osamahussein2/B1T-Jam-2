@@ -39,6 +39,9 @@ class Alien : public Entity
 
         void StunAlien() { if (stunned != true) { stunned = true; } }
 
+        bool GetSeedIncreased() { return seedIncreased; }
+        void SetSeedIncreased(bool value_) { seedIncreased = value_; }
+
     protected:
          float          alienHealth;
          float          animationTimer;
@@ -50,6 +53,8 @@ class Alien : public Entity
 
          Vector2 position;
          Vector2 direction;
+
+         bool seedIncreased;
 
          float velocity;
 
