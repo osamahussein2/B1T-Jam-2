@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "Colors.h"
 
 #include <iostream>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -72,7 +73,7 @@ void Window::InitializeWindow()
 
 			if (gameRenderer != 0)
 			{
-				SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 255);
+				SDL_SetRenderDrawColor(gameRenderer, DARK_GREEN.r, DARK_GREEN.g, DARK_GREEN.b, DARK_GREEN.a);
 				isRunning = true;
 				
 				gameState = GameState::MainMenu;

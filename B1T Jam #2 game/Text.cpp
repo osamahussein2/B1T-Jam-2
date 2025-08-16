@@ -1,5 +1,6 @@
 #include "Text.h"
 #include "Window.h"
+#include "Colors.h"
 
 Text::Text() : textTexture(NULL), srcText(), destText(), textSurface(NULL), font(NULL)
 {
@@ -17,7 +18,7 @@ void Text::InitializeText(std::string text_, float fontSize_, Vector2 textPos_)
 		// Load the font
 		font = TTF_OpenFont("Fonts/PIXEARG_.TTF", fontSize_);
 
-		textSurface = TTF_RenderText_Blended_Wrapped(font, text_.c_str(), 0, SDL_Color{255, 255, 255}, 0);
+		textSurface = TTF_RenderText_Blended_Wrapped(font, text_.c_str(), 0, LIGHT_GREEN, 0);
 
 		if (!textSurface) std::cout << "Can't load " << SDL_GetError();
 

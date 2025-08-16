@@ -24,7 +24,11 @@ void Tile::InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scale
 	// Create a tile texture from surface
 	tileTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), tileSurface);
 
-	// SDL_SetTextureColorModFloat(tileTexture, 255, 255, 255); 
+	// SDL_SetTextureColorModFloat(tileTexture,
+    // 	12.0f / 255.0f,   // R
+    // 	73.0f / 255.0f,   // G
+    // 	30.0f / 255.0f    // B
+	// );
 
 	// Destroy the temporary tile surface
 	SDL_DestroySurface(tileSurface);
