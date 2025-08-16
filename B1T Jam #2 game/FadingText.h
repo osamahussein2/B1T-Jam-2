@@ -17,7 +17,7 @@ public:
 	FadingText();
 	~FadingText();
 
-	virtual void InitializeText(std::string text_, float fontSize_, Vector2 textPos_) override;
+	virtual void InitializeText(std::string text_, float fontSize_, Vector2 textPos_, SDL_Color color_ = DARK_GREEN) override;
 
 	virtual void RenderText() override;
 	virtual void DestroyText() override;
