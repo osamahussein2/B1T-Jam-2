@@ -14,7 +14,7 @@ bool Window::isRunning = false;
 
 GameState Window::gameState = GameState::MainMenu;
 
-std::map<std::string, Audio> Window::enemySounds;
+std::map<std::string, Audio> Window::sounds;
 
 Window::Window()
 {
@@ -28,7 +28,8 @@ Window::~Window()
 
 void Window::InitializeAudioItems()
 {
-	enemySounds["EnemyDeathSound"].InitializeAudio("Sounds/Enemy_Dead.wav");
+	sounds["EnemyDeathSound"].InitializeAudio("Sounds/Enemy_Dead.wav");
+	sounds["BulletSound"].InitializeAudio("Sounds/BulletSound__001.wav");
 }
 
 void Window::InitializeWindow()
@@ -118,9 +119,9 @@ void Window::DestroyWindow()
 	gameRenderer = NULL;
 
 	// Unload any audio
-	for (std::pair<std::string, Audio> enemySound : enemySounds)
+	for (std::pair<std::string, Audio> soundMap : sounds)
 	{
-		enemySound.second.UnloadAudio();
-		enemySound.first.clear();
+		soundMap.second.UnloadAudio();
+		soundMap.first.clear();
 	}
 }

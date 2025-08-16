@@ -951,6 +951,8 @@ void Engine::IterateAliens()
 			{
 				bullets.push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
 
+				Window::sounds["BulletSound"].PlayAudio();
+
 				plantsEntities[i].get()->ResetShootingTime();
 			}
 

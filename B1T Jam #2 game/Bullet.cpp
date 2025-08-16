@@ -39,8 +39,8 @@ void Bullet::update()
 	destEntity.x = position.x + direction.x;
 	destEntity.y = position.y + direction.y;
 
-	destEntity.w = (srcEntity.w * 1.5f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-	destEntity.h = (srcEntity.h * 1.5f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+	destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+	destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 }
 
 void Bullet::render()
