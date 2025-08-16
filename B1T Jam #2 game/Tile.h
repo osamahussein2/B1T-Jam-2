@@ -16,7 +16,8 @@ public:
 	Tile();
 	~Tile();
 
-	void InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scaleMultiplier_);
+	void InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 scaleMultiplier_);
+	void DestroyTile();
 	void RenderTile();
 
 private:

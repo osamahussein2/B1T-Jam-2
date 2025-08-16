@@ -1,4 +1,5 @@
 #include "GameLevel.h"
+#include "Window.h"
 
 #include <fstream>
 #include <sstream>
@@ -14,6 +15,7 @@ GameLevel::GameLevel()
 GameLevel::~GameLevel()
 {
 	// need to destroy all tiles texture here!! or in a method, when level is completed
+    std::cout << "level destroyed" << std::endl;
 }
 
 void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsigned int levelWidth, unsigned int levelHeight)
@@ -23,27 +25,28 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
     unsigned int width = tileData[0].size(); 
     float unit_width = levelWidth / static_cast<float>(width);
     float unit_height = levelHeight / static_cast<float>(height); 
+
+    SDL_Texture* textureBlock1 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_1.png");
+    SDL_Texture* textureBlock2 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_2.png");
+
     // initialize level tiles based on tileData
-    float size_sc = 1;		
     for (unsigned int y = 0; y < height; ++y)
     {
         for (unsigned int x = 0; x < width; ++x)
         {
             // check block type from level data (2D level array)
             Tile tile;
+            Vector2 tilePosition(unit_width * x, unit_height * y);
+            Vector2 tileScale(unit_width, unit_height);
+
             if (tileData[y][x] == 1) // tile
             {
-                Vector2 tilePosition(unit_width * x, unit_height * y);
-                Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/block_1.png", tilePosition, tileScale);
-                m_Tiles.push_back(tile);
+                tile.InitializeTile(textureBlock1, tilePosition, tileScale);
             } else if (tileData[y][x] == 2)
             {
-                Vector2 tilePosition(unit_width * x, unit_height * y);
-                Vector2 tileScale(unit_width, unit_height);
-                tile.InitializeTile("Textures/block_2.png", tilePosition, tileScale);
-                m_Tiles.push_back(tile);
+                tile.InitializeTile(textureBlock2, tilePosition, tileScale);
             }
+            m_Tiles.push_back(tile);
         }
     }
 }
@@ -78,9 +81,10 @@ void GameLevel::LoadLevel(const char* file, unsigned int levelWidth, unsigned in
 
 void GameLevel::DestroyLevel()
 {
+    std::cout << "Destroy levels" << std::endl;
 	for (Tile& tile : m_Tiles)
     {
-    	//tile.DestroyTile();
+    	tile.DestroyTile();
     }
 }
 

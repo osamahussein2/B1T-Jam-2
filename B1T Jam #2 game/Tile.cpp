@@ -6,28 +6,13 @@ Tile::Tile() : tileTexture(NULL), srcTile(), destTile(), tileSurface(NULL)
 }
 
 Tile::~Tile()
-{
-	// Destroy the tile texture
-	// SDL_DestroyTexture(tileTexture);
-
-	// tileTexture = NULL;
+{	
 }
 
-void Tile::InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scaleMultiplier_)
+void Tile::InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 scaleMultiplier_)
 {
 	// Load tile image
-	tileSurface = IMG_Load(filePath_.c_str());
-
-	// If it's invalid, print error
-	if (!tileSurface) std::cout << "Can't load " << SDL_GetError();
-
-	// Create a tile texture from surface
-	tileTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), tileSurface);
-
-
-	// Destroy the temporary tile surface
-	SDL_DestroySurface(tileSurface);
-
+	tileTexture = _tileTexture;
 	// Set the source rectangle and destination rectangle for tile
 	srcTile.x = 0;
 	srcTile.y = 0;
@@ -41,6 +26,11 @@ void Tile::InitializeTile(std::string filePath_, Vector2 tilePos_, Vector2 scale
 
 	destTile.w = scaleMultiplier_.x;
 	destTile.h = scaleMultiplier_.y;
+}
+
+void Tile::DestroyTile()
+{
+	SDL_DestroyTexture(tileTexture);
 }
 
 void Tile::RenderTile()

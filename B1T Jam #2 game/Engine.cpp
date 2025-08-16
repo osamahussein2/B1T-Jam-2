@@ -99,6 +99,13 @@ void Engine::RunEngine()
 				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
 				bullets.clear();
 			}
+
+			// if (!gameLevels.empty()) got to validate that the player won the level to destroy it
+			// {
+			// 	for (int i = 0; i < gameLevels.size(); i++) 
+			// 		gameLevels[i].DestroyLevel();
+			// }
+
 			break;
 
 		case GameState::CreditsMenu:
