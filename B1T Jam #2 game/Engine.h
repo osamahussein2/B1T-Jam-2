@@ -51,6 +51,12 @@ private:
 	static void IteratePlacingPlants();
 	static void IteratePlants();
 	static void IterateBullets();
+
+	static void SpawnEnemies();
+
+	static void HandleLevel1Enemies();
+	static void HandleLevel2Enemies();
+	static void HandleLevel3Enemies();
 };
 
 #endif

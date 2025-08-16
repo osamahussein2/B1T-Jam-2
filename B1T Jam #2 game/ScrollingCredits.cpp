@@ -1,5 +1,6 @@
 #include "ScrollingCredits.h"
 #include "Window.h"
+#include "Colors.h"
 
 ScrollingCredits::ScrollingCredits() : textTexture(NULL), srcText(), destText(), textSurface(NULL), font(), velocityY(),
 startingPosition()
@@ -18,7 +19,7 @@ void ScrollingCredits::InitializeScrollingCredits(std::string text_, float fontS
 		// Load the font
 		font = TTF_OpenFont("Fonts/PIXEARG_.TTF", fontSize_);
 
-		textSurface = TTF_RenderText_Blended_Wrapped(font, text_.c_str(), 0, SDL_Color{ 255, 255, 255 }, 0);
+		textSurface = TTF_RenderText_Blended_Wrapped(font, text_.c_str(), 0, DARK_GREEN, 0);
 
 		if (!textSurface) std::cout << "Can't load " << SDL_GetError();
 

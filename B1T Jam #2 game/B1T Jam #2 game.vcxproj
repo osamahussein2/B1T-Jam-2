@@ -193,6 +193,7 @@
     <ClInclude Include="BigZogling.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="ChiliPepperBlaster.h" />
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="CornMortar.h" />
     <ClInclude Include="EggplantTrap.h" />
     <ClInclude Include="Engine.h" />

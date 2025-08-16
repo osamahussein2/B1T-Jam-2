@@ -61,7 +61,6 @@ Engine::~Engine()
 void Engine::RunEngine()
 {
 	Window::InitializeWindow();
-	Player::InitializePlayer("./Textures/character.png"); // just to mock the player with a texture
 
 	InitializeGameTexts();
 	InitializeScrollingCreditsTexts();
@@ -150,7 +149,6 @@ void Engine::RunEngine()
 			Window::RenderBeginFrame();
 
 			Player::UpdatePlayer();
-			//Player::RenderPlayer();
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
@@ -205,6 +203,8 @@ void Engine::RunEngine()
 
 				shovel.render();
 
+				SpawnEnemies();
+
 				IteratePlacingPlants();
 				IteratePlants();
 				IterateBullets();
@@ -230,10 +230,11 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 
+			staticObjects["FlowerShopUI"].RenderStaticObject();
+
 			IsMouseHovered();
 			SwitchFlowerUpgrades();
 
-			staticObjects["FlowerShopUI"].RenderStaticObject();
 			gameTexts["playerCurrencyAmount"].RenderText();
 
 			Window::RenderEndFrame();
@@ -390,17 +391,11 @@ void Engine::InitializeScrollingCreditsTexts()
 
 void Engine::InitializeGameEntities()
 {
-	GruntZogling alien1;
-    ShieldDrone alien2;
-    BigZogling alien3;
-    StunSporeling alien4;
-    GoliathWalker alien5;
-
 	Item item1(ItemType::Seeds);
 	Item item2(ItemType::Fertilizer);
 
-	aliensEntities.push_back(std::make_unique<GruntZogling>());
-	aliensEntities.push_back(std::make_unique<ShieldDrone>());
+	//aliensEntities.push_back(std::make_unique<GruntZogling>());
+	//aliensEntities.push_back(std::make_unique<ShieldDrone>());
 	// aliensEntities.push_back(std::make_unique<BigZogling>()); // they chrash because not having texture loaded, maybe we need some more validations 
 	// aliensEntities.push_back(std::make_unique<StunSporeling>());
 	// aliensEntities.push_back(std::make_unique<GoliathWalker>());
@@ -419,10 +414,10 @@ void Engine::InitializeGameEntities()
 		std::cout << "This plant is a Tomato cannon!: " << std::endl;
 	}*/
 
-	if (AlienType::GruntZogling == alien1.getAlienID())
+	/*if (AlienType::GruntZogling == alien1.getAlienID())
 	{
 		std::cout << "This alien is an GruntZogling!: " << std::endl;
-	}
+	}*/
 
 	if (ItemType::Fertilizer == item2.getEntityID())
 	{
@@ -940,6 +935,12 @@ void Engine::IterateAliens()
 				// Increase the seed amount after killing enemies
 				if (!alien->GetSeedIncreased())
 				{
+					Player::enemiesKilled += 1;
+
+#ifdef _DEBUG
+					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
+#endif
+
 					Player::currentSeedAmount += 50;
 					Player::scoreChanged = true;
 
@@ -969,6 +970,12 @@ void Engine::IterateAliens()
 				// Increase the seed amount after killing aliens
 				if (!alien->GetSeedIncreased())
 				{
+					Player::enemiesKilled += 1;
+
+#ifdef _DEBUG
+					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
+#endif
+
 					Player::currentSeedAmount += 30;
 					Player::scoreChanged = true;
 
@@ -1065,7 +1072,6 @@ void Engine::IterateBullets()
 	}
 }
 
-
 void Engine::RestartCreditsMenu()
 {
 	scrollingCreditsTexts["ProgrammersText"].StartScrollingCredits();
@@ -1074,4 +1080,98 @@ void Engine::RestartCreditsMenu()
 	scrollingCreditsTexts["AudioComposerNameText"].StartScrollingCredits();
 	scrollingCreditsTexts["ArtistText"].StartScrollingCredits();
 	scrollingCreditsTexts["ArtistNameText"].StartScrollingCredits();
+}
+
+// Handle enemy spawning here
+void Engine::SpawnEnemies()
+{
+	switch (Player::GetWaveNumber())
+	{
+	case 1:
+		HandleLevel1Enemies();
+		HandleLevel2Enemies();
+		HandleLevel3Enemies();
+		break;
+
+	case 2:
+		HandleLevel1Enemies();
+		HandleLevel2Enemies();
+		HandleLevel3Enemies();
+		break;
+
+	case 3:
+		HandleLevel1Enemies();
+		HandleLevel2Enemies();
+		HandleLevel3Enemies();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Engine::HandleLevel1Enemies()
+{
+	if (Player::GetLevelNumber() == 1)
+	{
+		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+
+		switch (Player::enemiesKilled)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+		}
+	}
+}
+
+void Engine::HandleLevel2Enemies()
+{
+	if (Player::GetLevelNumber() == 2)
+	{
+		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+
+		switch (Player::enemiesKilled)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+		}
+	}
+}
+
+void Engine::HandleLevel3Enemies()
+{
+	if (Player::GetLevelNumber() == 3)
+	{
+		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+
+		switch (Player::enemiesKilled)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+		}
+	}
 }
