@@ -38,3 +38,19 @@ void Tile::RenderTile()
 	// Render the tile
 	SDL_RenderTexture(Window::GetRenderer(), tileTexture, &srcTile, &destTile);
 }
+
+void Tile::SetTileID(unsigned int id)
+{
+	m_ID = id;
+}
+
+unsigned int Tile::GetTileID() const
+{
+	return m_ID;
+}
+
+Vector2 Tile::GetTilePosition() const
+{
+	return Vector2 {destTile.x, destTile.y};
+}
+

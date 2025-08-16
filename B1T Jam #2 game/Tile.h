@@ -20,6 +20,11 @@ public:
 	void DestroyTile();
 	void RenderTile();
 
+	void SetTileID(unsigned int id);
+	unsigned int GetTileID() const;
+
+	Vector2 GetTilePosition() const;
+
 private:
 	SDL_Texture* tileTexture;
 	
@@ -27,6 +32,8 @@ private:
 	SDL_FRect destTile;
 	
 	SDL_Surface* tileSurface;
+
+	unsigned int m_ID;
 };
 
 #endif

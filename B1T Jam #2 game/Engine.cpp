@@ -50,6 +50,8 @@ Shovel shovel;
 // Bullet
 std::vector<std::unique_ptr<Bullet>> bullets;
 
+std::vector<Vector2> aliensDirections;
+
 Engine::Engine()
 {
 }
@@ -488,6 +490,15 @@ void Engine::InitializeGameLevels()
 	gameLevels.push_back(level1);
 	gameLevels.push_back(level2);
 	gameLevels.push_back(level3);
+
+
+	for (int i = 0; i < level1.GetTilesArray().size(); i++)
+	{
+		if(level1.GetTilesArray()[i].GetTileID() == 1)
+		{
+			aliensDirections.push_back(level1.GetTilesArray()[i].GetTilePosition());
+		}
+	}
 }
 
 void Engine::InitializePlacingPlants()
@@ -905,9 +916,11 @@ void Engine::IterateAliens()
 			switch (aliensEntities[i].get()->GetCurrentDirectionIndex())
 			{
 			case 0:
+				// start 6.15385 y: 8.69565
+				// move 5.97015 y: 2.3166
 				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f }, 
-					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 9.375f });
+					{ Window::GetWindowWidth() / 5.57015f, Window::GetWindowHeight() / 2.3166f }, 
+					{ Window::GetWindowWidth() / 4.15385f, Window::GetWindowHeight() / 8.69565f });
 
 				break;
 

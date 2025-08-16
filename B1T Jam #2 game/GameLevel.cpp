@@ -46,6 +46,9 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             {
                 tile.InitializeTile(textureBlock2, tilePosition, tileScale);
             }
+
+            tile.SetTileID(tileData[y][x]);
+
             m_Tiles.push_back(tile);
         }
     }
@@ -101,4 +104,10 @@ void GameLevel::RenderLevel()
 bool GameLevel::IsLevelLoaded()
 {
 	return false;
+}
+
+
+std::vector<Tile> GameLevel::GetTilesArray() const
+{
+    return m_Tiles;
 }

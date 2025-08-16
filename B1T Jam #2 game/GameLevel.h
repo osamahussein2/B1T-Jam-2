@@ -24,6 +24,8 @@ class GameLevel
 
          bool IsLevelLoaded();
 
+         std::vector<Tile> GetTilesArray() const;
+
 
     private:
         std::vector<Tile> m_Tiles;
