@@ -73,7 +73,7 @@ void Window::InitializeWindow()
 
 			if (gameRenderer != 0)
 			{
-				SDL_SetRenderDrawColor(gameRenderer, DARK_GREEN.r, DARK_GREEN.g, DARK_GREEN.b, DARK_GREEN.a);
+				SDL_SetRenderDrawColor(gameRenderer, LIGHT_GREEN.r, LIGHT_GREEN.g, LIGHT_GREEN.b, LIGHT_GREEN.a);
 				isRunning = true;
 				
 				gameState = GameState::MainMenu;

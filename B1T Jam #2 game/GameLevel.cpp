@@ -37,6 +37,12 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
                 Vector2 tileScale(unit_width, unit_height);
                 tile.InitializeTile("Textures/block_1.png", tilePosition, tileScale);
                 m_Tiles.push_back(tile);
+            } else if (tileData[y][x] == 2)
+            {
+                Vector2 tilePosition(unit_width * x, unit_height * y);
+                Vector2 tileScale(unit_width, unit_height);
+                tile.InitializeTile("Textures/block_2.png", tilePosition, tileScale);
+                m_Tiles.push_back(tile);
             }
         }
     }
