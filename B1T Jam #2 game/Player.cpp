@@ -51,6 +51,8 @@ unsigned int Player::flowerUpgrade = 0;
 
 bool Player::toggleMouseInput = false;
 
+int Player::currentSeedAmount = 100;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -93,6 +95,7 @@ void Player::LoadPlayerStats()
 		getFile >> ignore >> ignore >> ignore >> currentPlayerScore;
 		getFile >> ignore >> ignore >> ignore >> playerCurrency;
 		getFile >> ignore >> ignore >> flowerUpgrade;
+		getFile >> ignore >> ignore >> ignore >> currentSeedAmount;
 		getFile.close();
 
 		Engine::UpdateCurrentWaveText();
@@ -111,11 +114,15 @@ void Player::LoadPlayerStats()
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
 
 		Engine::UpdatePlayerCurrencyText();
+		Engine::UpdateSeedAmountText();
 
-		if (currentPlayerScore != 0 && waveNumber == 1)
+		if (playerCurrency >= 999999) playerCurrency = 999999;
+
+		if (waveNumber == 1)
 		{
 			// Reset the score and make sure the score changed bool is true to show the actual score on HUD
-			currentPlayerScore = 0;
+			if (currentPlayerScore != 0) currentPlayerScore = 0;
+			if (currentSeedAmount != 100) currentSeedAmount = 100;
 			scoreChanged = true;
 		}
 
@@ -125,6 +132,7 @@ void Player::LoadPlayerStats()
 		std::cout << "Loaded player score: " << currentPlayerScore << std::endl;
 		std::cout << "Loaded player currency: $" << playerCurrency << std::endl;
 		std::cout << "Loaded flower upgrade: " << flowerUpgrade << std::endl;
+		std::cout << "Loaded seed amount: " << currentSeedAmount << std::endl;
 #endif
 	}
 
@@ -133,8 +141,10 @@ void Player::LoadPlayerStats()
 		// Load the player stats upon entering the play state
 		if (waveNumber != 1) waveNumber = 1;
 		if (levelNumber != 1) levelNumber = 1;
+		if (currentSeedAmount != 100) currentSeedAmount = 100;
 
 		Engine::UpdateCurrentWaveText();
+		Engine::UpdateSeedAmountText();
 
 		if (waveChanged != false) waveChanged = false;
 		if (waveFinishedChanging != false) waveFinishedChanging = false;
@@ -394,10 +404,10 @@ void Player::HandleAimAction(SDL_Event& event)
 
 		Engine::HasShovel();
 
-		Engine::InstantiateTomatoCannon();
-		Engine::InstantiateSunflowerShooter();
-		Engine::InstantiateEggplantTrap();
-		Engine::InstantiateCornMortar();
+		if (currentSeedAmount >= 50) Engine::InstantiateTomatoCannon();
+		if (currentSeedAmount >= 30) Engine::InstantiateSunflowerShooter();
+		if (currentSeedAmount >= 25) Engine::InstantiateEggplantTrap();
+		if (currentSeedAmount >= 90) Engine::InstantiateCornMortar();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)
@@ -448,6 +458,7 @@ void Player::UpdateWave()
 		else if (waveChanged)
 		{
 			Engine::UpdateCurrentWaveText();
+			Engine::UpdateSeedAmountText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -461,6 +472,7 @@ void Player::UpdateWave()
 		if (waveChanged)
 		{
 			Engine::UpdateCurrentWaveText();
+			Engine::UpdateSeedAmountText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -479,6 +491,7 @@ void Player::UpdateWave()
 		if (waveChanged)
 		{
 			Engine::UpdateCurrentWaveText();
+			Engine::UpdateSeedAmountText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -497,6 +510,7 @@ void Player::UpdateWave()
 		if (waveChanged)
 		{
 			Engine::UpdateCurrentWaveText();
+			Engine::UpdateSeedAmountText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -515,6 +529,7 @@ void Player::UpdateWave()
 		if (waveChanged)
 		{
 			Engine::UpdateCurrentWaveText();
+			Engine::UpdateSeedAmountText();
 
 			if (canSaveProgress) SavePlayerProgress();
 
@@ -653,12 +668,14 @@ void Player::SavePlayerProgress()
 	std::string playerScoreString = "Player score = ";
 	std::string currencyString = "Player currency = ";
 	std::string flowerUpgradeString = "Flower upgrade ";
+	std::string seedAmountString = "Seed amount = ";
 
 	writeFile << waveNumberString << waveNumber << std::endl;
 	writeFile << levelNumberString << levelNumber << std::endl;
 	writeFile << playerScoreString << currentPlayerScore << std::endl;
 	writeFile << currencyString << playerCurrency << std::endl;
 	writeFile << flowerUpgradeString << flowerUpgrade << std::endl;
+	writeFile << seedAmountString << currentSeedAmount << std::endl;
 	writeFile.close();
 
 #ifdef _DEBUG
@@ -667,6 +684,7 @@ void Player::SavePlayerProgress()
 	std::cout << "Saved player score: " << currentPlayerScore << std::endl;
 	std::cout << "Saved player currency: $" << playerCurrency << std::endl;
 	std::cout << "Saved flower upgrade: " << flowerUpgrade << std::endl;
+	std::cout << "Saved seed amount: " << currentSeedAmount << std::endl;
 #endif
 }
 
@@ -698,8 +716,10 @@ void Player::GoToNextLevel()
 	}
 
 	if (waveNumber != 1) waveNumber = 1;
+	if (currentSeedAmount != 100) currentSeedAmount = 100;
 
 	Engine::UpdateCurrentWaveText();
+	Engine::UpdateSeedAmountText();
 
 	if (canSaveProgress != true) canSaveProgress = true;
 	
@@ -716,7 +736,10 @@ void Player::ChangeScore()
 {
 	if (scoreChanged)
 	{
+		if (currentSeedAmount <= 0) currentSeedAmount = 0;
+
 		Engine::UpdatePlayerScore();
+		Engine::UpdateSeedAmountText();
 
 		scoreChanged = false;
 	}

@@ -47,6 +47,19 @@ void PlacePlant::render()
 	SDL_RenderTexture(Window::GetRenderer(), entityTexture, &srcEntity, &destEntity);
 }
 
+// Overloaded render method for changing the alpha value depending on the passed in value
+void PlacePlant::render(int seedValue_)
+{
+	// Render placing plant
+	SDL_RenderTexture(Window::GetRenderer(), entityTexture, &srcEntity, &destEntity);
+
+	// Make the texture fully visible when the player has enough seeds to plant
+	if (Player::currentSeedAmount >= seedValue_) SDL_SetTextureAlphaMod(entityTexture, 255);
+
+	// Otherwise, make the texture slightly transparent to give the illusion that player doesn't have enough seeds to plant
+	else SDL_SetTextureAlphaMod(entityTexture, 100);
+}
+
 void PlacePlant::moveEntity(Vector2 position)
 {
 	destEntity.x = position.x;

@@ -460,6 +460,9 @@ void Engine::InitializePlayerHUD()
 
 	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
+
+	playerHUD["currentSeedAmount"].InitializeText("Seed: " + std::to_string(Player::currentSeedAmount), 20.0f,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 5.4f });
 }
 
 void Engine::InitializeShopMenu()
@@ -487,13 +490,13 @@ void Engine::InitializeGameLevels()
 void Engine::InitializePlacingPlants()
 {
 	placePlants["PlaceTomato"].InitializePlacingPlant("Textures/Plant_Tomato.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 4.545f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 3.21f });
 
 	placePlants["PlaceSunflower"].InitializePlacingPlant("Textures/Plant_Sunflower.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 2.575f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 2.12f });
 
 	placePlants["PlaceEggplant"].InitializePlacingPlant("Textures/Plant_Eggplant.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.66f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.5f });
 
 	placePlants["PlaceCornMortar"].InitializePlacingPlant("Textures/Plant_Corn_Mortar.png",
 		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.24f });
@@ -656,6 +659,12 @@ void Engine::UpdatePlayerCurrencyText()
 	}
 }
 
+void Engine::UpdateSeedAmountText()
+{
+	playerHUD["currentSeedAmount"].InitializeText("Seed: " + std::to_string(Player::currentSeedAmount), 20.0f,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 5.4f });
+}
+
 void Engine::HasShovel()
 {
 	shovel.HandleShovel();
@@ -689,6 +698,14 @@ void Engine::InstantiateTomatoCannon()
 				}
 				else
 				{
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 50;
+						Player::scoreChanged = true;
+
+						plant->SetSeedDecreased(true);
+					}
+
 					++it;
 				}
 			}
@@ -724,6 +741,14 @@ void Engine::InstantiateSunflowerShooter()
 				}
 				else
 				{
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 30;
+						Player::scoreChanged = true;
+
+						plant->SetSeedDecreased(true);
+					}
+
 					++it;
 				}
 			}
@@ -759,6 +784,14 @@ void Engine::InstantiateEggplantTrap()
 				}
 				else
 				{
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 25;
+						Player::scoreChanged = true;
+
+						plant->SetSeedDecreased(true);
+					}
+
 					++it;
 				}
 			}
@@ -794,6 +827,14 @@ void Engine::InstantiateCornMortar()
 				}
 				else
 				{
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 90;
+						Player::scoreChanged = true;
+
+						plant->SetSeedDecreased(true);
+					}
+
 					++it;
 				}
 			}
@@ -896,7 +937,25 @@ void Engine::IterateAliens()
 				plantsEntities[i].get()->getEntityID() == PlantType::TomatoCannon &&
 				plantsEntities[i].get()->GetIsDead())
 			{
+				// Increase the seed amount after killing enemies
+				if (!alien->GetSeedIncreased())
+				{
+					Player::currentSeedAmount += 50;
+					Player::scoreChanged = true;
+
+					alien->SetSeedIncreased(true);
+				}
+
 				alien->setIsDead(true);
+			}
+
+			// Check if alien is near the eggplant trap to stun them and slow them down
+			if (plantsEntities[i].get()->checkCollision(alien) &&
+				plantsEntities[i].get()->getEntityID() == PlantType::EggplantTrap &&
+				!plantsEntities[i].get()->GetIsDead() && !plantsEntities[i].get()->GetGoingToPlacePlant())
+			{
+				plantsEntities[i].get()->SetIsDead(true);
+				alien->StunAlien();
 			}
 		}
 
@@ -907,6 +966,15 @@ void Engine::IterateAliens()
 			// Check if bullets hit the alien and kill the aliens
 			if (bullets[i].get()->checkCollision(alien) && !alien->getIsDead())
 			{
+				// Increase the seed amount after killing aliens
+				if (!alien->GetSeedIncreased())
+				{
+					Player::currentSeedAmount += 30;
+					Player::scoreChanged = true;
+
+					alien->SetSeedIncreased(true);
+				}
+
 				// Destroy the bullets too until the alien's death animation is completed
 				bullets[i].get()->SetIsDestroyed(true);
 				alien->setIsDead(true);
@@ -929,15 +997,10 @@ void Engine::IterateAliens()
 
 void Engine::IteratePlacingPlants()
 {
-	for (std::pair<std::string, PlacePlant> placePlantMap : placePlants)
-	{
-		placePlantMap.second.render();
-	}
-
-	/*for (int i = 0; i < placePlants.size(); i++)
-	{
-		placePlants.second.collision(aliensEntities[i].get()); // test shovel collision with aliens
-	}*/
+	placePlants["PlaceTomato"].render(50);
+	placePlants["PlaceSunflower"].render(30);
+	placePlants["PlaceEggplant"].render(25);
+	placePlants["PlaceCornMortar"].render(90);
 }
 
 void Engine::IteratePlants()
@@ -961,6 +1024,14 @@ void Engine::IteratePlants()
 			plant->DestroyPlantTower();
 			it = plantsEntities.erase(it);
 		}
+
+		// Destroy eggplant trap once it's dead and delete them from the vector
+		else if (plant->GetIsDead() && plant->getEntityID() == PlantType::EggplantTrap)
+		{
+			plant->DestroyPlantTower();
+			it = plantsEntities.erase(it);
+		}
+
 		else
 		{
 			++it;

@@ -37,6 +37,11 @@ class Alien : public Entity
         Vector2 GetCenter() const { return { destEntity.x + (destEntity.w / 2.0f),
             destEntity.y + (destEntity.h / 2.0f) }; }
 
+        void StunAlien() { if (stunned != true) { stunned = true; } }
+
+        bool GetSeedIncreased() { return seedIncreased; }
+        void SetSeedIncreased(bool value_) { seedIncreased = value_; }
+
     protected:
          float          alienHealth;
          float          animationTimer;
@@ -49,11 +54,16 @@ class Alien : public Entity
          Vector2 position;
          Vector2 direction;
 
+         bool seedIncreased;
+
          float velocity;
 
          int frameX;
 
          int currentDirectionIndex;
+
+         bool stunned;
+         float stunnedTime;
 };
 
 #endif

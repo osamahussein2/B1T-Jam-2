@@ -13,10 +13,14 @@ class ShieldDrone : public Alien
         void                    update() override;
         void                    render() override;
         void                    moveEntity(Vector2 position) override;
+        void moveEntity(Vector2 moveToPosition, Vector2 startingPosition);
         void                    collision(Entity* other) override;
 
 
         AlienType           getAlienID() const;
+
+private:
+    void CheckIfStunned();
 };
 
 #endif

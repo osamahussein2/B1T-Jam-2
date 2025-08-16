@@ -16,6 +16,7 @@ public:
 
     void update() override;
     void render() override;
+    void render(int seedValue_);
     void moveEntity(Vector2 position) override;
     void collision(Entity* other) override;
 

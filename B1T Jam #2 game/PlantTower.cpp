@@ -1,7 +1,8 @@
 #include "PlantTower.h"
 
 PlantTower::PlantTower(PlantType type)
-: m_PlantID(type), goingToPlacePlant(true), isDead(false), hasTextureChanged(false), shootingTime(0.0f)
+: m_PlantID(type), goingToPlacePlant(true), isDead(false), hasTextureChanged(false), shootingTime(0.0f), 
+seedDecreased(false)
 {
 }
 

@@ -37,19 +37,30 @@ void EggplantTrap::update()
 
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+
+		if (animationTimer != 0.0f) animationTimer = 0.0f;
+		if (seedDecreased != false) seedDecreased = false;
 	}
 
 	else
 	{
-		// Set the source rectangle to match the sprite dimensions for animation
-		srcEntity.x = 0;
-		srcEntity.y = 0;
+		if (!isDead)
+		{
+			//Prevents the x frame animation from animating too fast
+			animationTimer += Window::GetDeltaTime() * 0.1f;
 
-		srcEntity.w = entityTexture->w;
-		srcEntity.h = entityTexture->h;
+			// Set the source rectangle to match the sprite dimensions for animation
+			srcEntity.x = 0;
+			srcEntity.y = 0;
 
-		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+			srcEntity.w = entityTexture->w;
+			srcEntity.h = entityTexture->h;
+
+			destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+			destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+
+			if (animationTimer >= 4.0f) isDead = true;
+		}
 	}
 }
 
@@ -66,6 +77,12 @@ void EggplantTrap::moveEntity(Vector2 position)
 
 void EggplantTrap::collision(Entity* other)
 {
+}
+
+bool EggplantTrap::checkCollision(Entity* other)
+{
+	return destEntity.x + destEntity.w >= other->destEntity.x && destEntity.x <= other->destEntity.x + other->destEntity.w
+		&& destEntity.y + destEntity.h >= other->destEntity.y && destEntity.y <= other->destEntity.y + other->destEntity.h;
 }
 
 PlantType EggplantTrap::getPlantID() const
