@@ -56,6 +56,8 @@ void GruntZogling::update()
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 
+		CheckIfStunned();
+
 		if (alienHealth <= 0.0f)
 		{
 			if (hasTextureChanged != false) hasTextureChanged = false;
@@ -155,4 +157,28 @@ void GruntZogling::collision(Entity* other)
 AlienType GruntZogling::getAlienID() const
 {
 	return AlienType::GruntZogling;
+}
+
+void GruntZogling::CheckIfStunned()
+{
+	// Move at normal speed when not stunned
+	if (!stunned)
+	{
+		if (velocity != 0.0032f) velocity = 0.0032f;
+		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
+	}
+
+	// Move 50% slower if stunned
+	else if (stunned)
+	{
+		stunnedTime += Window::GetDeltaTime() * 0.02f;
+
+		if (velocity != 0.0016f) velocity = 0.0016f;
+
+		if (stunnedTime >= 3.0f)
+		{
+			stunnedTime = 0.0f;
+			stunned = false;
+		}
+	}
 }

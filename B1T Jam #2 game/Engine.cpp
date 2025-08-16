@@ -898,6 +898,15 @@ void Engine::IterateAliens()
 			{
 				alien->setIsDead(true);
 			}
+
+			// Check if alien is near the eggplant trap to stun them and slow them down
+			if (plantsEntities[i].get()->checkCollision(alien) &&
+				plantsEntities[i].get()->getEntityID() == PlantType::EggplantTrap &&
+				!plantsEntities[i].get()->GetIsDead() && !plantsEntities[i].get()->GetGoingToPlacePlant())
+			{
+				plantsEntities[i].get()->SetIsDead(true);
+				alien->StunAlien();
+			}
 		}
 
 		for (int i = 0; i < bullets.size(); i++)
@@ -961,6 +970,14 @@ void Engine::IteratePlants()
 			plant->DestroyPlantTower();
 			it = plantsEntities.erase(it);
 		}
+
+		// Destroy eggplant trap once it's dead and delete them from the vector
+		else if (plant->GetIsDead() && plant->getEntityID() == PlantType::EggplantTrap)
+		{
+			plant->DestroyPlantTower();
+			it = plantsEntities.erase(it);
+		}
+
 		else
 		{
 			++it;

@@ -14,6 +14,7 @@ public:
     void                    update() override;
     void                    render() override;
     void                    moveEntity(Vector2 position) override;
+    bool checkCollision(Entity* other);
     void                    collision(Entity* other) override;
 
 

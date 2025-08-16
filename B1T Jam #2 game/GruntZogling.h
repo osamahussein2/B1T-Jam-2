@@ -18,6 +18,9 @@ class GruntZogling : public Alien
 
 
         AlienType           getAlienID() const;
+
+private:
+    void CheckIfStunned();
 };
 #endif 
 

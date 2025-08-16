@@ -37,6 +37,8 @@ class Alien : public Entity
         Vector2 GetCenter() const { return { destEntity.x + (destEntity.w / 2.0f),
             destEntity.y + (destEntity.h / 2.0f) }; }
 
+        void StunAlien() { if (stunned != true) { stunned = true; } }
+
     protected:
          float          alienHealth;
          float          animationTimer;
@@ -54,6 +56,9 @@ class Alien : public Entity
          int frameX;
 
          int currentDirectionIndex;
+
+         bool stunned;
+         float stunnedTime;
 };
 
 #endif

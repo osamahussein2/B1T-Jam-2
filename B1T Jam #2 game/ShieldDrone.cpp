@@ -16,6 +16,8 @@ ShieldDrone::ShieldDrone()
 
 	// Set alien's health to be whatever at the start and increased after progressing past waves
 	alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
+
+	velocity = 0.0032f;
 }
 
 ShieldDrone::~ShieldDrone()
@@ -54,6 +56,8 @@ void ShieldDrone::update()
 
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+
+		CheckIfStunned();
 
 		if (alienHealth <= 0.0f)
 		{
@@ -123,6 +127,28 @@ void ShieldDrone::moveEntity(Vector2 position)
 {
 }
 
+void ShieldDrone::moveEntity(Vector2 moveToPosition, Vector2 startingPosition)
+{
+	// Move shield drone
+	if (!isDead)
+	{
+		float dx = moveToPosition.x - destEntity.x;
+		float dy = moveToPosition.y - destEntity.y;
+		float distance = sqrtf((dx * dx) + (dy * dy));
+
+		if (distance <= 0.3f)
+		{
+			currentDirectionIndex += 1;
+		}
+
+		else
+		{
+			direction.x += (moveToPosition.x - startingPosition.x) * velocity * Window::GetDeltaTime();
+			direction.y += (moveToPosition.y - startingPosition.y) * velocity * Window::GetDeltaTime();
+		}
+	}
+}
+
 void ShieldDrone::collision(Entity* other)
 {
 }
@@ -130,4 +156,28 @@ void ShieldDrone::collision(Entity* other)
 AlienType ShieldDrone::getAlienID() const
 {
 	return AlienType::ShieldDrone;
+}
+
+void ShieldDrone::CheckIfStunned()
+{
+	// Move at normal speed when not stunned
+	if (!stunned)
+	{
+		if (velocity != 0.0032f) velocity = 0.0032f;
+		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
+	}
+
+	// Move 50% slower if stunned
+	else if (stunned)
+	{
+		stunnedTime += Window::GetDeltaTime() * 0.02f;
+
+		if (velocity != 0.0016f) velocity = 0.0016f;
+
+		if (stunnedTime >= 3.0f)
+		{
+			stunnedTime = 0.0f;
+			stunned = false;
+		}
+	}
 }

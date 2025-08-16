@@ -30,7 +30,9 @@ class PlantTower : public Entity
             destEntity.y + (destEntity.h / 2.0f) }; }
 
         float GetAnimationTimer() const { return animationTimer; }
+
         bool GetIsDead() const { return isDead; }
+        void SetIsDead(bool isDead_) { isDead = isDead_; }
 
         float GetShootingTime() const { return shootingTime; }
         void ResetShootingTime() { shootingTime = 0.0f; }
