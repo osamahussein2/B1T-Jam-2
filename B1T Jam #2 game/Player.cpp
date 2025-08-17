@@ -311,7 +311,6 @@ void Player::HandleAimAction(SDL_Event& event)
 		if (currentSeedAmount >= 50) Engine::InstantiateTomatoCannon();
 		if (currentSeedAmount >= 30) Engine::InstantiateSunflowerShooter();
 		if (currentSeedAmount >= 25) Engine::InstantiateEggplantTrap();
-		if (currentSeedAmount >= 90) Engine::InstantiateCornMortar();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)

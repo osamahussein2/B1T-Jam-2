@@ -27,7 +27,6 @@ public:
 	static void InstantiateTomatoCannon();
 	static void InstantiateSunflowerShooter();
 	static void InstantiateEggplantTrap();
-	static void InstantiateCornMortar();
 
 private:
 	Engine();
@@ -57,6 +56,8 @@ private:
 	static void HandleLevel1Enemies();
 	static void HandleLevel2Enemies();
 	static void HandleLevel3Enemies();
+
+	static void GivePlayerSeeds();
 };
 
 #endif

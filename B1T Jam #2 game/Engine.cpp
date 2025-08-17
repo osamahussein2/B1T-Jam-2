@@ -52,6 +52,7 @@ std::vector<std::unique_ptr<Bullet>> bullets;
 std::vector<Vector2> aliensDirections;
 
 float delayTimer = 0.0f; // Delay changing waves/levels until player info is updated
+float seedTime = 0.0f; // Give player seeds after certain time has passed
 
 Engine::Engine()
 {
@@ -168,6 +169,8 @@ void Engine::RunEngine()
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
+				GivePlayerSeeds();
+
 				// Render player HUD texts
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
@@ -518,9 +521,6 @@ void Engine::InitializePlacingPlants()
 
 	placePlants["PlaceEggplant"].InitializePlacingPlant("Textures/Plant_Eggplant.png",
 		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.5f });
-
-	placePlants["PlaceCornMortar"].InitializePlacingPlant("Textures/Plant_Corn_Mortar.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.24f });
 }
 
 void Engine::IsMouseHovered()
@@ -826,49 +826,6 @@ void Engine::InstantiateEggplantTrap()
 	}
 }
 
-void Engine::InstantiateCornMortar()
-{
-	placePlants["PlaceCornMortar"].HandlePlacingPlant();
-
-	if (placePlants["PlaceCornMortar"].GetPickedUpPlacingPlant())
-	{
-		plantsEntities.push_back(std::make_unique<CornMortar>());
-
-		std::cout << plantsEntities.size() << std::endl;
-	}
-
-	else if (!Player::GetToggleMouseInput())
-	{
-		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
-		{
-			PlantTower* plant = it->get();
-
-			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
-				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
-				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
-			{
-				plant->DestroyPlantTower();
-				it = plantsEntities.erase(it);
-			}
-
-			else
-			{
-				if (!plant->GetSeedDecreased())
-				{
-					Player::currentSeedAmount -= 90;
-					Player::scoreChanged = true;
-
-					plant->SetSeedDecreased(true);
-				}
-
-				plant->PlacePlant();
-
-				++it;
-			}
-		}
-	}
-}
-
 void Engine::CheckIfScrollingCreditsFinished()
 {
 	// Reset scrolling credits texts once they reach above the screen
@@ -1045,7 +1002,6 @@ void Engine::IteratePlacingPlants()
 	placePlants["PlaceTomato"].render(50);
 	placePlants["PlaceSunflower"].render(30);
 	placePlants["PlaceEggplant"].render(25);
-	placePlants["PlaceCornMortar"].render(90);
 }
 
 void Engine::IteratePlants()
@@ -1568,5 +1524,28 @@ void Engine::HandleLevel3Enemies()
 
 	default:
 		break;
+	}
+}
+
+void Engine::GivePlayerSeeds()
+{
+	// Increase seed value whenever player is low on seeds
+	if (Player::currentSeedAmount < 25)
+	{
+		seedTime += Window::GetDeltaTime() * 0.02f;
+
+		if (seedTime >= 3.0f)
+		{
+			Player::currentSeedAmount += 50;
+			Player::scoreChanged = true;
+
+			seedTime = 0.0f;
+		}
+	}
+
+	// Otherwise, no need to give the player seeds and reset the seed time back to 0
+	else
+	{
+		if (seedTime != 0.0f) seedTime = 0.0f;
 	}
 }
