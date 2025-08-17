@@ -29,6 +29,8 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
     SDL_Texture* textureBlock0 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_0.png");
     SDL_Texture* textureBlock1 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_1.png");
     SDL_Texture* textureBlock2 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_2.png");
+    SDL_Texture* textureBlock3 = IMG_LoadTexture(Window::GetRenderer(), "Textures/alien_ship.png");
+    SDL_Texture* textureBlock4 = IMG_LoadTexture(Window::GetRenderer(), "Textures/cows.png");
 
     // initialize level tiles based on tileData
     for (unsigned int y = 0; y < height; ++y)
@@ -51,6 +53,12 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             } else if (tileData[y][x] == 2)
             {
                 tile.InitializeTile(textureBlock2, tilePosition, tileWorldPosition, tileScale);
+            } else if (tileData[y][x] == 3)
+            {
+                tile.InitializeTile(textureBlock3, tilePosition, tileWorldPosition, tileScale);
+            } else if (tileData[y][x] == 4)
+            {
+                tile.InitializeTile(textureBlock4, tilePosition, tileWorldPosition, tileScale);
             }
 
             tile.SetTileID(tileData[y][x]);
