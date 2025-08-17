@@ -468,16 +468,16 @@ void Engine::InitializeAnimatedObjects()
 void Engine::InitializePlayerHUD()
 {
 	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore), 20,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
 
 	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20, 
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 15.0f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.43f }, LIGHT_GREEN);
 
 	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.25f }, LIGHT_GREEN);
 
 	playerHUD["currentSeedAmount"].InitializeText("Seed: " + std::to_string(Player::currentSeedAmount), 20.0f,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 5.4f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.11f }, LIGHT_GREEN);
 }
 
 void Engine::InitializeShopMenu()
@@ -514,13 +514,13 @@ void Engine::InitializeGameLevels()
 void Engine::InitializePlacingPlants()
 {
 	placePlants["PlaceTomato"].InitializePlacingPlant("Textures/Plant_Tomato.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 3.21f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 10.17f });
 
 	placePlants["PlaceSunflower"].InitializePlacingPlant("Textures/Plant_Sunflower.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 2.12f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 4.32f });
 
 	placePlants["PlaceEggplant"].InitializePlacingPlant("Textures/Plant_Eggplant.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.5f });
+		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 2.68f });
 }
 
 void Engine::IsMouseHovered()
@@ -626,19 +626,19 @@ void Engine::HandleMousePressedEvents()
 void Engine::UpdatePlayerScore()
 {
 	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore),
-		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 120.0f });
+		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
 }
 
 void Engine::UpdateCurrentLevelText()
 {
 	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 15.0f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.43f }, LIGHT_GREEN);
 }
 
 void Engine::UpdateCurrentWaveText()
 {
 	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 8.0f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.25f }, LIGHT_GREEN);
 }
 
 void Engine::UpdatePlayerCurrencyText()
@@ -689,7 +689,7 @@ void Engine::UpdatePlayerCurrencyText()
 void Engine::UpdateSeedAmountText()
 {
 	playerHUD["currentSeedAmount"].InitializeText("Seed: " + std::to_string(Player::currentSeedAmount), 20.0f,
-		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 5.4f });
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.11f }, LIGHT_GREEN);
 }
 
 void Engine::HasShovel()
