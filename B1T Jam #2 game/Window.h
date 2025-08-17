@@ -35,7 +35,7 @@ public:
 
 	static void StopRunning() { isRunning = false; }
 
-	static std::map<std::string, Audio> enemySounds;
+	static std::map<std::string, Audio> sounds;
 
 private:
 	Window();

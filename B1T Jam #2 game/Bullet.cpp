@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Window.h"
+#include "Player.h"
 
 Bullet::Bullet(Vector2 position_) : frameX(0), position(position_), direction(), isDestroyed(false)
 {
@@ -10,6 +11,9 @@ Bullet::Bullet(Vector2 position_) : frameX(0), position(position_), direction(),
 
 	entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 	SDL_DestroySurface(entitySurface);
+
+	if (Player::flowerUpgrade == 0) velocity = 0.03f;
+	else if (Player::flowerUpgrade == 1) velocity = 0.042f;
 }
 
 Bullet::~Bullet()
@@ -39,8 +43,8 @@ void Bullet::update()
 	destEntity.x = position.x + direction.x;
 	destEntity.y = position.y + direction.y;
 
-	destEntity.w = (srcEntity.w * 1.5f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-	destEntity.h = (srcEntity.h * 1.5f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+	destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+	destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 }
 
 void Bullet::render()
@@ -60,8 +64,8 @@ void Bullet::render()
 
 void Bullet::moveEntity(Vector2 position_)
 {
-	direction.x += (position_.x - position.x) * 0.008f * Window::GetDeltaTime();
-	direction.y += (position_.y - position.y) * 0.008f * Window::GetDeltaTime();
+	direction.x += (position_.x - position.x) * velocity * Window::GetDeltaTime();
+	direction.y += (position_.y - position.y) * velocity * Window::GetDeltaTime();
 }
 
 void Bullet::collision(Entity* other)

@@ -18,6 +18,9 @@ public:
 
 
     PlantType           getPlantID() const;
+
+private:
+    float scaleMultiplier;
 };
 
 #endif

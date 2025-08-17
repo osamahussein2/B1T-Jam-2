@@ -12,6 +12,9 @@ SunflowerShooter::SunflowerShooter() : PlantTower(PlantType::SunflowerShooter)
 
 	entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 	SDL_DestroySurface(entitySurface);
+
+	if (Player::flowerUpgrade <= 0) scaleMultiplier = 1.0f;
+	else if (Player::flowerUpgrade == 1) scaleMultiplier = 1.5f;
 }
 
 SunflowerShooter::~SunflowerShooter()
@@ -35,8 +38,8 @@ void SunflowerShooter::update()
 		destEntity.x = Player::GetMouseX() - (destEntity.w / 2.0f);
 		destEntity.y = Player::GetMouseY() - (destEntity.h / 2.0f);
 
-		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+		destEntity.w = (srcEntity.w * scaleMultiplier) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+		destEntity.h = (srcEntity.h * scaleMultiplier) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 
 		if (shootingTime != 0.0f) shootingTime = 0.0f;
 		if (seedDecreased != false) seedDecreased = false;
@@ -53,8 +56,8 @@ void SunflowerShooter::update()
 		srcEntity.w = entityTexture->w;
 		srcEntity.h = entityTexture->h;
 
-		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
-		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
+		destEntity.w = (srcEntity.w * scaleMultiplier) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
+		destEntity.h = (srcEntity.h * scaleMultiplier) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 	}
 }
 

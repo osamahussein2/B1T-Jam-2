@@ -35,6 +35,8 @@ private:
     bool isDestroyed;
 
     double rotation;
+
+    float velocity;
 };
 
 #endif

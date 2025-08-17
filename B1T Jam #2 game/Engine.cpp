@@ -25,7 +25,6 @@
 #include <map>
 #include <vector>
 
-
 std::map<std::string, Text> gameTexts;
 std::map<std::string, ScrollingCredits> scrollingCreditsTexts;
 std::map<std::string, AnimatedObject> animatedObjects;
@@ -51,6 +50,9 @@ Shovel shovel;
 std::vector<std::unique_ptr<Bullet>> bullets;
 
 std::vector<Vector2> aliensDirections;
+
+float delayTimer = 0.0f; // Delay changing waves/levels until player info is updated
+float seedTime = 0.0f; // Give player seeds after certain time has passed
 
 Engine::Engine()
 {
@@ -94,6 +96,12 @@ void Engine::RunEngine()
 			{
 				for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
 				plantsEntities.clear();
+			}
+
+			if (!aliensEntities.empty())
+			{
+				for (int i = 0; i < aliensEntities.size(); i++) aliensEntities[i].get()->DestroyAlien();
+				aliensEntities.clear();
 			}
 
 			if (!bullets.empty())
@@ -159,7 +167,7 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 
-			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
+			if (Player::GetLevelFinishedChanging())
 			{
 				// render player level, i have to validate yet also if exist on the array
 				// but we know we have 3 levels	
@@ -178,6 +186,8 @@ void Engine::RunEngine()
 						std::cout << "level not loaded" << std::endl;
 						break;
 				}
+				GivePlayerSeeds();
+
 				// Render player HUD texts
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
@@ -511,9 +521,6 @@ void Engine::InitializePlacingPlants()
 
 	placePlants["PlaceEggplant"].InitializePlacingPlant("Textures/Plant_Eggplant.png",
 		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.5f });
-
-	placePlants["PlaceCornMortar"].InitializePlacingPlant("Textures/Plant_Corn_Mortar.png",
-		{ Window::GetWindowWidth() / 80.0f, Window::GetWindowHeight() / 1.24f });
 }
 
 void Engine::IsMouseHovered()
@@ -819,49 +826,6 @@ void Engine::InstantiateEggplantTrap()
 	}
 }
 
-void Engine::InstantiateCornMortar()
-{
-	placePlants["PlaceCornMortar"].HandlePlacingPlant();
-
-	if (placePlants["PlaceCornMortar"].GetPickedUpPlacingPlant())
-	{
-		plantsEntities.push_back(std::make_unique<CornMortar>());
-
-		std::cout << plantsEntities.size() << std::endl;
-	}
-
-	else if (!Player::GetToggleMouseInput())
-	{
-		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
-		{
-			PlantTower* plant = it->get();
-
-			if (!gameLevels[0].TileCollision(plant, 2) && Player::GetLevelNumber() == 1 ||
-				!gameLevels[1].TileCollision(plant, 2) && Player::GetLevelNumber() == 2 ||
-				!gameLevels[2].TileCollision(plant, 2) && Player::GetLevelNumber() == 3)
-			{
-				plant->DestroyPlantTower();
-				it = plantsEntities.erase(it);
-			}
-
-			else
-			{
-				if (!plant->GetSeedDecreased())
-				{
-					Player::currentSeedAmount -= 90;
-					Player::scoreChanged = true;
-
-					plant->SetSeedDecreased(true);
-				}
-
-				plant->PlacePlant();
-
-				++it;
-			}
-		}
-	}
-}
-
 void Engine::CheckIfScrollingCreditsFinished()
 {
 	// Reset scrolling credits texts once they reach above the screen
@@ -952,6 +916,8 @@ void Engine::IterateAliens()
 			{
 				bullets.push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
 
+				Window::sounds["BulletSound"].PlayAudio();
+
 				plantsEntities[i].get()->ResetShootingTime();
 			}
 
@@ -963,14 +929,14 @@ void Engine::IterateAliens()
 				// Increase the seed amount after killing enemies
 				if (!alien->GetSeedIncreased())
 				{
+					Player::currentSeedAmount += 50;
+					Player::scoreChanged = true;
+
 					Player::enemiesKilled += 1;
 
 #ifdef _DEBUG
 					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
 #endif
-
-					Player::currentSeedAmount += 50;
-					Player::scoreChanged = true;
 
 					alien->SetSeedIncreased(true);
 				}
@@ -995,30 +961,32 @@ void Engine::IterateAliens()
 			// Check if bullets hit the alien and kill the aliens
 			if (bullets[i].get()->checkCollision(alien) && !alien->getIsDead())
 			{
-				// Increase the seed amount after killing aliens
-				if (!alien->GetSeedIncreased())
+				// Destroy the bullets too until the alien's death animation is completed
+				bullets[i].get()->SetIsDestroyed(true);
+
+				if (Player::flowerUpgrade <= 0) alien->SetAlienDamaged(5.0f);
+				else if (Player::flowerUpgrade == 1) alien->SetAlienDamaged(10.0f);
+
+				if (alien->GetAlienHealth() <= 0.1f && !alien->GetSeedIncreased())
 				{
+					Player::currentSeedAmount += 30;
+					Player::scoreChanged = true;
+
 					Player::enemiesKilled += 1;
 
 #ifdef _DEBUG
 					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
 #endif
 
-					Player::currentSeedAmount += 30;
-					Player::scoreChanged = true;
-
 					alien->SetSeedIncreased(true);
 				}
-
-				// Destroy the bullets too until the alien's death animation is completed
-				bullets[i].get()->SetIsDestroyed(true);
-				alien->setIsDead(true);
 			}
 		}
 
-		// Destroy grunt zogling alien when they're dead and delete them from the vector
+		// Destroy grunt zogling/shield drone alien when they're dead and delete them from the vector
 		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
-			alien->getDeathAnimationTime() >= 8.0f)
+			alien->getDeathAnimationTime() >= 8.0f || alien->getIsDead() && 
+			alien->getAlienID() == AlienType::ShieldDrone && alien->getDeathAnimationTime() >= 8.0f)
 		{
 			alien->DestroyAlien();
 			it = aliensEntities.erase(it);
@@ -1035,7 +1003,6 @@ void Engine::IteratePlacingPlants()
 	placePlants["PlaceTomato"].render(50);
 	placePlants["PlaceSunflower"].render(30);
 	placePlants["PlaceEggplant"].render(25);
-	placePlants["PlaceCornMortar"].render(90);
 }
 
 void Engine::IteratePlants()
@@ -1113,24 +1080,164 @@ void Engine::RestartCreditsMenu()
 // Handle enemy spawning here
 void Engine::SpawnEnemies()
 {
+	if (Player::GetLevelNumber() == 1) HandleLevel1Enemies();
+	if (Player::GetLevelNumber() == 2) HandleLevel2Enemies();
+	if (Player::GetLevelNumber() == 3) HandleLevel3Enemies();
+}
+
+void Engine::HandleLevel1Enemies()
+{
+	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+
 	switch (Player::GetWaveNumber())
 	{
-	case 1:
-		HandleLevel1Enemies();
-		HandleLevel2Enemies();
-		HandleLevel3Enemies();
+	case 1: // Wave 1
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				Player::GoToNextWave();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
 		break;
 
-	case 2:
-		HandleLevel1Enemies();
-		HandleLevel2Enemies();
-		HandleLevel3Enemies();
+	case 2: // Wave 2
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				Player::GoToNextWave();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
 		break;
 
-	case 3:
-		HandleLevel1Enemies();
-		HandleLevel2Enemies();
-		HandleLevel3Enemies();
+	case 3: // Wave 3
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				// Clear all in-game entities after completing level
+				if (!plantsEntities.empty())
+				{
+					for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
+					plantsEntities.clear();
+				}
+
+				if (!aliensEntities.empty())
+				{
+					for (int i = 0; i < aliensEntities.size(); i++) aliensEntities[i].get()->DestroyAlien();
+					aliensEntities.clear();
+				}
+
+				if (!bullets.empty())
+				{
+					for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
+					bullets.clear();
+				}
+
+				Player::GoToShoppingMenu();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
+		else
+		{
+			if (delayTimer != 0.0f) delayTimer = 0.0f;
+		}
+
 		break;
 
 	default:
@@ -1138,68 +1245,308 @@ void Engine::SpawnEnemies()
 	}
 }
 
-void Engine::HandleLevel1Enemies()
-{
-	if (Player::GetLevelNumber() == 1)
-	{
-		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
-
-		switch (Player::enemiesKilled)
-		{
-		case 0:
-			if (Player::enemySpawnTime >= 5.0f)
-			{
-				aliensEntities.push_back(std::make_unique<GruntZogling>());
-				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
-
-				Player::enemySpawnTime = 0.0f;
-			}
-
-			break;
-		}
-	}
-}
-
 void Engine::HandleLevel2Enemies()
 {
-	if (Player::GetLevelNumber() == 2)
-	{
-		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
 
-		switch (Player::enemiesKilled)
+	switch (Player::GetWaveNumber())
+	{
+	case 1:
+		switch (Player::enemyNumber)
 		{
 		case 0:
 			if (Player::enemySpawnTime >= 5.0f)
 			{
 				aliensEntities.push_back(std::make_unique<GruntZogling>());
-				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemyNumber += 1;
 
 				Player::enemySpawnTime = 0.0f;
 			}
 
 			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
 		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				Player::GoToNextWave();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
+		break;
+
+	case 2:
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				Player::GoToNextWave();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
+		break;
+
+	case 3:
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			// Clear all in-game entities after completing level
+			if (!plantsEntities.empty())
+			{
+				for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
+				plantsEntities.clear();
+			}
+
+			if (!aliensEntities.empty())
+			{
+				for (int i = 0; i < aliensEntities.size(); i++) aliensEntities[i].get()->DestroyAlien();
+				aliensEntities.clear();
+			}
+
+			if (!bullets.empty())
+			{
+				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
+				bullets.clear();
+			}
+
+			delayTimer += Window::GetDeltaTime() * 0.02f;
+
+			if (delayTimer >= 0.2f)
+			{
+				Player::GoToShoppingMenu();
+
+				delayTimer = 0.0f;
+				Player::enemiesKilled = 0;
+			}
+		}
+
+		else
+		{
+			if (delayTimer != 0.0f) delayTimer = 0.0f;
+		}
+
+		break;
+
+	default:
+		break;
 	}
 }
 
 void Engine::HandleLevel3Enemies()
 {
-	if (Player::GetLevelNumber() == 3)
-	{
-		Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
 
-		switch (Player::enemiesKilled)
+	switch (Player::GetWaveNumber())
+	{
+	case 1:
+		switch (Player::enemyNumber)
 		{
 		case 0:
 			if (Player::enemySpawnTime >= 5.0f)
 			{
 				aliensEntities.push_back(std::make_unique<GruntZogling>());
-				//aliensEntities.push_back(std::make_unique<ShieldDrone>());
+
+				Player::enemyNumber += 1;
 
 				Player::enemySpawnTime = 0.0f;
 			}
 
 			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
 		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			Player::GoToNextWave();
+			Player::enemiesKilled = 0;
+		}
+
+		break;
+
+	case 2:
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			Player::GoToNextWave();
+			Player::enemiesKilled = 0;
+		}
+
+		break;
+
+	case 3:
+		switch (Player::enemyNumber)
+		{
+		case 0:
+			if (Player::enemySpawnTime >= 5.0f)
+			{
+				aliensEntities.push_back(std::make_unique<GruntZogling>());
+
+				Player::enemyNumber += 1;
+
+				Player::enemySpawnTime = 0.0f;
+			}
+
+			break;
+
+		case 1:
+			Player::enemyNumber = 0;
+			break;
+
+		default:
+			Player::enemyNumber = 0;
+			break;
+		}
+
+		if (Player::enemiesKilled >= 5)
+		{
+			// Clear all in-game entities after completing level
+			if (!plantsEntities.empty())
+			{
+				for (int i = 0; i < plantsEntities.size(); i++) plantsEntities[i].get()->DestroyPlantTower();
+				plantsEntities.clear();
+			}
+
+			if (!aliensEntities.empty())
+			{
+				for (int i = 0; i < aliensEntities.size(); i++) aliensEntities[i].get()->DestroyAlien();
+				aliensEntities.clear();
+			}
+
+			if (!bullets.empty())
+			{
+				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
+				bullets.clear();
+			}
+
+			Player::GoToShoppingMenu();
+			Player::enemiesKilled = 0;
+		}
+
+		else
+		{
+			if (delayTimer != 0.0f) delayTimer = 0.0f;
+		}
+
+		break;
+
+	default:
+		break;
+	}
+}
+
+void Engine::GivePlayerSeeds()
+{
+	// Increase seed value whenever player is low on seeds
+	if (Player::currentSeedAmount < 25)
+	{
+		seedTime += Window::GetDeltaTime() * 0.02f;
+
+		if (seedTime >= 3.0f)
+		{
+			Player::currentSeedAmount += 50;
+			Player::scoreChanged = true;
+
+			seedTime = 0.0f;
+		}
+	}
+
+	// Otherwise, no need to give the player seeds and reset the seed time back to 0
+	else
+	{
+		if (seedTime != 0.0f) seedTime = 0.0f;
 	}
 }

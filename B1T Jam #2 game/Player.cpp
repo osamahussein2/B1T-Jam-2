@@ -7,11 +7,7 @@
 
 int Player::waveNumber = 1;
 
-bool Player::waveChanged = true;
-
 std::map<std::string, FadingText> Player::fadingTexts;
-
-bool Player::waveFinishedChanging = false;
 
 float Player::mouseX = 0.0f;
 float Player::mouseY = 0.0f;
@@ -25,8 +21,6 @@ bool Player::levelFinishedChanging = false;
 
 ScoringSystem Player::scoring;
 
-bool Player::canSaveProgress = false;
-
 int Player::currentPlayerScore = 0;
 
 unsigned int Player::playerCurrency = 0;
@@ -39,6 +33,8 @@ int Player::currentSeedAmount = 100;
 
 int Player::enemiesKilled = 0;
 float Player::enemySpawnTime = 0.0f;
+
+int Player::enemyNumber = 0;
 
 // Initialize non-static variables
 bool pressed = false;
@@ -71,14 +67,10 @@ void Player::LoadPlayerStats()
 		getFile.close();
 
 		Engine::UpdateCurrentWaveText();
-
-		if (waveChanged != false) waveChanged = false;
-		if (waveFinishedChanging != false) waveFinishedChanging = false;
+		Engine::UpdateSeedAmountText();
 
 		if (levelChanged != true) levelChanged = true;
 		if (levelFinishedChanging != false) levelFinishedChanging = false;
-
-		if (canSaveProgress != false) canSaveProgress = false;
 
 		if (scoreChanged != true) scoreChanged = true;
 
@@ -124,13 +116,8 @@ void Player::LoadPlayerStats()
 		Engine::UpdateCurrentWaveText();
 		Engine::UpdateSeedAmountText();
 
-		if (waveChanged != false) waveChanged = false;
-		if (waveFinishedChanging != false) waveFinishedChanging = false;
-
 		if (levelChanged != true) levelChanged = true;
 		if (levelFinishedChanging != false) levelFinishedChanging = false;
-
-		if (canSaveProgress != true) canSaveProgress = true;
 
 		if (fadingTexts["levelText"].GetAlpha() != 0.0f) fadingTexts["levelText"].SetAlpha(0.0f);
 		if (fadingTexts["levelText"].GetAlphaStateChanged() != false) fadingTexts["levelText"].SetAlphaStateChanged(false);
@@ -149,7 +136,6 @@ void Player::UpdatePlayer()
 	if (Window::gameState == GameState::Playing)
 	{
 		UpdateLevel();
-		UpdateWave();
 	}
 
 	ChangeScore();
@@ -228,7 +214,7 @@ void Player::HandlePlayerInput()
 
 #ifdef _DEBUG
 			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::Playing && !pressed &&
-				waveFinishedChanging && levelFinishedChanging)
+				levelFinishedChanging)
 			{
 				Window::gameState = GameState::Shopping;
 				pressed = true;
@@ -256,16 +242,16 @@ void Player::HandlePlayerInput()
 			break;
 
 		case SDL_EVENT_MOUSE_MOTION:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging ||
-				Window::gameState == GameState::Shopping && waveFinishedChanging && levelFinishedChanging)
+			if (Window::gameState == GameState::Playing && levelFinishedChanging ||
+				Window::gameState == GameState::Shopping && levelFinishedChanging)
 			{
 				HandleAimCursor();
 			}
 			break;
 
 		case SDL_EVENT_MOUSE_BUTTON_DOWN:
-			if (Window::gameState == GameState::Playing && waveFinishedChanging && levelFinishedChanging || 
-				Window::gameState == GameState::Shopping && waveFinishedChanging && levelFinishedChanging)
+			if (Window::gameState == GameState::Playing && levelFinishedChanging || 
+				Window::gameState == GameState::Shopping && levelFinishedChanging)
 			{
 				HandleAimAction(event);
 			}
@@ -309,7 +295,6 @@ void Player::HandleAimAction(SDL_Event& event)
 		if (currentSeedAmount >= 50) Engine::InstantiateTomatoCannon();
 		if (currentSeedAmount >= 30) Engine::InstantiateSunflowerShooter();
 		if (currentSeedAmount >= 25) Engine::InstantiateEggplantTrap();
-		if (currentSeedAmount >= 90) Engine::InstantiateCornMortar();
 	}
 
 	if (b.button == SDL_BUTTON_RIGHT)
@@ -319,115 +304,6 @@ void Player::HandleAimAction(SDL_Event& event)
 		#endif
 	}
 
-}
-
-void Player::UpdateWave()
-{
-	switch (waveNumber)
-	{
-	case 1:
-		if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		else if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		break;
-
-	case 2:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
-	case 3:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
-	case 4:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
-	case 5:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
-	default:
-
-#ifdef _DEBUG
-		std::cout << "Wave number invalid\n";
-#endif
-
-		break;
-	}
 }
 
 void Player::UpdateLevel()
@@ -443,8 +319,6 @@ void Player::UpdateLevel()
 
 			Engine::UpdateCurrentLevelText();
 
-			if (canSaveProgress) SavePlayerProgress();
-
 			levelFinishedChanging = false;
 			levelChanged = false;
 		}
@@ -472,8 +346,8 @@ void Player::UpdateLevel()
 				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
 
 			Engine::UpdateCurrentLevelText();
-
-			if (canSaveProgress) SavePlayerProgress();
+			
+			SavePlayerProgress();
 
 			levelFinishedChanging = false;
 			levelChanged = false;
@@ -502,8 +376,8 @@ void Player::UpdateLevel()
 				static_cast<float>(Window::GetWindowHeight() / 2.75f) });
 
 			Engine::UpdateCurrentLevelText();
-
-			if (canSaveProgress) SavePlayerProgress();
+			
+			SavePlayerProgress();
 
 			levelFinishedChanging = false;
 			levelChanged = false;
@@ -566,30 +440,28 @@ void Player::SavePlayerProgress()
 
 void Player::GoToNextWave()
 {
-	if (waveNumber < 5) ++waveNumber;
-	else if (waveNumber >= 5) waveNumber = 1;
+	++waveNumber;
 
-	waveChanged = true;
-	canSaveProgress = true;
+	Engine::UpdateCurrentWaveText();
+	Engine::UpdateSeedAmountText();
+	
+	SavePlayerProgress();
 }
 
 void Player::GoToNextLevel()
 {
-	if (levelNumber < 3)
+	/*if (levelNumber < 3)
 	{
 		++levelNumber;
 		levelChanged = true;
 
 		fadingTexts["levelText"].SetAlphaStateChanged(false);
-	}
+	}*/
 
-	else
-	{
-		levelNumber = 1;
-		levelChanged = true;
+	levelNumber = 1;
+	levelChanged = true;
 
-		fadingTexts["levelText"].SetAlphaStateChanged(false);
-	}
+	fadingTexts["levelText"].SetAlphaStateChanged(false);
 
 	if (waveNumber != 1) waveNumber = 1;
 	if (currentSeedAmount != 100) currentSeedAmount = 100;
@@ -597,15 +469,26 @@ void Player::GoToNextLevel()
 	Engine::UpdateCurrentWaveText();
 	Engine::UpdateSeedAmountText();
 
-	if (canSaveProgress != true) canSaveProgress = true;
-	
-	playerCurrency += currentPlayerScore;
-
 	if (currentPlayerScore != 0)
 	{
 		currentPlayerScore = 0;
 		scoreChanged = true;
 	}
+
+	SavePlayerProgress();
+}
+
+void Player::GoToShoppingMenu()
+{
+	playerCurrency += currentPlayerScore;
+
+#ifdef _DEBUG
+	std::cout << playerCurrency << std::endl;
+#endif
+
+	Engine::UpdatePlayerCurrencyText();
+
+	Window::gameState = GameState::Shopping;
 }
 
 void Player::ChangeScore()
