@@ -167,7 +167,7 @@ void Engine::RunEngine()
 
 			Player::UpdatePlayer();
 
-			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
+			if (Player::GetLevelFinishedChanging())
 			{
 				GivePlayerSeeds();
 

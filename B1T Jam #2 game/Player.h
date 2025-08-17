@@ -27,7 +27,6 @@ public:
 	static int GetWaveNumber() { return waveNumber; }
 	static void SetWaveNumber(int waveNumber_) { waveNumber = waveNumber_; }
 
-	static bool GetWaveFinishedChanging() { return waveFinishedChanging; }
 	static bool GetLevelFinishedChanging() { return levelFinishedChanging; }
 
 	static float GetMouseX() { return mouseX; }
@@ -73,7 +72,6 @@ private:
 	static void HandleAimCursor();
 	static void HandleAimAction(SDL_Event& event);
 
-	static void UpdateWave();
 	static void UpdateLevel();
 
 	static void SavePlayerProgress();
@@ -81,9 +79,6 @@ private:
 	static void ChangeScore();
 
 	static int waveNumber;
-
-	static bool waveChanged;
-	static bool waveFinishedChanging;
 
 	static bool levelChanged;
 	static bool levelFinishedChanging;
@@ -96,8 +91,6 @@ private:
 	static ScoringSystem scoring;
 
 	static int levelNumber;
-
-	static bool canSaveProgress;
 
 	static unsigned int playerCurrency;
 
