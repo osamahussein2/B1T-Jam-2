@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_image/SDL_image.h>
 
 SDL_Window* Window::gameWindow = NULL; 
 SDL_Renderer* Window::gameRenderer = NULL;
@@ -36,6 +37,7 @@ void Window::InitializeWindow()
 {
 	InitializeAudioItems();
 
+
 	// Initialize SDL to initialize all of the SDL subsystems
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) >= 0)
 	{
@@ -67,6 +69,16 @@ void Window::InitializeWindow()
 
 		gameWindow = SDL_CreateWindow("B1T Jam #2 Game", windowWidth, windowHeight, SDL_WINDOW_MAXIMIZED);
 
+		SDL_Surface* iconSurface = IMG_Load("Textures/Sunflower1.png"); 
+
+		if (iconSurface) {
+	    	SDL_SetWindowIcon(Window::gameWindow, iconSurface);
+	    	SDL_DestroySurface(iconSurface); 
+		} else {
+		    // SDL_Log("Failed to load icon: %s", IMG_GetError());
+			std::cout << "not icon found " << std::endl;
+		}
+		
 		// Create an SDL renderer if the window creation works
 		if (gameWindow != 0)
 		{
