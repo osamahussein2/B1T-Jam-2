@@ -163,7 +163,8 @@ void ShieldDrone::CheckIfStunned()
 	// Move at normal speed when not stunned
 	if (!stunned)
 	{
-		if (velocity != 0.0032f) velocity = 0.0032f;
+		if (velocity != 0.0032f && currentDirectionIndex != 6) velocity = 0.0032f;
+		else if (velocity != 0.0016f && currentDirectionIndex >= 6) velocity = 0.0016f;
 		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
 	}
 
@@ -172,7 +173,8 @@ void ShieldDrone::CheckIfStunned()
 	{
 		stunnedTime += Window::GetDeltaTime() * 0.02f;
 
-		if (velocity != 0.0016f) velocity = 0.0016f;
+		if (velocity != 0.0016f && currentDirectionIndex != 6) velocity = 0.0016f;
+		else if (velocity != 0.0008f && currentDirectionIndex >= 6) velocity = 0.0008f;
 
 		if (stunnedTime >= 3.0f)
 		{

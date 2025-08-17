@@ -47,11 +47,11 @@ void GruntZogling::update()
 
 		//if (direction.x <= 0.1f && direction.y <= 0.1f && frameX != 0) frameX = 0;
 
-		if (direction.y > 0.1f && frameX != 0) frameX = 0; // Moving down
-		else if (direction.x > 0.1f && frameX != 2) frameX = 2; // Moving right
-		else if (direction.x > 0.1f && frameX != 3) frameX = 3; // Moving right
-		else if (direction.x < -0.1f && frameX != 6) frameX = 6; // Moving left
-		else if (direction.x < -0.1f && frameX != 7) frameX = 7; // Moving left
+		//if (direction.y > 0.1f && frameX != 0) frameX = 0; // Moving down
+		//else if (direction.x > 0.1f && frameX != 2) frameX = 2; // Moving right
+		//else if (direction.x > 0.1f && frameX != 3) frameX = 3; // Moving right
+		//else if (direction.x < -0.1f && frameX != 6) frameX = 6; // Moving left
+		//else if (direction.x < -0.1f && frameX != 7) frameX = 7; // Moving left
 
 		destEntity.w = (srcEntity.w * 1.0f) * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 		destEntity.h = (srcEntity.h * 1.0f) * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
@@ -165,7 +165,8 @@ void GruntZogling::CheckIfStunned()
 	// Move at normal speed when not stunned
 	if (!stunned)
 	{
-		if (velocity != 0.0032f) velocity = 0.0032f;
+		if (velocity != 0.0032f && currentDirectionIndex != 6) velocity = 0.0032f;
+		else if (velocity != 0.0016f && currentDirectionIndex >= 6) velocity = 0.0016f;
 		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
 	}
 
@@ -174,7 +175,8 @@ void GruntZogling::CheckIfStunned()
 	{
 		stunnedTime += Window::GetDeltaTime() * 0.02f;
 
-		if (velocity != 0.0016f) velocity = 0.0016f;
+		if (velocity != 0.0016f && currentDirectionIndex != 6) velocity = 0.0016f;
+		else if (velocity != 0.0008f && currentDirectionIndex >= 6) velocity = 0.0008f;
 
 		if (stunnedTime >= 3.0f)
 		{

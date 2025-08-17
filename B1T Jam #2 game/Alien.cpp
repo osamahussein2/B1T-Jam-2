@@ -6,7 +6,7 @@
 
 Alien::Alien()
 	: animationTimer(0.0f), isDead(false), hasTextureChanged(false), deathTimer(0.0f), 
-	position(Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 9.375f), direction(), velocity(0.0f),
+	position(Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f), direction(), velocity(0.0f),
 	currentDirectionIndex(0), stunned(false), stunnedTime(0.0f), seedIncreased(false)
 {
 }

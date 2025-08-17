@@ -876,17 +876,57 @@ void Engine::IterateAliens()
 		{
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
-			
-				if (aliensEntities[i].get()->GetCurrentDirectionIndex() < aliensDirections.size() -1)
-				{
-					Vector2 direction = aliensDirections[aliensEntities[i].get()->GetCurrentDirectionIndex()];
 
-					// std::cout << "dir x: " << test.x << " y: " << test.y << std::endl;
-					std::cout << "dir x: " << direction.x << " y: " << direction.y << std::endl;
-					aliensEntities[i].get()->moveEntity(direction.x, direction.y);
-				}
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 0)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f },
+					{ Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f });
+			}
 
-				aliensEntities[i].get()->render();
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 1)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f },
+					{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f });
+			}
+
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 2)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f },
+					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f });
+			}
+
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 3)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f },
+					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f });
+			}
+
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 4)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f },
+					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f });
+			}
+
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 5)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f },
+					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f });
+			}
+
+			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 6)
+			{
+				aliensEntities[i].get()->moveEntity(
+					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 0.5f },
+					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f });
+			}
+
+			aliensEntities[i].get()->render();
 		}
 	}
 
@@ -972,7 +1012,8 @@ void Engine::IterateAliens()
 		// Destroy grunt zogling/shield drone alien when they're dead and delete them from the vector
 		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
 			alien->getDeathAnimationTime() >= 8.0f || alien->getIsDead() && 
-			alien->getAlienID() == AlienType::ShieldDrone && alien->getDeathAnimationTime() >= 8.0f)
+			alien->getAlienID() == AlienType::ShieldDrone && alien->getDeathAnimationTime() >= 8.0f ||
+			alien->GetPosition().y >= Window::GetWindowHeight() + 50.0f)
 		{
 			alien->DestroyAlien();
 			it = aliensEntities.erase(it);
