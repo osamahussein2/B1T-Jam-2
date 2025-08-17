@@ -937,8 +937,11 @@ void Engine::IterateAliens()
 
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
+			float dx = plantsEntities[i].get()->GetPosition().x - alien->GetPosition().x;
+			float dy = plantsEntities[i].get()->GetPosition().y - alien->GetPosition().y;
+			float distance = std::sqrtf(dx * dx + dy * dy);
 			if (plantsEntities[i].get()->getEntityID() == PlantType::SunflowerShooter &&
-				plantsEntities[i].get()->GetShootingTime() >= 1.0f && !alien->getIsDead())
+				plantsEntities[i].get()->GetShootingTime() >= 1.0f && !alien->getIsDead() && distance <= 100.0f)
 			{
 				bullets.push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
 
