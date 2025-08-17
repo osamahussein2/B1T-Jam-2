@@ -38,18 +38,19 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             // check block type from level data (2D level array)
             Tile tile;
             Vector2 tilePosition(unit_width * x, unit_height * y);
+            Vector2 tileWorldPosition = {tilePosition.x <= 0 ? tilePosition.x : Window::GetWindowWidth() / tilePosition.x, tilePosition.y <= 0 ? tilePosition.y : Window::GetWindowHeight() / tilePosition.y};
             Vector2 tileScale(unit_width, unit_height);
 
             if (tileData[y][x] == 0)
             {
-                tile.InitializeTile(textureBlock0, tilePosition, tileScale);
+                tile.InitializeTile(textureBlock0, tilePosition, tileWorldPosition, tileScale);
             }
             else if (tileData[y][x] == 1) // tile
             {
-                tile.InitializeTile(textureBlock1, tilePosition, tileScale);
+                tile.InitializeTile(textureBlock1, tilePosition, tileWorldPosition, tileScale);
             } else if (tileData[y][x] == 2)
             {
-                tile.InitializeTile(textureBlock2, tilePosition, tileScale);
+                tile.InitializeTile(textureBlock2, tilePosition, tileWorldPosition, tileScale);
             }
 
             tile.SetTileID(tileData[y][x]);

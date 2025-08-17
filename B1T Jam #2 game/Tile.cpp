@@ -9,7 +9,7 @@ Tile::~Tile()
 {	
 }
 
-void Tile::InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 scaleMultiplier_)
+void Tile::InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 worldPos_, Vector2 scaleMultiplier_)
 {
 	// Load tile image
 	tileTexture = _tileTexture;
@@ -23,6 +23,9 @@ void Tile::InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 s
 	// Draw tile somewhere inside the window
 	destTile.x = tilePos_.x;
 	destTile.y = tilePos_.y;
+
+	worldPosition.x = worldPos_.x;
+	worldPosition.y = worldPos_.y;
 
 	destTile.w = scaleMultiplier_.x;
 	destTile.h = scaleMultiplier_.y;
@@ -52,4 +55,9 @@ unsigned int Tile::GetTileID() const
 Vector2 Tile::GetTilePosition() const
 {
 	return Vector2 {destTile.x, destTile.y};
+}
+
+Vector2 Tile::GetTileWorldPosition() const
+{
+	return Vector2 {worldPosition.x, worldPosition.y};
 }

@@ -506,7 +506,7 @@ void Engine::InitializeGameLevels()
 	{
 		if(level1.GetTilesArray()[i].GetTileID() == 0)
 		{
-			aliensDirections.push_back(level1.GetTilesArray()[i].GetTilePosition());
+			aliensDirections.push_back(level1.GetTilesArray()[i].GetTileWorldPosition());
 		}
 	}
 }
@@ -877,30 +877,16 @@ void Engine::IterateAliens()
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
 			
-			// for (int j = 0; j < aliensDirections.size(); j++)
-			// {
-				// Vector2 direction = aliensDirections[j];
 				if (aliensEntities[i].get()->GetCurrentDirectionIndex() < aliensDirections.size() -1)
 				{
 					Vector2 direction = aliensDirections[aliensEntities[i].get()->GetCurrentDirectionIndex()];
-					Vector2 start(Window::GetWindowWidth() / 8.15385f, Window::GetWindowHeight() / 8.69565f );
 
+					// std::cout << "dir x: " << test.x << " y: " << test.y << std::endl;
 					std::cout << "dir x: " << direction.x << " y: " << direction.y << std::endl;
-					
-					aliensEntities[i].get()->moveEntity(
-							{ Window::GetWindowWidth() / direction.x, direction.y <= 0 ? direction.y : Window::GetWindowWidth() / direction.y }, 
-							{ Window::GetWindowWidth() / start.x, Window::GetWindowHeight() / start.y });
-
-					// harcoded works
-					// but currentIndexDir does not actualize
-					// aliensEntities[i].get()->moveEntity(
-					// { Window::GetWindowWidth() / 5.57015f, Window::GetWindowHeight() / 2.3166f }, 
-					// { Window::GetWindowWidth() / 4.15385f, Window::GetWindowHeight() / 8.69565f });
+					aliensEntities[i].get()->moveEntity(direction.x, direction.y);
 				}
 
 				aliensEntities[i].get()->render();
-			// }
-
 		}
 	}
 

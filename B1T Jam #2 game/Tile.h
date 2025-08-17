@@ -16,7 +16,7 @@ public:
 	Tile();
 	~Tile();
 
-	void InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 scaleMultiplier_);
+	void InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 worldPos_,Vector2 scaleMultiplier_);
 	void DestroyTile();
 	void RenderTile();
 
@@ -24,6 +24,7 @@ public:
 	unsigned int GetTileID() const;
 
 	Vector2 GetTilePosition() const;
+	Vector2 GetTileWorldPosition() const;
 
 	SDL_FRect GetTileDimensions() const { return destTile; }
 	Vector2 GetTileCenter() const { return { destTile.x + (destTile.w / 2.0f), destTile.y + (destTile.h / 2.0f) }; }
@@ -37,6 +38,8 @@ private:
 	SDL_Surface* tileSurface;
 
 	unsigned int m_ID;
+
+	Vector2 worldPosition;
 };
 
 #endif

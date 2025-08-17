@@ -136,6 +136,8 @@ void GruntZogling::moveEntity(Vector2 moveToPosition, Vector2 startingPosition)
 		float dy = moveToPosition.y - destEntity.y;
 		float distance = sqrtf((dx * dx) + (dy * dy));
 
+		Vector2 pos = { Window::GetWindowWidth() / GetPosition().x, Window::GetWindowHeight() / GetPosition().y };
+
 		if (distance > 1.0f)
 		{
 			direction.x += (moveToPosition.x - startingPosition.x) * velocity * Window::GetDeltaTime();
