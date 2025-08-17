@@ -43,7 +43,10 @@ public:
 	static void SpendPlayerCurrency(unsigned int cost_) { playerCurrency -= cost_; }
 	static void EarnPlayerCurrency(unsigned int earned_) { playerCurrency += earned_; }
 
+	static void GoToNextWave();
 	static void GoToNextLevel();
+
+	static void GoToShoppingMenu();
 
 	static unsigned int flowerUpgrade;
 
@@ -60,6 +63,8 @@ public:
 	static int enemiesKilled;
 	static float enemySpawnTime;
 
+	static int enemyNumber;
+
 private:
 	Player();
 
@@ -72,8 +77,6 @@ private:
 	static void UpdateLevel();
 
 	static void SavePlayerProgress();
-
-	static void GoToNextWave();
 
 	static void ChangeScore();
 

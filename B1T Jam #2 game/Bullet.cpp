@@ -1,5 +1,6 @@
 #include "Bullet.h"
 #include "Window.h"
+#include "Player.h"
 
 Bullet::Bullet(Vector2 position_) : frameX(0), position(position_), direction(), isDestroyed(false)
 {
@@ -10,6 +11,9 @@ Bullet::Bullet(Vector2 position_) : frameX(0), position(position_), direction(),
 
 	entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 	SDL_DestroySurface(entitySurface);
+
+	if (Player::flowerUpgrade == 0) velocity = 0.016f;
+	else if (Player::flowerUpgrade == 1) velocity = 0.032f;
 }
 
 Bullet::~Bullet()
@@ -60,8 +64,8 @@ void Bullet::render()
 
 void Bullet::moveEntity(Vector2 position_)
 {
-	direction.x += (position_.x - position.x) * 0.008f * Window::GetDeltaTime();
-	direction.y += (position_.y - position.y) * 0.008f * Window::GetDeltaTime();
+	direction.x += (position_.x - position.x) * velocity * Window::GetDeltaTime();
+	direction.y += (position_.y - position.y) * velocity * Window::GetDeltaTime();
 }
 
 void Bullet::collision(Entity* other)

@@ -40,6 +40,8 @@ int Player::currentSeedAmount = 100;
 int Player::enemiesKilled = 0;
 float Player::enemySpawnTime = 0.0f;
 
+int Player::enemyNumber = 0;
+
 // Initialize non-static variables
 bool pressed = false;
 
@@ -382,44 +384,6 @@ void Player::UpdateWave()
 
 		break;
 
-	case 4:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
-	case 5:
-		if (waveChanged)
-		{
-			Engine::UpdateCurrentWaveText();
-			Engine::UpdateSeedAmountText();
-
-			if (canSaveProgress) SavePlayerProgress();
-
-			waveFinishedChanging = false;
-			waveChanged = false;
-		}
-
-		else if (!waveChanged)
-		{
-			if (waveFinishedChanging != true) waveFinishedChanging = true;
-		}
-
-		break;
-
 	default:
 
 #ifdef _DEBUG
@@ -566,8 +530,7 @@ void Player::SavePlayerProgress()
 
 void Player::GoToNextWave()
 {
-	if (waveNumber < 5) ++waveNumber;
-	else if (waveNumber >= 5) waveNumber = 1;
+	++waveNumber;
 
 	waveChanged = true;
 	canSaveProgress = true;
@@ -575,15 +538,15 @@ void Player::GoToNextWave()
 
 void Player::GoToNextLevel()
 {
-	if (levelNumber < 3)
+	/*if (levelNumber < 3)
 	{
 		++levelNumber;
 		levelChanged = true;
 
 		fadingTexts["levelText"].SetAlphaStateChanged(false);
-	}
+	}*/
 
-	else
+	if (levelNumber < 3)
 	{
 		levelNumber = 1;
 		levelChanged = true;
@@ -598,14 +561,25 @@ void Player::GoToNextLevel()
 	Engine::UpdateSeedAmountText();
 
 	if (canSaveProgress != true) canSaveProgress = true;
-	
-	playerCurrency += currentPlayerScore;
 
 	if (currentPlayerScore != 0)
 	{
 		currentPlayerScore = 0;
 		scoreChanged = true;
 	}
+}
+
+void Player::GoToShoppingMenu()
+{
+	playerCurrency += currentPlayerScore;
+
+#ifdef _DEBUG
+	std::cout << playerCurrency << std::endl;
+#endif
+
+	Engine::UpdatePlayerCurrencyText();
+
+	Window::gameState = GameState::Shopping;
 }
 
 void Player::ChangeScore()
