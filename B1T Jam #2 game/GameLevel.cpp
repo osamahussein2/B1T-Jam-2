@@ -26,6 +26,7 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
     float unit_width = levelWidth / static_cast<float>(width);
     float unit_height = levelHeight / static_cast<float>(height); 
 
+    SDL_Texture* textureBlock0 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_0.png");
     SDL_Texture* textureBlock1 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_1.png");
     SDL_Texture* textureBlock2 = IMG_LoadTexture(Window::GetRenderer(), "Textures/block_2.png");
 
@@ -39,7 +40,11 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             Vector2 tilePosition(unit_width * x, unit_height * y);
             Vector2 tileScale(unit_width, unit_height);
 
-            if (tileData[y][x] == 1) // tile
+            if (tileData[y][x] == 0)
+            {
+                tile.InitializeTile(textureBlock0, tilePosition, tileScale);
+            }
+            else if (tileData[y][x] == 1) // tile
             {
                 tile.InitializeTile(textureBlock1, tilePosition, tileScale);
             } else if (tileData[y][x] == 2)
