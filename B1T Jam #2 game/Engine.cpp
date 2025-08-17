@@ -161,6 +161,23 @@ void Engine::RunEngine()
 
 			if (Player::GetWaveFinishedChanging() && Player::GetLevelFinishedChanging())
 			{
+				// render player level, i have to validate yet also if exist on the array
+				// but we know we have 3 levels	
+				switch(Player::GetLevelNumber())
+				{
+					case 1:
+						gameLevels[0].RenderLevel();
+						break;
+					case 2:
+						gameLevels[1].RenderLevel();
+						break;
+					case 3:
+						gameLevels[2].RenderLevel();
+						break;
+					default:
+						std::cout << "level not loaded" << std::endl;
+						break;
+				}
 				// Render player HUD texts
 				for (std::pair<std::string, Text> HUD_Map : playerHUD) HUD_Map.second.RenderText();
 
@@ -192,23 +209,6 @@ void Engine::RunEngine()
 					}
 				}
 
-				// render player level, i have to validate yet also if exist on the array
-				// but we know we have 3 levels	
-				switch(Player::GetLevelNumber())
-				{
-					case 1:
-						gameLevels[0].RenderLevel();
-						break;
-					case 2:
-						gameLevels[1].RenderLevel();
-						break;
-					case 3:
-						gameLevels[2].RenderLevel();
-						break;
-					default:
-						std::cout << "level not loaded" << std::endl;
-						break;
-				}
 
 				shovel.render();
 
@@ -494,7 +494,7 @@ void Engine::InitializeGameLevels()
 
 	for (int i = 0; i < level1.GetTilesArray().size(); i++)
 	{
-		if(level1.GetTilesArray()[i].GetTileID() == 1)
+		if(level1.GetTilesArray()[i].GetTileID() == 0)
 		{
 			aliensDirections.push_back(level1.GetTilesArray()[i].GetTilePosition());
 		}
@@ -913,29 +913,30 @@ void Engine::IterateAliens()
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
 			
-			switch (aliensEntities[i].get()->GetCurrentDirectionIndex())
-			{
-			case 0:
-				// start 6.15385 y: 8.69565
-				// move 5.97015 y: 2.3166
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 5.57015f, Window::GetWindowHeight() / 2.3166f }, 
-					{ Window::GetWindowWidth() / 4.15385f, Window::GetWindowHeight() / 8.69565f });
+			// for (int j = 0; j < aliensDirections.size(); j++)
+			// {
+				// Vector2 direction = aliensDirections[j];
+				if (aliensEntities[i].get()->GetCurrentDirectionIndex() < aliensDirections.size() -1)
+				{
+					Vector2 direction = aliensDirections[aliensEntities[i].get()->GetCurrentDirectionIndex()];
+					Vector2 start(Window::GetWindowWidth() / 8.15385f, Window::GetWindowHeight() / 8.69565f );
 
-				break;
+					std::cout << "dir x: " << direction.x << " y: " << direction.y << std::endl;
+					
+					aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / direction.x, direction.y <= 0 ? direction.y : Window::GetWindowWidth() / direction.y }, 
+							{ Window::GetWindowWidth() / start.x, Window::GetWindowHeight() / start.y });
 
-			case 1:
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 2.622f, Window::GetWindowHeight() / 1.875f }, 
-					{ Window::GetWindowWidth() / 5.555f, Window::GetWindowHeight() / 1.875f });
+					// harcoded works
+					// but currentIndexDir does not actualize
+					// aliensEntities[i].get()->moveEntity(
+					// { Window::GetWindowWidth() / 5.57015f, Window::GetWindowHeight() / 2.3166f }, 
+					// { Window::GetWindowWidth() / 4.15385f, Window::GetWindowHeight() / 8.69565f });
+				}
 
-				break;
+				aliensEntities[i].get()->render();
+			// }
 
-			default:
-				break;
-			}
-
-			aliensEntities[i].get()->render();
 		}
 	}
 
