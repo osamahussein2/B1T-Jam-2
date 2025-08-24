@@ -16,7 +16,12 @@ GruntZogling::GruntZogling()
 	// Set alien's health to be whatever at the start and increased after progressing past waves
 	alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
 
-	velocity = 0.0032f;
+	if (Player::GetWaveNumber() == 2)
+	{
+		velocity = 0.1132f;
+	} else {
+		velocity = 0.0032f;
+	}
 }
 
 GruntZogling::~GruntZogling()

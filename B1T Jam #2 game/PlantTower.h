@@ -5,7 +5,11 @@
 
 #include "Entity.h"
 #include "PlantType.h"
+#include "Alien.h"
+#include "Bullet.h"
 
+#include <vector>
+#include <memory>
 class PlantTower : public Entity
 {
     public:
@@ -25,7 +29,6 @@ class PlantTower : public Entity
         void PlacePlant() { if (goingToPlacePlant != false) goingToPlacePlant = false; }
         bool GetGoingToPlacePlant() const { return goingToPlacePlant; }
 
-        Vector2 GetPosition() const { return { destEntity.x, destEntity.y }; }
         Vector2 GetCenter() const { return { destEntity.x + (destEntity.w / 2.0f),
             destEntity.y + (destEntity.h / 2.0f) }; }
 
@@ -40,6 +43,19 @@ class PlantTower : public Entity
         bool GetSeedDecreased() { return seedDecreased; }
         void SetSeedDecreased(bool value_) { seedDecreased = value_; }
 
+        void SetEntityTarget(Entity* target_);
+
+        Vector2 GetTarget() { return m_target; } 
+
+        void AddTarget(Alien* alien) { targetEntities.push_back(alien); }
+        void RemoveTarget(Alien* alien) { targetEntities.erase(std::find(targetEntities.begin(), targetEntities.end(), alien)); }
+
+        bool GetIsTarget() { return isTargetSet; }
+        void SetIsTarget(bool value_) { isTargetSet = value_; }
+
+        std::vector<Alien*> GetTargets() const { return targetEntities; }
+        std::vector<std::unique_ptr<Bullet>>& GetBullets() { return bullets; }
+
 protected:
     float          animationTimer;
 
@@ -49,8 +65,14 @@ protected:
     bool hasTextureChanged;
 
     float shootingTime;
+    bool  isTargetSet;
 
     bool seedDecreased;
+
+    Vector2 m_target;
+
+    std::vector<Alien*> targetEntities;
+    std::vector<std::unique_ptr<Bullet>> bullets;
 
     private:
         PlantType   m_PlantID;

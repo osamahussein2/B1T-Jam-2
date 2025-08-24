@@ -19,6 +19,10 @@ class Entity
         virtual void                collision(Entity* other);
 
         SDL_FRect destEntity;
+        
+        Vector2 GetPosition() const {return  destEntity.x, destEntity.y; }
+ 
+        Vector2 GetWorldPosition();
 
     protected:
         virtual void                update();
@@ -33,6 +37,7 @@ class Entity
 
     private:
         Vector2     m_Position;
+        Vector2     m_WorldPosition;
         Vector2     m_Velocity;
         int         m_LifePoints;
 };

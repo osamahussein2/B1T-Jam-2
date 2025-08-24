@@ -42,6 +42,9 @@ class Alien : public Entity
         bool GetSeedIncreased() { return seedIncreased; }
         void SetSeedIncreased(bool value_) { seedIncreased = value_; }
 
+        void IncreaseAlienVelocity(float velocity_) { velocity += velocity_; }
+        float GetAlienVelocity() { return velocity; }
+
     protected:
          float          alienHealth;
          float          animationTimer;
@@ -57,6 +60,7 @@ class Alien : public Entity
          bool seedIncreased;
 
          float velocity;
+         float initialVelocity;
 
          int frameX;
 

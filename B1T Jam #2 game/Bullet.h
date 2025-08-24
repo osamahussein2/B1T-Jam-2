@@ -24,6 +24,8 @@ public:
     void SetIsDestroyed(bool destroyed_) { isDestroyed = destroyed_; }
     bool IsDestroyed() const { return isDestroyed; }
 
+    Vector2 GetPosition() { return position; }
+
 private:
     int frameX;
 

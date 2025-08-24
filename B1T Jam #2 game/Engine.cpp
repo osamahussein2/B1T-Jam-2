@@ -47,7 +47,7 @@ std::vector<GameLevel> gameLevels;
 Shovel shovel;
 
 // Bullet
-std::vector<std::unique_ptr<Bullet>> bullets;
+//std::vector<std::unique_ptr<Bullet>> bullets;
 
 std::vector<Vector2> aliensDirections;
 
@@ -104,10 +104,14 @@ void Engine::RunEngine()
 				aliensEntities.clear();
 			}
 
-			if (!bullets.empty())
+
+			for (int i = 0; i < plantsEntities.size(); i++)
 			{
-				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
-				bullets.clear();
+				if (!plantsEntities[i]->GetBullets().empty())
+				{
+					for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++) plantsEntities[i]->GetBullets()[j].get()->DestroyBullet();
+					plantsEntities[i]->GetBullets().clear();
+				}
 			}
 
 			// if (!gameLevels.empty()) got to validate that the player won the level to destroy it
@@ -171,20 +175,20 @@ void Engine::RunEngine()
 			{
 				// render player level, i have to validate yet also if exist on the array
 				// but we know we have 3 levels	
-				switch(Player::GetLevelNumber())
+				switch (Player::GetLevelNumber())
 				{
-					case 1:
-						gameLevels[0].RenderLevel();
-						break;
-					case 2:
-						gameLevels[1].RenderLevel();
-						break;
-					case 3:
-						gameLevels[2].RenderLevel();
-						break;
-					default:
-						std::cout << "level not loaded" << std::endl;
-						break;
+				case 1:
+					gameLevels[0].RenderLevel();
+					break;
+				case 2:
+					gameLevels[1].RenderLevel();
+					break;
+				case 3:
+					gameLevels[2].RenderLevel();
+					break;
+				default:
+					std::cout << "level not loaded" << std::endl;
+					break;
 				}
 				GivePlayerSeeds();
 
@@ -306,10 +310,12 @@ void Engine::RunEngine()
 		placePlantMap.first.clear();
 	}
 
-	if (!bullets.empty())
-	{
-		for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
-		bullets.clear();
+	for (int i = 0; i < plantsEntities.size(); i++) {
+		if (!plantsEntities[i]->GetBullets().empty())
+		{
+			for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++) plantsEntities[i]->GetBullets()[j].get()->DestroyBullet();
+			plantsEntities[i]->GetBullets().clear();
+		}
 	}
 
 	// Clear all entities
@@ -935,15 +941,25 @@ void Engine::IterateAliens()
 	{
 		Alien* alien = it->get();
 
+
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
 			float dx = plantsEntities[i].get()->GetPosition().x - alien->GetPosition().x;
 			float dy = plantsEntities[i].get()->GetPosition().y - alien->GetPosition().y;
 			float distance = std::sqrtf(dx * dx + dy * dy);
+
 			if (plantsEntities[i].get()->getEntityID() == PlantType::SunflowerShooter &&
-				plantsEntities[i].get()->GetShootingTime() >= 1.0f && !alien->getIsDead() && distance <= 100.0f)
+				plantsEntities[i].get()->GetShootingTime() >= 1.0f * 0.35f && !alien->getIsDead() && distance <= 75.0f)
 			{
-				bullets.push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
+				plantsEntities[i]->GetBullets().push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
+
+				if (plantsEntities[i]->GetTargets().size() == 0)
+				{
+					plantsEntities[i]->AddTarget(alien);
+				} else if (plantsEntities[i]->GetTargets().size() > 0 && distance > 75.0f)
+				{
+					// plantsEntities[i]->RemoveTarget(alien);
+				}
 
 				Window::sounds["BulletSound"].PlayAudio();
 
@@ -981,36 +997,43 @@ void Engine::IterateAliens()
 				plantsEntities[i].get()->SetIsDead(true);
 				alien->StunAlien();
 			}
-		}
 
-		for (int i = 0; i < bullets.size(); i++)
-		{
-			bullets[i].get()->moveEntity(alien->GetCenter());
 
-			// Check if bullets hit the alien and kill the aliens
-			if (bullets[i].get()->checkCollision(alien) && !alien->getIsDead())
+		for (int j = 0; j < plantsEntities[i]->GetTargets().size(); j++) {
+			for (int k = 0; k < plantsEntities[i]->GetBullets().size(); k++)
 			{
-				// Destroy the bullets too until the alien's death animation is completed
-				bullets[i].get()->SetIsDestroyed(true);
+				Alien *target = plantsEntities[i]->GetTargets()[0];
 
-				if (Player::flowerUpgrade <= 0) alien->SetAlienDamaged(5.0f);
-				else if (Player::flowerUpgrade == 1) alien->SetAlienDamaged(10.0f);
+				plantsEntities[i]->GetBullets()[k].get()->moveEntity(target->GetCenter());
 
-				if (alien->GetAlienHealth() <= 0.1f && !alien->GetSeedIncreased())
-				{
-					Player::currentSeedAmount += 30;
-					Player::scoreChanged = true;
+						// Check if bullets hit the alien and kill the aliens
+						if (plantsEntities[i]->GetBullets()[k].get()->checkCollision(alien) && !alien->getIsDead())
+						{
+							// Destroy the bullets too until the alien's death animation is completed
+							plantsEntities[i]->GetBullets()[k].get()->SetIsDestroyed(true);
 
-					Player::enemiesKilled += 1;
+							if (Player::flowerUpgrade <= 0) alien->SetAlienDamaged(5.0f);
+							else if (Player::flowerUpgrade == 1) alien->SetAlienDamaged(10.0f);
 
-#ifdef _DEBUG
-					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
-#endif
+							if (alien->GetAlienHealth() <= 0.1f && !alien->GetSeedIncreased())
+							{
+								Player::currentSeedAmount += 30;
+								Player::scoreChanged = true;
 
-					alien->SetSeedIncreased(true);
+								Player::enemiesKilled += 1;
+								plantsEntities[i]->RemoveTarget(target);
+
+			#ifdef _DEBUG
+								std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
+			#endif
+
+								alien->SetSeedIncreased(true);
+							}
+						}
 				}
-			}
 		}
+		}
+				
 
 		// Destroy grunt zogling/shield drone alien when they're dead and delete them from the vector
 		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
@@ -1073,14 +1096,16 @@ void Engine::IteratePlants()
 
 void Engine::IterateBullets()
 {
-	for (int i = 0; i < bullets.size(); i++)
-	{
-		bullets[i].get()->update();
-		bullets[i].get()->render();
-	}
+
+	for (int i = 0; i < plantsEntities.size(); i++) {
+		for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++)
+		{
+			plantsEntities[i]->GetBullets()[j].get()->update();
+			plantsEntities[i]->GetBullets()[j].get()->render();
+		}
 
 	// Iterate through the bullets
-	for (auto it = bullets.begin(); it != bullets.end();)
+	for (auto it = plantsEntities[i]->GetBullets().begin(); it != plantsEntities[i]->GetBullets().end();)
 	{
 		Bullet* bullet = it->get();
 
@@ -1088,13 +1113,14 @@ void Engine::IterateBullets()
 		if (bullet->GetLifeTime() >= 3.0f || bullet->IsDestroyed())
 		{
 			bullet->DestroyBullet();
-			it = bullets.erase(it);
+			it = plantsEntities[i]->GetBullets().erase(it);
 		}
 		else
 		{
 			++it;
 		}
 	}
+}
 }
 
 void Engine::RestartCreditsMenu()
@@ -1250,10 +1276,14 @@ void Engine::HandleLevel1Enemies()
 					aliensEntities.clear();
 				}
 
-				if (!bullets.empty())
+				for (int i = 0; i < plantsEntities.size(); i++)
 				{
-					for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
-					bullets.clear();
+					if (!plantsEntities[i]->GetBullets().empty())
+					{
+						for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++) plantsEntities[i]->GetBullets()[j].get()->DestroyBullet();
+						plantsEntities[i]->GetBullets().clear();
+					}
+
 				}
 
 				Player::GoToShoppingMenu();
@@ -1398,10 +1428,13 @@ void Engine::HandleLevel2Enemies()
 				aliensEntities.clear();
 			}
 
-			if (!bullets.empty())
+			for (int i = 0; i < plantsEntities.size(); i++)
 			{
-				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
-				bullets.clear();
+				if (!plantsEntities[i]->GetBullets().empty())
+				{
+					for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++) plantsEntities[i]->GetBullets()[j].get()->DestroyBullet();
+					plantsEntities[i]->GetBullets().clear();
+				}
 			}
 
 			delayTimer += Window::GetDeltaTime() * 0.02f;
@@ -1536,10 +1569,13 @@ void Engine::HandleLevel3Enemies()
 				aliensEntities.clear();
 			}
 
-			if (!bullets.empty())
+			for (int i = 0; i < plantsEntities.size(); i++)
 			{
-				for (int i = 0; i < bullets.size(); i++) bullets[i].get()->DestroyBullet();
-				bullets.clear();
+				if (!plantsEntities[i]->GetBullets().empty())
+				{
+					for (int j = 0; j < plantsEntities[i]->GetBullets().size(); j++) plantsEntities[i]->GetBullets()[j].get()->DestroyBullet();
+					plantsEntities[i]->GetBullets().clear();
+				}
 			}
 
 			Player::GoToShoppingMenu();

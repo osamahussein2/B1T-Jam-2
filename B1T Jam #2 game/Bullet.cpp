@@ -74,8 +74,14 @@ void Bullet::collision(Entity* other)
 
 bool Bullet::checkCollision(Entity* other)
 {
-	return destEntity.x + destEntity.w >= other->destEntity.x && destEntity.x <= other->destEntity.x + other->destEntity.w
+	bool collision = destEntity.x + destEntity.w >= other->destEntity.x && destEntity.x <= other->destEntity.x + other->destEntity.w
 		&& destEntity.y + destEntity.h >= other->destEntity.y && destEntity.y <= other->destEntity.y + other->destEntity.h;
+
+	// if (collision)
+	// 	DestroyBullet();
+	
+	return collision;
+
 }
 
 void Bullet::DestroyBullet()

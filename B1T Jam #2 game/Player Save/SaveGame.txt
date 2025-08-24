@@ -1,6 +1,6 @@
-Wave Number = 1
+Wave Number = 3
 Level Number = 1
-Player score = 0
-Player currency = 0
+Player score = 175
+Player currency = 1485
 Flower upgrade 0
-Seed amount = 100
+Seed amount = 140
