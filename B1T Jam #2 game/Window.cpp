@@ -13,9 +13,13 @@ int Window::windowHeight = 600;
 
 bool Window::isRunning = false;
 
+float Window::deltaTime = 0.0f;
+
 GameState Window::gameState = GameState::MainMenu;
 
 std::map<std::string, Audio> Window::sounds;
+
+Uint32 Window::lastTick = 0;
 
 Window::Window()
 {
@@ -90,6 +94,8 @@ void Window::InitializeWindow()
 				isRunning = true;
 				
 				gameState = GameState::MainMenu;
+
+				lastTick = SDL_GetTicks();
 			}
 
 			else
@@ -111,6 +117,12 @@ void Window::InitializeWindow()
 
 void Window::RenderBeginFrame()
 {
+	Uint32 currentTick = SDL_GetTicks();
+	deltaTime = (float)(currentTick - lastTick) / 1000.0f;
+	lastTick = currentTick;
+
+	//std::cout << deltaTime << std::endl;
+
 	// Clear the window with the set drawing color
 	SDL_RenderClear(gameRenderer);
 }

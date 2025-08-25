@@ -47,7 +47,7 @@ void EggplantTrap::update()
 		if (!isDead)
 		{
 			//Prevents the x frame animation from animating too fast
-			animationTimer += Window::GetDeltaTime() * 0.1f;
+			animationTimer += Window::GetDeltaTime() * 10.0f;
 
 			// Set the source rectangle to match the sprite dimensions for animation
 			srcEntity.x = 0;

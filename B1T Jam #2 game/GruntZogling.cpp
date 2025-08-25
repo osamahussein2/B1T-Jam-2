@@ -16,7 +16,7 @@ GruntZogling::GruntZogling()
 	// Set alien's health to be whatever at the start and increased after progressing past waves
 	alienHealth = 100.0f + ((Player::GetWaveNumber() - 1) * 10.0f);
 
-	velocity = 0.0032f;
+	velocity = 0.3f;
 }
 
 GruntZogling::~GruntZogling()
@@ -94,7 +94,7 @@ void GruntZogling::update()
 		else
 		{
 			// Prevents the x frame animation from animating too fast
-			deathTimer += Window::GetDeltaTime() * 0.1f;
+			deathTimer += Window::GetDeltaTime() * 10.0f;
 
 			// Set the source rectangle to match the sprite dimensions for animation
 			srcEntity.x = (entityTexture->w / 8) * static_cast<int>(deathTimer);
@@ -138,7 +138,7 @@ void GruntZogling::moveEntity(Vector2 moveToPosition, Vector2 startingPosition)
 
 		Vector2 pos = { Window::GetWindowWidth() / GetPosition().x, Window::GetWindowHeight() / GetPosition().y };
 
-		if (distance > 1.0f)
+		if (distance > 0.3f)
 		{
 			direction.x += (moveToPosition.x - startingPosition.x) * velocity * Window::GetDeltaTime();
 			direction.y += (moveToPosition.y - startingPosition.y) * velocity * Window::GetDeltaTime();
@@ -165,18 +165,18 @@ void GruntZogling::CheckIfStunned()
 	// Move at normal speed when not stunned
 	if (!stunned)
 	{
-		if (velocity != 0.0032f && currentDirectionIndex != 6) velocity = 0.0032f;
-		else if (velocity != 0.0016f && currentDirectionIndex >= 6) velocity = 0.0016f;
+		if (velocity != 0.3f && currentDirectionIndex != 6) velocity = 0.3f;
+		else if (velocity != 0.15f && currentDirectionIndex >= 6) velocity = 0.15f;
 		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
 	}
 
 	// Move 50% slower if stunned
 	else if (stunned)
 	{
-		stunnedTime += Window::GetDeltaTime() * 0.02f;
+		stunnedTime += Window::GetDeltaTime();
 
-		if (velocity != 0.0016f && currentDirectionIndex != 6) velocity = 0.0016f;
-		else if (velocity != 0.0008f && currentDirectionIndex >= 6) velocity = 0.0008f;
+		if (velocity != 0.15f && currentDirectionIndex != 6) velocity = 0.15f;
+		else if (velocity != 0.075f && currentDirectionIndex >= 6) velocity = 0.075f;
 
 		if (stunnedTime >= 3.0f)
 		{

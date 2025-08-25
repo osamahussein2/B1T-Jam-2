@@ -47,7 +47,7 @@ void SunflowerShooter::update()
 
 	else
 	{
-		shootingTime += Window::GetDeltaTime() * 0.02f;
+		shootingTime += Window::GetDeltaTime();
 
 		// Set the source rectangle to match the sprite dimensions for animation
 		srcEntity.x = 0;

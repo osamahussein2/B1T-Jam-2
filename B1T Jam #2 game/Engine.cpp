@@ -1016,7 +1016,8 @@ void Engine::IterateAliens()
 		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
 			alien->getDeathAnimationTime() >= 8.0f || alien->getIsDead() && 
 			alien->getAlienID() == AlienType::ShieldDrone && alien->getDeathAnimationTime() >= 8.0f ||
-			alien->GetPosition().y >= Window::GetWindowHeight() + 50.0f)
+			alien->GetPosition().y >= Window::GetWindowHeight() + 50.0f ||
+			alien->GetPosition().x >= Window::GetWindowWidth() + 50.0f)
 		{
 			alien->DestroyAlien();
 			it = aliensEntities.erase(it);
@@ -1117,7 +1118,7 @@ void Engine::SpawnEnemies()
 
 void Engine::HandleLevel1Enemies()
 {
-	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+	Player::enemySpawnTime += Window::GetDeltaTime();
 
 	switch (Player::GetWaveNumber())
 	{
@@ -1147,7 +1148,7 @@ void Engine::HandleLevel1Enemies()
 
 		if (Player::enemiesKilled >= 5)
 		{
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1186,7 +1187,7 @@ void Engine::HandleLevel1Enemies()
 
 		if (Player::enemiesKilled >= 5)
 		{
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1233,7 +1234,7 @@ void Engine::HandleLevel1Enemies()
 
 		if (Player::enemiesKilled >= 5)
 		{
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1277,7 +1278,7 @@ void Engine::HandleLevel1Enemies()
 
 void Engine::HandleLevel2Enemies()
 {
-	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+	Player::enemySpawnTime += Window::GetDeltaTime();
 
 	switch (Player::GetWaveNumber())
 	{
@@ -1307,7 +1308,7 @@ void Engine::HandleLevel2Enemies()
 
 		if (Player::enemiesKilled >= 5)
 		{
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1346,7 +1347,7 @@ void Engine::HandleLevel2Enemies()
 
 		if (Player::enemiesKilled >= 5)
 		{
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1404,7 +1405,7 @@ void Engine::HandleLevel2Enemies()
 				bullets.clear();
 			}
 
-			delayTimer += Window::GetDeltaTime() * 0.02f;
+			delayTimer += Window::GetDeltaTime();
 
 			if (delayTimer >= 0.2f)
 			{
@@ -1429,7 +1430,7 @@ void Engine::HandleLevel2Enemies()
 
 void Engine::HandleLevel3Enemies()
 {
-	Player::enemySpawnTime += Window::GetDeltaTime() * 0.02f;
+	Player::enemySpawnTime += Window::GetDeltaTime();
 
 	switch (Player::GetWaveNumber())
 	{
@@ -1563,7 +1564,7 @@ void Engine::GivePlayerSeeds()
 	// Increase seed value whenever player is low on seeds
 	if (Player::currentSeedAmount < 25)
 	{
-		seedTime += Window::GetDeltaTime() * 0.02f;
+		seedTime += Window::GetDeltaTime();
 
 		if (seedTime >= 3.0f)
 		{

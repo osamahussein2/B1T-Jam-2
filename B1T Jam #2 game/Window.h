@@ -50,7 +50,9 @@ private:
 
 	static bool isRunning;
 
-	static constexpr float deltaTime = 1.0f / 60.0f;
+	static float deltaTime;
+
+	static Uint32 lastTick;
 };
 
 #endif
