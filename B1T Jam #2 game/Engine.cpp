@@ -943,6 +943,7 @@ void Engine::IterateAliens()
 
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
+			// i have to refactor this
 			float plantPositionX = plantsEntities[i].get()->GetPosition().x;
 			float plantPositionY = plantsEntities[i].get()->GetPosition().y;
 			Vector2 plantWorldPosition = { plantPositionX <= 0 ? plantPositionX : Window::GetWindowWidth() / plantPositionX,
@@ -957,11 +958,11 @@ void Engine::IterateAliens()
 			float dy = plantWorldPosition.y - plantWorldPosition.y;
 
 			float distance = std::sqrtf(dx * dx + dy * dy);
-			constexpr float min_distance = 0.50f;
-			constexpr float max_distance = 5.91552f;
+			constexpr float minDistance = 0.50f;
+			constexpr float maxDistance = 4.91552f;
 
 			if (plantsEntities[i].get()->getEntityID() == PlantType::SunflowerShooter &&
-				plantsEntities[i].get()->GetShootingTime() >= 1.0f * 0.35f && !alien->getIsDead() && distance < min_distance)
+				plantsEntities[i].get()->GetShootingTime() >= 1.0f * 0.35f && !alien->getIsDead() && distance < minDistance)
 			{
 				plantsEntities[i]->GetBullets().push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
 
@@ -1017,7 +1018,7 @@ void Engine::IterateAliens()
 					if (plantsEntities[i]->GetTargets().size() > 0)
 					{
 						Alien* target = plantsEntities[i]->GetTargets()[0];
-
+						// i have to refactor this
 						float plantAimPositionX = plantsEntities[i].get()->GetPosition().x;
 						float plantAimPositionY = plantsEntities[i].get()->GetPosition().y;
 
@@ -1028,8 +1029,6 @@ void Engine::IterateAliens()
 
 						float targetPositionX = target->GetPosition().x;
 						float targetPositionY = target->GetPosition().y;
-	/*					float dx = plantAimWorldPosition.x - target->GetWorldPosition().x;
-						float dy = plantAimWorldPosition.y - target->GetWorldPosition().y;*/
 
 						Vector2 targetWorldPosition = {
 							targetPositionX <= 0 ? targetPositionX : Window::GetWindowWidth() / targetPositionX,
@@ -1038,13 +1037,15 @@ void Engine::IterateAliens()
 
 						float dx = plantAimWorldPosition.x - targetWorldPosition.x;
 						float dy = plantAimWorldPosition.y - targetWorldPosition.y;	
-						float distance_debug = std::sqrtf(dx * dx + dy * dy);
+						float targetDistance = std::sqrtf(dx * dx + dy * dy);
 
 						plantsEntities[i]->GetBullets()[k].get()->moveEntity(target->GetCenter());
-						if (distance_debug > max_distance)
+						
+						if (targetDistance > maxDistance) // if the target of the plant goes out of range
 						{
-							std::cout << "distance lost target" << distance_debug << std::endl;
-							plantsEntities[i]->RemoveTarget(target);
+							std::cout << "distance lost target" << targetDistance << std::endl;
+							plantsEntities[i]->RemoveTarget(target); // remove the pointer target
+							plantsEntities[i]->GetBullets()[k].get()->SetIsDestroyed(true); // destroy the bullets
 						}
 
 						// Check if bullets hit the alien and kill the aliens
