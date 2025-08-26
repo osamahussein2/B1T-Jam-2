@@ -22,3 +22,6 @@ bin/
 /B1T Jam #2 game/B1T Jam #2 game/Windows (x64)/Debug
 /B1T Jam #2 game/B1T Jam #2 game.vcxproj
 /B1T Jam #2 game/B1T Jam #2 game.vcxproj.filters
+/B1T Jam #2 game/SDL3_ttf.dll
+/B1T Jam #2 game/SDL3_image.dll
+/B1T Jam #2 game/SDL3.dll

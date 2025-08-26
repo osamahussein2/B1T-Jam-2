@@ -383,7 +383,7 @@ void Engine::InitializeGameTexts()
 
 	// Shop menu texts
 	gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
-		{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) }, 
+		{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
 		LIGHT_GREEN);
 }
 
@@ -476,7 +476,7 @@ void Engine::InitializePlayerHUD()
 	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore), 20,
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
 
-	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20, 
+	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20,
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.43f }, LIGHT_GREEN);
 
 	playerHUD["WaveNumber"].InitializeText("Wave: " + std::to_string(Player::GetWaveNumber()), 20,
@@ -510,7 +510,7 @@ void Engine::InitializeGameLevels()
 
 	for (int i = 0; i < level1.GetTilesArray().size(); i++)
 	{
-		if(level1.GetTilesArray()[i].GetTileID() == 0)
+		if (level1.GetTilesArray()[i].GetTileID() == 0)
 		{
 			aliensDirections.push_back(level1.GetTilesArray()[i].GetTileWorldPosition());
 		}
@@ -532,9 +532,9 @@ void Engine::InitializePlacingPlants()
 void Engine::IsMouseHovered()
 {
 	// Check if mouse is hovered on the but flower button
-	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 12.5f && 
-		Player::GetMouseX() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 
-		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().w - 15.0f && 
+	if (Player::GetMouseX() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x + 12.5f &&
+		Player::GetMouseX() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().x +
+		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().w - 15.0f &&
 		Player::GetMouseY() >= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y + 25.0f &&
 		Player::GetMouseY() <= animatedObjects["BuyFlowerButton1"].GetAnimationPosition().y +
 		animatedObjects["BuyFlowerButton1"].GetAnimationPosition().h - 60.0f && Player::flowerUpgrade == 0)
@@ -713,7 +713,7 @@ void Engine::InstantiateTomatoCannon()
 
 		std::cout << plantsEntities.size() << std::endl;
 	}
-	
+
 	if (!Player::GetToggleMouseInput())
 	{
 		for (auto it = plantsEntities.begin(); it != plantsEntities.end();)
@@ -941,24 +941,34 @@ void Engine::IterateAliens()
 	{
 		Alien* alien = it->get();
 
-
 		for (int i = 0; i < plantsEntities.size(); i++)
 		{
-			float dx = plantsEntities[i].get()->GetPosition().x - alien->GetPosition().x;
-			float dy = plantsEntities[i].get()->GetPosition().y - alien->GetPosition().y;
+			float plantPositionX = plantsEntities[i].get()->GetPosition().x;
+			float plantPositionY = plantsEntities[i].get()->GetPosition().y;
+			Vector2 plantWorldPosition = { plantPositionX <= 0 ? plantPositionX : Window::GetWindowWidth() / plantPositionX,
+			plantPositionY <= 0 ? plantPositionY : Window::GetWindowHeight() / plantPositionY };
+
+			float alienPositionX = alien->GetPosition().x;
+			float alienPositionY = alien->GetPosition().y;
+			Vector2 alienWorldPosition = { alienPositionX <= 0 ? alienPositionX : Window::GetWindowWidth() / alienPositionX,
+			alienPositionY <= 0 ? alienPositionY : Window::GetWindowHeight() / alienPositionY };
+
+			float dx = plantWorldPosition.x - alienWorldPosition.x;
+			float dy = plantWorldPosition.y - plantWorldPosition.y;
+
 			float distance = std::sqrtf(dx * dx + dy * dy);
+			constexpr float min_distance = 0.50f;
+			constexpr float max_distance = 5.91552f;
 
 			if (plantsEntities[i].get()->getEntityID() == PlantType::SunflowerShooter &&
-				plantsEntities[i].get()->GetShootingTime() >= 1.0f * 0.35f && !alien->getIsDead() && distance <= 75.0f)
+				plantsEntities[i].get()->GetShootingTime() >= 1.0f * 0.35f && !alien->getIsDead() && distance < min_distance)
 			{
 				plantsEntities[i]->GetBullets().push_back(std::make_unique<Bullet>((plantsEntities[i].get()->GetCenter())));
 
 				if (plantsEntities[i]->GetTargets().size() == 0)
 				{
+					std::cout << "adedd - distance: " << distance << std::endl;
 					plantsEntities[i]->AddTarget(alien);
-				} else if (plantsEntities[i]->GetTargets().size() > 0 && distance > 75.0f)
-				{
-					// plantsEntities[i]->RemoveTarget(alien);
 				}
 
 				Window::sounds["BulletSound"].PlayAudio();
@@ -981,9 +991,11 @@ void Engine::IterateAliens()
 
 #ifdef _DEBUG
 					std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
+					std::cout << "killed distance " << distance << std::endl;
 #endif
 
 					alien->SetSeedIncreased(true);
+					plantsEntities[i]->RemoveTarget(alien);
 				}
 
 				alien->setIsDead(true);
@@ -999,12 +1011,41 @@ void Engine::IterateAliens()
 			}
 
 
-		for (int j = 0; j < plantsEntities[i]->GetTargets().size(); j++) {
-			for (int k = 0; k < plantsEntities[i]->GetBullets().size(); k++)
-			{
-				Alien *target = plantsEntities[i]->GetTargets()[0];
+			for (int j = 0; j < plantsEntities[i]->GetTargets().size(); j++) {
+				for (int k = 0; k < plantsEntities[i]->GetBullets().size(); k++)
+				{
+					if (plantsEntities[i]->GetTargets().size() > 0)
+					{
+						Alien* target = plantsEntities[i]->GetTargets()[0];
 
-				plantsEntities[i]->GetBullets()[k].get()->moveEntity(target->GetCenter());
+						float plantAimPositionX = plantsEntities[i].get()->GetPosition().x;
+						float plantAimPositionY = plantsEntities[i].get()->GetPosition().y;
+
+						Vector2 plantAimWorldPosition = { 
+						    plantAimPositionX <= 0 ? plantAimPositionX : Window::GetWindowWidth() / plantAimPositionX,
+						    plantAimPositionY <= 0 ? plantAimPositionY : Window::GetWindowHeight() / plantAimPositionY 
+						};
+
+						float targetPositionX = target->GetPosition().x;
+						float targetPositionY = target->GetPosition().y;
+	/*					float dx = plantAimWorldPosition.x - target->GetWorldPosition().x;
+						float dy = plantAimWorldPosition.y - target->GetWorldPosition().y;*/
+
+						Vector2 targetWorldPosition = {
+							targetPositionX <= 0 ? targetPositionX : Window::GetWindowWidth() / targetPositionX,
+							targetPositionY <= 0 ? targetPositionY : Window::GetWindowHeight() / targetPositionY
+						};
+
+						float dx = plantAimWorldPosition.x - targetWorldPosition.x;
+						float dy = plantAimWorldPosition.y - targetWorldPosition.y;	
+						float distance_debug = std::sqrtf(dx * dx + dy * dy);
+
+						plantsEntities[i]->GetBullets()[k].get()->moveEntity(target->GetCenter());
+						if (distance_debug > max_distance)
+						{
+							std::cout << "distance lost target" << distance_debug << std::endl;
+							plantsEntities[i]->RemoveTarget(target);
+						}
 
 						// Check if bullets hit the alien and kill the aliens
 						if (plantsEntities[i]->GetBullets()[k].get()->checkCollision(alien) && !alien->getIsDead())
@@ -1023,21 +1064,28 @@ void Engine::IterateAliens()
 								Player::enemiesKilled += 1;
 								plantsEntities[i]->RemoveTarget(target);
 
-			#ifdef _DEBUG
+#ifdef _DEBUG
 								std::cout << "Enemies killed: " << Player::enemiesKilled << std::endl;
-			#endif
+								std::cout << "killed distance " << distance << std::endl;
+#endif
 
 								alien->SetSeedIncreased(true);
 							}
 						}
+						else if (plantsEntities[i]->GetTargets().size() > 0 && distance > max_distance) {
+							std::cout << "lost - distance: " << distance << std::endl;
+							std::cout << "RemoveTarget(alien) " << std::endl;
+							// plantsEntities[i]->RemoveTarget(target);
+						}
+					}
 				}
+			}
 		}
-		}
-				
+
 
 		// Destroy grunt zogling/shield drone alien when they're dead and delete them from the vector
 		if (alien->getIsDead() && alien->getAlienID() == AlienType::GruntZogling &&
-			alien->getDeathAnimationTime() >= 8.0f || alien->getIsDead() && 
+			alien->getDeathAnimationTime() >= 8.0f || alien->getIsDead() &&
 			alien->getAlienID() == AlienType::ShieldDrone && alien->getDeathAnimationTime() >= 8.0f ||
 			alien->GetPosition().y >= Window::GetWindowHeight() + 50.0f)
 		{
@@ -1104,23 +1152,23 @@ void Engine::IterateBullets()
 			plantsEntities[i]->GetBullets()[j].get()->render();
 		}
 
-	// Iterate through the bullets
-	for (auto it = plantsEntities[i]->GetBullets().begin(); it != plantsEntities[i]->GetBullets().end();)
-	{
-		Bullet* bullet = it->get();
+		// Iterate through the bullets
+		for (auto it = plantsEntities[i]->GetBullets().begin(); it != plantsEntities[i]->GetBullets().end();)
+		{
+			Bullet* bullet = it->get();
 
-		// Destroy bullet after a few seconds and delete them from the vector
-		if (bullet->GetLifeTime() >= 3.0f || bullet->IsDestroyed())
-		{
-			bullet->DestroyBullet();
-			it = plantsEntities[i]->GetBullets().erase(it);
-		}
-		else
-		{
-			++it;
+			// Destroy bullet after a few seconds and delete them from the vector
+			if (bullet->GetLifeTime() >= 3.0f || bullet->IsDestroyed())
+			{
+				bullet->DestroyBullet();
+				it = plantsEntities[i]->GetBullets().erase(it);
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
-}
 }
 
 void Engine::RestartCreditsMenu()
@@ -1171,7 +1219,7 @@ void Engine::HandleLevel1Enemies()
 			break;
 		}
 
-		if (Player::enemiesKilled >= 5)
+		if (Player::enemiesKilled >= 10)
 		{
 			delayTimer += Window::GetDeltaTime() * 0.02f;
 

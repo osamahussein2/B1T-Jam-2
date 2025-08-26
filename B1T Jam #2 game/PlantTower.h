@@ -48,7 +48,7 @@ class PlantTower : public Entity
         Vector2 GetTarget() { return m_target; } 
 
         void AddTarget(Alien* alien) { targetEntities.push_back(alien); }
-        void RemoveTarget(Alien* alien) { targetEntities.erase(std::find(targetEntities.begin(), targetEntities.end(), alien)); }
+        void RemoveTarget(Alien* alien) { auto it = std::find(targetEntities.begin(), targetEntities.end(), alien); if (it != targetEntities.end()) targetEntities.erase(it); }
 
         bool GetIsTarget() { return isTargetSet; }
         void SetIsTarget(bool value_) { isTargetSet = value_; }
