@@ -24,6 +24,7 @@ ShieldDrone::ShieldDrone()
 	else {
 		velocity = 0.0032f;
 	}
+	velocity = 0.3f;
 }
 
 ShieldDrone::~ShieldDrone()
@@ -101,7 +102,7 @@ void ShieldDrone::update()
 		else
 		{
 			// Prevents the x frame animation from animating too fast
-			deathTimer += Window::GetDeltaTime() * 0.1f;
+			deathTimer += Window::GetDeltaTime() * 10.0f;
 
 			// Set the source rectangle to match the sprite dimensions for animation
 			srcEntity.x = (entityTexture->w / 8) * static_cast<int>(deathTimer);
@@ -169,18 +170,18 @@ void ShieldDrone::CheckIfStunned()
 	// Move at normal speed when not stunned
 	if (!stunned)
 	{
-		if (velocity != 0.0032f && currentDirectionIndex != 6) velocity = 0.0032f;
-		else if (velocity != 0.0016f && currentDirectionIndex >= 6) velocity = 0.0016f;
+		if (velocity != 0.3f && currentDirectionIndex != 6) velocity = 0.3f;
+		else if (velocity != 0.15f && currentDirectionIndex >= 6) velocity = 0.15f;
 		if (stunnedTime != 0.0f) stunnedTime = 0.0f;
 	}
 
 	// Move 50% slower if stunned
 	else if (stunned)
 	{
-		stunnedTime += Window::GetDeltaTime() * 0.02f;
+		stunnedTime += Window::GetDeltaTime();
 
-		if (velocity != 0.0016f && currentDirectionIndex != 6) velocity = 0.0016f;
-		else if (velocity != 0.0008f && currentDirectionIndex >= 6) velocity = 0.0008f;
+		if (velocity != 0.15f && currentDirectionIndex != 6) velocity = 0.15f;
+		else if (velocity != 0.075f && currentDirectionIndex >= 6) velocity = 0.075f;
 
 		if (stunnedTime >= 3.0f)
 		{

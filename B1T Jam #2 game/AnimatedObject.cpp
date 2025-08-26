@@ -34,7 +34,7 @@ void AnimatedObject::UpdateAnimation(int numberOfFramesX_, int numberOfFramesY_,
 	if (animationTimer <= startAnimationTime_) animationTimer = startAnimationTime_;
 
 	// Prevents the x frame animation from animating too fast
-	animationTimer += Window::GetDeltaTime() * 0.1f;
+	animationTimer += Window::GetDeltaTime() * 10.0f;
 
 	// Set the source rectangle to match the sprite dimensions for animation
 	srcAnimation.x = (animatedTexture->w / static_cast<float>(numberOfFramesX_)) * 

@@ -45,8 +45,8 @@ void FadingText::InitializeText(std::string text_, float fontSize_, Vector2 text
 void FadingText::RenderText()
 {
 	// Make text fade overtime
-	if (alphaStateChanged) alpha -= Window::GetDeltaTime();
-	else if (!alphaStateChanged) alpha += Window::GetDeltaTime();
+	if (alphaStateChanged) alpha -= Window::GetDeltaTime() * 150.0f;
+	else if (!alphaStateChanged) alpha += Window::GetDeltaTime() * 150.0f;
 
 	if (alpha >= 255.0f && !alphaStateChanged) alphaStateChanged = true;
 

@@ -12,8 +12,8 @@ Bullet::Bullet(Vector2 position_) : frameX(0), position(position_), direction(),
 	entityTexture = SDL_CreateTextureFromSurface(Window::GetRenderer(), entitySurface);
 	SDL_DestroySurface(entitySurface);
 
-	if (Player::flowerUpgrade == 0) velocity = 0.03f;
-	else if (Player::flowerUpgrade == 1) velocity = 0.042f;
+	if (Player::flowerUpgrade == 0) velocity = 1.0f;
+	else if (Player::flowerUpgrade == 1) velocity = 1.5f;
 }
 
 Bullet::~Bullet()
@@ -23,7 +23,7 @@ Bullet::~Bullet()
 
 void Bullet::update()
 {
-	lifeTime += Window::GetDeltaTime() * 0.02f;
+	lifeTime += Window::GetDeltaTime();
 
 	//std::cout << direction.x << ", " << direction.y << std::endl;
 

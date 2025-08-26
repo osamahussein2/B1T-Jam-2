@@ -54,7 +54,7 @@ void ScrollingCredits::UpdateScrollingCredits()
 	destText.w = srcText.w * (static_cast<float>(Window::GetWindowWidth()) / 800.0f);
 	destText.h = srcText.h * (static_cast<float>(Window::GetWindowHeight()) / 600.0f);
 	
-	velocityY -= 2.0f * Window::GetDeltaTime();
+	velocityY -= 125.0f * Window::GetDeltaTime();
 }
 
 void ScrollingCredits::RenderScrollingCredits()
