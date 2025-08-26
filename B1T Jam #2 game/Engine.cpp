@@ -1073,7 +1073,7 @@ void Engine::IterateAliens()
 								alien->SetSeedIncreased(true);
 							}
 						}
-						else if (plantsEntities[i]->GetTargets().size() > 0 && distance > max_distance) {
+						else if (plantsEntities[i]->GetTargets().size() > 0 && distance > maxDistance) {
 							std::cout << "lost - distance: " << distance << std::endl;
 							std::cout << "RemoveTarget(alien) " << std::endl;
 							// plantsEntities[i]->RemoveTarget(target);
