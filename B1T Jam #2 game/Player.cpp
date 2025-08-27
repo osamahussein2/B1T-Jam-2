@@ -450,16 +450,15 @@ void Player::GoToNextWave()
 
 void Player::GoToNextLevel()
 {
-	/*if (levelNumber < 3)
+	if (levelNumber < 3)
 	{
 		++levelNumber;
 		levelChanged = true;
 
 		fadingTexts["levelText"].SetAlphaStateChanged(false);
-	}*/
+	}
 
-	levelNumber = 1;
-	levelChanged = true;
+	
 
 	fadingTexts["levelText"].SetAlphaStateChanged(false);
 
