@@ -42,6 +42,18 @@ void Tile::RenderTile()
 	SDL_RenderTexture(Window::GetRenderer(), tileTexture, &srcTile, &destTile);
 }
 
+void Tile::RenderTile(bool highlight_)
+{
+	// Render the tile
+	SDL_RenderTexture(Window::GetRenderer(), tileTexture, &srcTile, &destTile);
+
+	// Decrease its alpha a bit to highlight the tile texture
+	if (highlight_) SDL_SetTextureAlphaMod(tileTexture, 175);
+
+	// Otherwise, just show the tile texture with full alpha value
+	else SDL_SetTextureAlphaMod(tileTexture, 255);
+}
+
 void Tile::SetTileID(unsigned int id)
 {
 	m_ID = id;

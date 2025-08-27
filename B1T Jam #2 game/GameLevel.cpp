@@ -1,5 +1,6 @@
 #include "GameLevel.h"
 #include "Window.h"
+#include "Player.h"
 
 #include <fstream>
 #include <sstream>
@@ -111,7 +112,23 @@ void GameLevel::RenderLevel()
 {
     for (Tile& tile : m_Tiles)
     {
-    	tile.RenderTile();
+        // Show the full alpha of the tile whenever the player hasn't picked up a plant for placing
+        if (tile.GetTileID() == 2 && !Player::GetToggleMouseInput())
+        {
+            tile.RenderTile(false);
+        }
+
+        // Show the highlighted tiles when the player is placing a plant
+        else if (tile.GetTileID() == 2 && Player::GetToggleMouseInput())
+        {
+            tile.RenderTile(true);
+        }
+
+        // Render all other tiles normally
+        else
+        {
+            tile.RenderTile();
+        }
     }
 }
 

@@ -18,7 +18,9 @@ public:
 
 	void InitializeTile(SDL_Texture* _tileTexture, Vector2 tilePos_, Vector2 worldPos_,Vector2 scaleMultiplier_);
 	void DestroyTile();
+
 	void RenderTile();
+	void RenderTile(bool highlight_);
 
 	void SetTileID(unsigned int id);
 	unsigned int GetTileID() const;
