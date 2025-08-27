@@ -24,6 +24,8 @@ class Entity
  
         Vector2 GetWorldPosition();
 
+        void SetCenteredPosition(SDL_FRect rect_, Vector2 divideValue_);
+
     protected:
         virtual void                update();
 

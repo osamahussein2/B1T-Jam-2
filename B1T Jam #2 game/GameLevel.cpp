@@ -152,6 +152,8 @@ bool GameLevel::TileCollision(Entity* other, int tileNumber_)
             m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
             m_Tiles[i].GetTileID() == tileNumber_)
         {
+            // Center the other entity on the tile
+            other->SetCenteredPosition(m_Tiles[i].GetTileDimensions(), { 2.5f, 3.5f });
             return true;
         }
     }

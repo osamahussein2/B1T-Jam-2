@@ -24,6 +24,12 @@ Vector2 Entity::GetWorldPosition()
 	return m_WorldPosition;
 }
 
+void Entity::SetCenteredPosition(SDL_FRect rect_, Vector2 divideValue_)
+{
+	destEntity.x = rect_.x + (rect_.w / divideValue_.x);
+	destEntity.y = rect_.y + (rect_.h / divideValue_.y);
+}
+
 void Entity::update()
 {
 	std::cout << "update entity" << std::endl;
