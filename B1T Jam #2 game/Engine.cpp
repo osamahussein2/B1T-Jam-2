@@ -263,6 +263,18 @@ void Engine::RunEngine()
 			Window::RenderEndFrame();
 			break;
 
+		case GameState::LooseGame:
+			Window::RenderBeginFrame();
+
+			Player::UpdatePlayer();
+			// Player::RenderPlayer();
+			gameTexts["gameOverTitle"].RenderText();
+			gameTexts["gameOverMessage"].RenderText();
+			gameTexts["pauseMenuResume"].RenderText();
+			gameTexts["pauseMenuQuit"].RenderText();
+
+			Window::RenderEndFrame();
+
 		default:
 			break;
 		}
@@ -385,6 +397,14 @@ void Engine::InitializeGameTexts()
 	gameTexts["playerCurrencyAmount"].InitializeText("$" + std::to_string(Player::GetPlayerCurrency()), 25.0f,
 		{ static_cast<float>(Window::GetWindowWidth() / 2.05f), static_cast<float>(Window::GetWindowHeight() / 1.2f) },
 		LIGHT_GREEN);
+
+	gameTexts["gameOverTitle"].InitializeText("Game Over",
+		40.0f, { static_cast<float>(Window::GetWindowWidth() / 3.2f),
+		static_cast<float>(Window::GetWindowHeight() / 30.0f) });
+
+	gameTexts["gameOverMessage"].InitializeText("The aliens stole all your livestock!",
+		22.0f, { static_cast<float>(Window::GetWindowWidth() / 4.2f),
+		static_cast<float>(Window::GetWindowHeight() / 2.5f) });
 }
 
 void Engine::InitializeScrollingCreditsTexts()
@@ -474,6 +494,9 @@ void Engine::InitializeAnimatedObjects()
 void Engine::InitializePlayerHUD()
 {
 	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 3.36f }, LIGHT_GREEN);
+
+	playerHUD["Livestock"].InitializeText("Cows: " + std::to_string(Player::GetLivesNumber()), 20,
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
 
 	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20,
@@ -632,7 +655,13 @@ void Engine::HandleMousePressedEvents()
 void Engine::UpdatePlayerScore()
 {
 	playerHUD["PlayerScore"].InitializeText("Score: " + std::to_string(Player::currentPlayerScore),
-		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
+		20, { Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.88f }, LIGHT_GREEN);
+}
+
+void Engine::UpdatePlayerLivestockNumber()
+{
+	playerHUD["Livestock"].InitializeText("Cows: " + std::to_string(Player::GetLivesNumber()), 20,
+		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.68f }, LIGHT_GREEN);
 }
 
 void Engine::UpdateCurrentLevelText()
@@ -640,6 +669,7 @@ void Engine::UpdateCurrentLevelText()
 	playerHUD["LevelNumber"].InitializeText("Level: " + std::to_string(Player::GetLevelNumber()), 20,
 		{ Window::GetWindowWidth() / 160.0f, Window::GetWindowHeight() / 1.43f }, LIGHT_GREEN);
 }
+
 
 void Engine::UpdateCurrentWaveText()
 {
@@ -883,54 +913,179 @@ void Engine::IterateAliens()
 			// Update and render all alien entities
 			aliensEntities[i].get()->update();
 
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 0)
+			switch (Player::GetLevelNumber())
 			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f },
-					{ Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f });
+				case 1:
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 0)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f },
+							{ Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 1)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f },
+							{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 2)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 3)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 4)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 5)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 6)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 0.5f },
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f });
+
+						if (gameLevels[0].TileCollision(aliensEntities[i].get(), 4) && !aliensEntities[i].get()->GetGoalReached())
+						{
+							std::cout << "reach to end Initial LIVES: " << Player::GetLivesNumber() << std::endl;
+							aliensEntities[i].get()->SetGoalReached(true);
+							Player::SetLivesNumber();
+							std::cout << "reach to end Current LIVES: " << Player::GetLivesNumber() << std::endl;
+
+							if (Player::GetLivesNumber() <= 0 && !Player::GetWinningStatus())
+							{
+								std::cout << "GAME OVER: " << std::endl;
+								Window::gameState = GameState::LooseGame;
+							}
+						}
+					}
+					break;
+
+				case 2:
+					
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 0)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 4.25f , Window::GetWindowHeight() / 26.0f },
+							{ Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 1)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f },
+							{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 2)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 3)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 4)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 5)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 6)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 0.5f },
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f });
+					}
+					break;
+
+				case 3:
+					
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 0)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f },
+							{ Window::GetWindowWidth() / 6.83f, Window::GetWindowHeight() / 200.0f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 1)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f },
+							{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 2)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 3)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f },
+							{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 4)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 5)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f },
+							{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f });
+					}
+
+					if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 6)
+					{
+						aliensEntities[i].get()->moveEntity(
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 0.5f },
+							{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f });
+					}
+					break;
 			}
 
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 1)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f },
-					{ Window::GetWindowWidth() / 7.21f, Window::GetWindowHeight() / 2.56f });
-			}
-
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 2)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f },
-					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 2.56f });
-			}
-
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 3)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f },
-					{ Window::GetWindowWidth() / 2.47f, Window::GetWindowHeight() / 5.94f });
-			}
-
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 4)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f },
-					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 5.88f });
-			}
-
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 5)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f },
-					{ Window::GetWindowWidth() / 1.24f, Window::GetWindowHeight() / 2.5f });
-			}
-
-			if (aliensEntities[i].get()->GetCurrentDirectionIndex() == 6)
-			{
-				aliensEntities[i].get()->moveEntity(
-					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 0.5f },
-					{ Window::GetWindowWidth() / 1.48f, Window::GetWindowHeight() / 2.5f });
-			}
 
 			aliensEntities[i].get()->render();
 		}
@@ -1043,7 +1198,9 @@ void Engine::IterateAliens()
 						
 						if (targetDistance > maxDistance) // if the target of the plant goes out of range
 						{
-							std::cout << "distance lost target" << targetDistance << std::endl;
+							#ifdef _DEBUG
+								std::cout << "distance lost target" << targetDistance << std::endl;
+							#endif
 							plantsEntities[i]->RemoveTarget(target); // remove the pointer target
 							plantsEntities[i]->GetBullets()[k].get()->SetIsDestroyed(true); // destroy the bullets
 						}
@@ -1072,11 +1229,6 @@ void Engine::IterateAliens()
 
 								alien->SetSeedIncreased(true);
 							}
-						}
-						else if (plantsEntities[i]->GetTargets().size() > 0 && distance > maxDistance) {
-							std::cout << "lost - distance: " << distance << std::endl;
-							std::cout << "RemoveTarget(alien) " << std::endl;
-							// plantsEntities[i]->RemoveTarget(target);
 						}
 					}
 				}

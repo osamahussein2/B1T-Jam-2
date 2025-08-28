@@ -17,6 +17,7 @@ public:
 	static void HandleMousePressedEvents();
 
 	static void UpdatePlayerScore();
+	static void UpdatePlayerLivestockNumber();
 	static void UpdateCurrentLevelText();
 	static void UpdateCurrentWaveText();
 	static void UpdatePlayerCurrencyText();

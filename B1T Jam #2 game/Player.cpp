@@ -35,6 +35,9 @@ int Player::enemiesKilled = 0;
 float Player::enemySpawnTime = 0.0f;
 
 int Player::enemyNumber = 0;
+int Player::livesNumber = 4;
+
+bool Player::winGame = false;
 
 // Initialize non-static variables
 bool pressed = false;
@@ -201,6 +204,12 @@ void Player::HandlePlayerInput()
 			}
 
 			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::Paused && !pressed)
+			{
+				Window::gameState = GameState::MainMenu;
+				pressed = true;
+			}
+
+			if (event.key.scancode == SDL_SCANCODE_RETURN && Window::gameState == GameState::LooseGame && !pressed)
 			{
 				Window::gameState = GameState::MainMenu;
 				pressed = true;
@@ -501,4 +510,16 @@ void Player::ChangeScore()
 
 		scoreChanged = false;
 	}
+}
+
+void Player::SetLivesNumber()
+{
+	if (livesNumber <= 0)
+	{
+		livesNumber = 0;
+		return;
+	}
+
+	--livesNumber;
+	Engine::UpdatePlayerLivestockNumber();
 }

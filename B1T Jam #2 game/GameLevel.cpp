@@ -6,6 +6,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <iostream>
+#include "PlantTower.h"
 
 
 GameLevel::GameLevel()
@@ -61,6 +62,7 @@ void GameLevel::BuildLevel(std::vector<std::vector<unsigned int>> tileData, unsi
             } else if (tileData[y][x] == 4)
             {
                 tile.InitializeTile(textureBlock4, tilePosition, tileWorldPosition, tileScale);
+                SetAlienDestinationPosition(tileWorldPosition);
             } else if (tileData[y][x] == 5)
             {
                 tile.InitializeTile(textureBlock5, tilePosition, tileWorldPosition, tileScale);
@@ -156,8 +158,11 @@ bool GameLevel::TileCollision(Entity* other, int tileNumber_)
             m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
             m_Tiles[i].GetTileID() == tileNumber_)
         {
-            // Center the other entity on the tile
-            other->SetCenteredPosition(m_Tiles[i].GetTileDimensions(), { 2.5f, 3.5f });
+            if (PlantTower* plant = dynamic_cast<PlantTower*>(other)) // center only the towers for planting
+            {
+                // Center the other entity on the tile
+                other->SetCenteredPosition(m_Tiles[i].GetTileDimensions(), { 2.5f, 3.5f });
+            }
             return true;
         }
     }

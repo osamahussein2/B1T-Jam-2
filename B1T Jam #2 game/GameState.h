@@ -11,7 +11,9 @@ enum class GameState
 	GameIntro,
 	Playing,
 	Paused,
-	Shopping
+	Shopping,
+	WinGame,
+	LooseGame
 };
 
 #endif

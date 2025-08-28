@@ -45,6 +45,9 @@ class Alien : public Entity
         void IncreaseAlienVelocity(float velocity_) { velocity += velocity_; }
         float GetAlienVelocity() { return velocity; }
 
+        bool GetGoalReached() { return reachedGoal; }
+        void SetGoalReached(bool reachedGoal_) { reachedGoal = reachedGoal_; }
+
     protected:
          float          alienHealth;
          float          animationTimer;
@@ -68,6 +71,8 @@ class Alien : public Entity
 
          bool stunned;
          float stunnedTime;
+
+         bool reachedGoal;
 };
 
 #endif

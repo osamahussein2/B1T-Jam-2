@@ -23,6 +23,9 @@ class GameLevel
          void DestroyLevel();
          void RenderLevel();
 
+         Vector2    GetAlienDestinationPosition() const { return m_EndPosition; }
+         void       SetAlienDestinationPosition(Vector2 position) { m_EndPosition = position; }
+
          bool IsLevelLoaded();
 
          std::vector<Tile> GetTilesArray() const;
@@ -31,7 +34,8 @@ class GameLevel
 
 
     private:
-        std::vector<Tile> m_Tiles;
+        std::vector<Tile>   m_Tiles;
+        Vector2             m_EndPosition;
 };
 
 #endif 

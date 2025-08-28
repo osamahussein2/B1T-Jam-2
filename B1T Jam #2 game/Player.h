@@ -35,6 +35,11 @@ public:
 	static ScoringSystem getScoringSystem() { return scoring; }
 
 	static int GetLevelNumber() { return levelNumber; }
+	static int GetLivesNumber() { return livesNumber; }
+	static void SetLivesNumber();
+
+	static bool GetWinningStatus() { return winGame; }
+
 
 	static int currentPlayerScore;
 
@@ -91,10 +96,13 @@ private:
 	static ScoringSystem scoring;
 
 	static int levelNumber;
+	static int livesNumber;
 
 	static unsigned int playerCurrency;
 
 	static bool toggleMouseInput;
+
+	static bool winGame;
 };
 
 #endif
