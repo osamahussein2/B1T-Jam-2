@@ -219,8 +219,8 @@ void Engine::RunEngine()
 
 						// Also set the tiles to not planted as well
 						if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-						else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-						else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+						else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+						else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 					}
 					else
 					{
@@ -803,8 +803,8 @@ void Engine::InstantiateTomatoCannon()
 
 					// Also change the tile planted bool to false afterwards to prevent freezing the game
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 				}
 			}
 		}
@@ -876,8 +876,8 @@ void Engine::InstantiateSunflowerShooter()
 
 					// Also change the tile planted bool to false afterwards to prevent freezing the game
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 				}
 			}
 		}
@@ -949,8 +949,8 @@ void Engine::InstantiateEggplantTrap()
 
 					// Also change the tile planted bool to false afterwards to prevent freezing the game
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 				}
 			}
 		}
@@ -1377,8 +1377,8 @@ void Engine::IteratePlants()
 			it = plantsEntities.erase(it);
 
 			if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-			else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-			else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 		}
 
 		// Destroy eggplant trap once it's dead and delete them from the vector
@@ -1388,8 +1388,8 @@ void Engine::IteratePlants()
 			it = plantsEntities.erase(it);
 
 			if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
-			else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
-			else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 2) gameLevels[1].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 3) gameLevels[2].TileNotPlanted(plant, 2);
 		}
 
 		else
