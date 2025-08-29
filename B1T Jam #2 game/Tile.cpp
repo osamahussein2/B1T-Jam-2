@@ -1,7 +1,7 @@
 #include "Tile.h"
 #include "Window.h"
 
-Tile::Tile() : tileTexture(NULL), srcTile(), destTile(), tileSurface(NULL)
+Tile::Tile() : tileTexture(NULL), srcTile(), destTile(), tileSurface(NULL), tilePlanted(false)
 {
 }
 

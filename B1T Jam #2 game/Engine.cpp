@@ -216,6 +216,11 @@ void Engine::RunEngine()
 					{
 						plant->DestroyPlantTower();
 						it = plantsEntities.erase(it);
+
+						// Also set the tiles to not planted as well
+						if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+						else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+						else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
 					}
 					else
 					{
@@ -756,21 +761,51 @@ void Engine::InstantiateTomatoCannon()
 			{
 				plant->DestroyPlantTower();
 				it = plantsEntities.erase(it);
+
+				gameLevels[0].TileNotPlanted(plant, 2);
+				gameLevels[1].TileNotPlanted(plant, 2);
+				gameLevels[2].TileNotPlanted(plant, 2);
 			}
 
 			else
 			{
-				if (!plant->GetSeedDecreased())
+				// Check if a tile hasn't been planted yet, if so place a plant
+				if (gameLevels[0].GetTileNotPlanted(plant, 2) || gameLevels[1].GetTileNotPlanted(plant, 2) ||
+					gameLevels[2].GetTileNotPlanted(plant, 2))
 				{
-					Player::currentSeedAmount -= 50;
-					Player::scoreChanged = true;
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 50;
+						Player::scoreChanged = true;
 
-					plant->SetSeedDecreased(true);
+						plant->SetSeedDecreased(true);
+					}
+
+					plant->PlacePlant();
+
+					// Also change the tile planted bool to true afterwards to prevent further planting on tile
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+
+					++it;
 				}
 
-				plant->PlacePlant();
+				// If there is a plant already, destroy it
+				else if (gameLevels[0].GetTilePlanted(plant, 2) || gameLevels[1].GetTilePlanted(plant, 2) ||
+					gameLevels[2].GetTilePlanted(plant, 2))
+				{
+					if (plant->GetGoingToPlacePlant())
+					{
+						plant->DestroyPlantTower();
+						it = plantsEntities.erase(it);
+					}
 
-				++it;
+					// Also change the tile planted bool to false afterwards to prevent freezing the game
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+				}
 			}
 		}
 	}
@@ -799,21 +834,51 @@ void Engine::InstantiateSunflowerShooter()
 			{
 				plant->DestroyPlantTower();
 				it = plantsEntities.erase(it);
+
+				gameLevels[0].TileNotPlanted(plant, 2);
+				gameLevels[1].TileNotPlanted(plant, 2);
+				gameLevels[2].TileNotPlanted(plant, 2);
 			}
 
 			else
 			{
-				if (!plant->GetSeedDecreased())
+				// Check if a tile hasn't been planted yet, if so place a plant
+				if (gameLevels[0].GetTileNotPlanted(plant, 2) || gameLevels[1].GetTileNotPlanted(plant, 2) ||
+					gameLevels[2].GetTileNotPlanted(plant, 2))
 				{
-					Player::currentSeedAmount -= 30;
-					Player::scoreChanged = true;
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 30;
+						Player::scoreChanged = true;
 
-					plant->SetSeedDecreased(true);
+						plant->SetSeedDecreased(true);
+					}
+
+					plant->PlacePlant();
+
+					// Also change the tile planted bool to true afterwards to prevent further planting on tile
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+
+					++it;
 				}
 
-				plant->PlacePlant();
+				// If there is a plant already, destroy it
+				else if (gameLevels[0].GetTilePlanted(plant, 2) || gameLevels[1].GetTilePlanted(plant, 2) ||
+					gameLevels[2].GetTilePlanted(plant, 2))
+				{
+					if (plant->GetGoingToPlacePlant())
+					{
+						plant->DestroyPlantTower();
+						it = plantsEntities.erase(it);
+					}
 
-				++it;
+					// Also change the tile planted bool to false afterwards to prevent freezing the game
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+				}
 			}
 		}
 	}
@@ -842,21 +907,51 @@ void Engine::InstantiateEggplantTrap()
 			{
 				plant->DestroyPlantTower();
 				it = plantsEntities.erase(it);
+
+				gameLevels[0].TileNotPlanted(plant, 2);
+				gameLevels[1].TileNotPlanted(plant, 2);
+				gameLevels[2].TileNotPlanted(plant, 2);
 			}
 
 			else
 			{
-				if (!plant->GetSeedDecreased())
+				// Check if a tile hasn't been planted yet, if so place a plant
+				if (gameLevels[0].GetTileNotPlanted(plant, 2) || gameLevels[1].GetTileNotPlanted(plant, 2) ||
+					gameLevels[2].GetTileNotPlanted(plant, 2))
 				{
-					Player::currentSeedAmount -= 25;
-					Player::scoreChanged = true;
+					if (!plant->GetSeedDecreased())
+					{
+						Player::currentSeedAmount -= 25;
+						Player::scoreChanged = true;
 
-					plant->SetSeedDecreased(true);
+						plant->SetSeedDecreased(true);
+					}
+
+					plant->PlacePlant();
+
+					// Also change the tile planted bool to true afterwards to prevent further planting on tile
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+
+					++it;
 				}
 
-				plant->PlacePlant();
+				// If there is a plant already, destroy it
+				else if (gameLevels[0].GetTilePlanted(plant, 2) || gameLevels[1].GetTilePlanted(plant, 2) ||
+					gameLevels[2].GetTilePlanted(plant, 2))
+				{
+					if (plant->GetGoingToPlacePlant())
+					{
+						plant->DestroyPlantTower();
+						it = plantsEntities.erase(it);
+					}
 
-				++it;
+					// Also change the tile planted bool to false afterwards to prevent freezing the game
+					if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
+				}
 			}
 		}
 	}
@@ -1280,6 +1375,10 @@ void Engine::IteratePlants()
 		{
 			plant->DestroyPlantTower();
 			it = plantsEntities.erase(it);
+
+			if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
 		}
 
 		// Destroy eggplant trap once it's dead and delete them from the vector
@@ -1287,6 +1386,10 @@ void Engine::IteratePlants()
 		{
 			plant->DestroyPlantTower();
 			it = plantsEntities.erase(it);
+
+			if (Player::GetLevelNumber() == 1) gameLevels[0].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 1) gameLevels[1].TileNotPlanted(plant, 2);
+			else if (Player::GetLevelNumber() == 2) gameLevels[2].TileNotPlanted(plant, 2);
 		}
 
 		else

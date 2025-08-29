@@ -32,6 +32,11 @@ class GameLevel
 
          bool TileCollision(Entity* other, int tileNumber_);
 
+         void TilePlanted(Entity* other, int tileNumber_);
+         void TileNotPlanted(Entity* other, int tileNumber_);
+
+         bool GetTilePlanted(Entity* other, int tileNumber_);
+         bool GetTileNotPlanted(Entity* other, int tileNumber_);
 
     private:
         std::vector<Tile>   m_Tiles;

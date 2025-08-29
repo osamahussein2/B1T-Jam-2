@@ -169,3 +169,63 @@ bool GameLevel::TileCollision(Entity* other, int tileNumber_)
 
     return false;
 }
+
+void GameLevel::TilePlanted(Entity* other, int tileNumber_)
+{
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        if (m_Tiles[i].GetTileDimensions().x + m_Tiles[i].GetTileDimensions().w >= other->destEntity.x &&
+            m_Tiles[i].GetTileDimensions().x <= other->destEntity.x + other->destEntity.w &&
+            m_Tiles[i].GetTileDimensions().y + m_Tiles[i].GetTileDimensions().h >= other->destEntity.y &&
+            m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
+            m_Tiles[i].GetTileID() == tileNumber_ && !m_Tiles[i].GetTilePlanted())
+        {
+            m_Tiles[i].SetTilePlanted(true);
+        }
+    }
+}
+
+void GameLevel::TileNotPlanted(Entity* other, int tileNumber_)
+{
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        if (m_Tiles[i].GetTileID() == tileNumber_ && m_Tiles[i].GetTilePlanted())
+        {
+            m_Tiles[i].SetTilePlanted(false);
+        }
+    }
+}
+
+bool GameLevel::GetTilePlanted(Entity* other, int tileNumber_)
+{
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        if (m_Tiles[i].GetTileDimensions().x + m_Tiles[i].GetTileDimensions().w >= other->destEntity.x &&
+            m_Tiles[i].GetTileDimensions().x <= other->destEntity.x + other->destEntity.w &&
+            m_Tiles[i].GetTileDimensions().y + m_Tiles[i].GetTileDimensions().h >= other->destEntity.y &&
+            m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
+            m_Tiles[i].GetTileID() == tileNumber_ && m_Tiles[i].GetTilePlanted())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool GameLevel::GetTileNotPlanted(Entity* other, int tileNumber_)
+{
+    for (int i = 0; i < m_Tiles.size(); i++)
+    {
+        if (m_Tiles[i].GetTileDimensions().x + m_Tiles[i].GetTileDimensions().w >= other->destEntity.x &&
+            m_Tiles[i].GetTileDimensions().x <= other->destEntity.x + other->destEntity.w &&
+            m_Tiles[i].GetTileDimensions().y + m_Tiles[i].GetTileDimensions().h >= other->destEntity.y &&
+            m_Tiles[i].GetTileDimensions().y <= other->destEntity.y + other->destEntity.h &&
+            m_Tiles[i].GetTileID() == tileNumber_ && !m_Tiles[i].GetTilePlanted())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}

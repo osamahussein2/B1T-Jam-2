@@ -31,6 +31,9 @@ public:
 	SDL_FRect GetTileDimensions() const { return destTile; }
 	Vector2 GetTileCenter() const { return { destTile.x + (destTile.w / 2.0f), destTile.y + (destTile.h / 2.0f) }; }
 
+	bool GetTilePlanted() { return tilePlanted; }
+	void SetTilePlanted(bool tilePlanted_) { tilePlanted = tilePlanted_; }
+
 private:
 	SDL_Texture* tileTexture;
 	
@@ -42,6 +45,8 @@ private:
 	unsigned int m_ID;
 
 	Vector2 worldPosition;
+
+	bool tilePlanted;
 };
 
 #endif
