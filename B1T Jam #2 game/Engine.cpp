@@ -785,8 +785,8 @@ void Engine::InstantiateTomatoCannon()
 
 					// Also change the tile planted bool to true afterwards to prevent further planting on tile
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TilePlanted(plant, 2);
 
 					++it;
 				}
@@ -858,8 +858,8 @@ void Engine::InstantiateSunflowerShooter()
 
 					// Also change the tile planted bool to true afterwards to prevent further planting on tile
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TilePlanted(plant, 2);
 
 					++it;
 				}
@@ -931,8 +931,8 @@ void Engine::InstantiateEggplantTrap()
 
 					// Also change the tile planted bool to true afterwards to prevent further planting on tile
 					if (Player::GetLevelNumber() == 1) gameLevels[0].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 1) gameLevels[1].TilePlanted(plant, 2);
-					else if (Player::GetLevelNumber() == 2) gameLevels[2].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 2) gameLevels[1].TilePlanted(plant, 2);
+					else if (Player::GetLevelNumber() == 3) gameLevels[2].TilePlanted(plant, 2);
 
 					++it;
 				}
